@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Chuck Taylors — EVENTS</title>
+  <title>The Chuck Taylors — Events</title>
   <meta name="theme-color" content="#ff6b35" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,7 +48,7 @@
 <body>
   <div class="max-w-6xl mx-auto p-4 md:p-8">
     <header class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">The Chuck Taylors — EVENTS</h1>
+      <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">The Chuck Taylors — Events</h1>
       <div class="flex items-center gap-2 flex-wrap text-sm text-slate-300">
         <button id="setPassBtn" class="btn-sec">🔒 Set Passcode</button>
         <button id="adminLoginBtn" class="btn-sec">👤 Admin Login</button>
@@ -60,19 +60,19 @@
     <!-- Control bar -->
     <div class="card p-3 md:p-4 mb-6">
       <div class="flex items-center justify-between gap-2 flex-wrap">
-        <div class="text-sm text-slate-300">events, chat, payments, charts, and YouTube links.</div>
+        <div class="text-sm text-slate-300">Events, chat, payments, charts, and YouTube links.</div>
         <div class="flex items-center gap-2 flex-wrap">
-          <button id="showeventsBtn" class="btn-sec">📅 Dates</button>
+          <button id="showEventsBtn" class="btn-sec">📅 Dates</button>
           <button id="toggleChatBtn" class="btn-sec">💬 Chat</button>
           <button id="togglePaymentsBtn" class="btn-sec">💰 Payments</button>
           <button id="toggleChartsBtn" class="btn-sec">📊 Charts</button>
-          <button id="toggleYouTubeBtn" class="btn-sec">🎬 YouTUBE</button>
-          <button id="addGigBtn" class="btn hidden">+ New Gig</button>
+          <button id="toggleYouTubeBtn" class="btn-sec">🎬 YouTube</button>
+          <button id="addEventBtn" class="btn hidden">+ New Event</button>
         </div>
       </div>
     </div>
 
-    <!-- events View -->
+    <!-- Events View -->
     <div id="eventsView">
       <div class="grid xl:grid-cols-3 gap-6">
         <div class="xl:col-span-2 card p-4 min-w-0">
@@ -83,7 +83,7 @@
           </div>
           <div class="flex gap-4 mb-3 text-sm flex-wrap">
             <div class="flex items-center gap-2"><div class="w-4 h-4 bg-white rounded"></div><span>Open Date</span></div>
-            <div class="flex items-center gap-2"><div class="w-4 h-4 bg-orange-500 rounded"></div><span>Gig Scheduled</span></div>
+            <div class="flex items-center gap-2"><div class="w-4 h-4 bg-orange-500 rounded"></div><span>Event Scheduled</span></div>
             <div class="flex items-center gap-2"><div class="w-4 h-4 bg-red-600 rounded"></div><span>Band Off (Greg solo)</span></div>
             <div class="flex items-center gap-2"><div class="w-4 h-4 border-4 border-yellow-400 rounded"></div><span>Today</span></div>
           </div>
@@ -169,7 +169,7 @@
     <div id="youtubeView" class="hidden">
       <div class="card p-6">
         <div class="flex items-center justify-between flex-wrap gap-3">
-          <h2 class="text-2xl font-bold">YouTUBE Links</h2>
+          <h2 class="text-2xl font-bold">YouTube Links</h2>
           <span class="pill">Public links</span>
         </div>
 
@@ -210,7 +210,7 @@
     </div>
   </div>
 
-  <!-- Gig Detail Modal (view/edit/delete + band off) -->
+  <!-- Event Detail Modal (view/edit/delete + band off) -->
   <dialog id="gigModal" class="card modal p-0" style="max-width:720px;">
     <div class="p-6">
       <div class="flex items-center justify-between mb-3">
@@ -248,11 +248,11 @@
     </div>
   </dialog>
 
-  <!-- New Gig Modal -->
+  <!-- New Event Modal -->
   <dialog id="newGigModal" class="card modal p-0" style="max-width:720px;">
     <div class="p-6">
       <div class="flex items-center justify-between mb-3">
-        <h3 class="text-xl font-bold">New Gig</h3>
+        <h3 class="text-xl font-bold">New Event</h3>
         <button id="closeNewGigModal" class="btn-sec">Close</button>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -342,7 +342,7 @@
   const BAND_MEMBERS = ['greg','john','tim','brian','mark'];
   const MEMBER_NAMES = { greg:'Greg', john:'John', tim:'Tim', brian:'Brian', mark:'Mark' };
 
-  const SEED_events = [
+  const SEED_EVENTS = [
     { id:1, title:'Sarah & Mike Wedding', date:'2025-11-15', startTime:'18:00', venue:'The Bell Event Centre', address:'312 Elm St, Cincinnati, OH',
       payments:{ greg:{amount:250,paid:true}, john:{amount:200,paid:true}, tim:{amount:200,paid:false}, brian:{amount:225,paid:true}, mark:{amount:200,paid:false} } },
     { id:2, title:'Jazz Night at The Blue Note', date:'2025-11-08', startTime:'20:00', venue:'The Blue Note', address:'456 Main St, Cincinnati, OH',
@@ -356,9 +356,9 @@
   ];
 
   /* ===== Persistence: events in localStorage ===== */
-  const events_KEY = 'ct_events_v1';
-  function getevents(){ try { return JSON.parse(localStorage.getItem(events_KEY)) || SEED_events.slice(); } catch { return SEED_events.slice(); } }
-  function setevents(arr){ localStorage.setItem(events_KEY, JSON.stringify(arr)); }
+  const EVENTS_KEY = 'ct_events_v1';
+  function getEvents(){ try { return JSON.parse(localStorage.getItem(EVENTS_KEY)) || SEED_EVENTS.slice(); } catch { return SEED_EVENTS.slice(); } }
+  function setEvents(arr){ localStorage.setItem(EVENTS_KEY, JSON.stringify(arr)); }
 
   /* ===== Chat (local) ===== */
   const DEMO_CHAT = [
@@ -366,7 +366,7 @@
     { name:'John', message:'Thanks! That crowd was amazing', time:'2:35 PM' },
     { name:'Tim', message:'When is our next rehearsal?', time:'2:40 PM' },
     { name:'Greg', message:'Thursday at 7pm, my place', time:'2:42 PM' },
-    { name:'Brian', message:'I\\'ll bring the setlist', time:'2:45 PM' },
+    { name:'Brian', message:'I\'ll bring the setlist', time:'2:45 PM' },
   ];
   let chatMessages = JSON.parse(localStorage.getItem('ct_chat_v1')||'null') || [...DEMO_CHAT];
 
@@ -388,7 +388,7 @@
   }
   function adminLoggedIn(){ return localStorage.getItem(PASS_KEYS.adminSession) === '1'; }
   function ensureAdminUI(){
-    document.getElementById('addGigBtn').classList.toggle('hidden', !adminLoggedIn());
+    document.getElementById('addEventBtn').classList.toggle('hidden', !adminLoggedIn());
     document.getElementById('adminLoginBtn').classList.toggle('hidden', adminLoggedIn());
     document.getElementById('adminLogoutBtn').classList.toggle('hidden', !adminLoggedIn());
   }
@@ -401,21 +401,18 @@
   }
 
   /* ===== Elements ===== */
-  const showeventsBtn=document.getElementById('showeventsBtn');
+  const showEventsBtn=document.getElementById('showEventsBtn');
   const toggleChatBtn=document.getElementById('toggleChatBtn');
   const togglePaymentsBtn=document.getElementById('togglePaymentsBtn');
   const toggleChartsBtn=document.getElementById('toggleChartsBtn');
   const toggleYouTubeBtn=document.getElementById('toggleYouTubeBtn');
-  const addGigBtn=document.getElementById('addGigBtn');
+  const addEventBtn=document.getElementById('addEventBtn');
 
   const eventsView=document.getElementById('eventsView');
   const chatView=document.getElementById('chatView');
   const paymentsView=document.getElementById('paymentsView');
   const chartsView=document.getElementById('chartsView');
   const youtubeView=document.getElementById('youtubeView');
-
-  const calPrev=document.getElementById('calPrev');
-  const calNext=document.getElementById('calNext');
 
   const chatMessagesEl=document.getElementById('chatMessages');
   const chatInput=document.getElementById('chatInput');
@@ -444,7 +441,7 @@
   const pdfDownloadBtn=document.getElementById('pdfDownloadBtn');
   const closePdfModal=document.getElementById('closePdfModal');
 
-  // Gig modal
+  // Event modal
   const gigModal=document.getElementById('gigModal');
   const gigTitleEl=document.getElementById('gigTitle');
   const gigView=document.getElementById('gigView');
@@ -466,7 +463,7 @@
   const saveGigBtn=document.getElementById('saveGigBtn');
   const cancelEditBtn=document.getElementById('cancelEditBtn');
 
-  // New gig modal
+  // New event modal
   const newGigModal=document.getElementById('newGigModal');
   const closeNewGigModal=document.getElementById('closeNewGigModal');
   const ngTitle=document.getElementById('ngTitle');
@@ -511,13 +508,16 @@
 
   /* ===== View switching ===== */
   function hideAllViews(){ eventsView.classList.add('hidden'); chatView.classList.add('hidden'); paymentsView.classList.add('hidden'); chartsView.classList.add('hidden'); youtubeView.classList.add('hidden'); }
-  function showeventsView(){ hideAllViews(); eventsView.classList.remove('hidden'); renderCalendar(); renderevents(); }
+  function showEventsView(){ hideAllViews(); eventsView.classList.remove('hidden'); renderCalendar(); renderEvents(); }
   function showChatView(){ hideAllViews(); chatView.classList.remove('hidden'); renderChat(); }
   function showPaymentsView(){ hideAllViews(); paymentsView.classList.remove('hidden'); renderPayments(); }
   function showChartsView(){ hideAllViews(); chartsView.classList.remove('hidden'); hydrateUploaderFilter(); renderRepo(); }
   function showYouTubeView(){ hideAllViews(); youtubeView.classList.remove('hidden'); ytHydrateUploaderFilter(); ytRenderRepo(); }
 
-  showeventsBtn.onclick = showeventsView;
+  document.getElementById('calPrev').onclick = ()=>{ calendarDate.setMonth(calendarDate.getMonth()-1); renderCalendar(); };
+  document.getElementById('calNext').onclick = ()=>{ calendarDate.setMonth(calendarDate.getMonth()+1); renderCalendar(); };
+
+  showEventsBtn.onclick = showEventsView;
   toggleChatBtn.onclick = showChatView;
   togglePaymentsBtn.onclick = showPaymentsView;
   toggleChartsBtn.onclick = showChartsView;
@@ -526,11 +526,8 @@
   /* ===== Calendar ===== */
   let calendarDate = new Date();
 
-  document.getElementById('calPrev').onclick = ()=>{ calendarDate.setMonth(calendarDate.getMonth()-1); renderCalendar(); };
-  document.getElementById('calNext').onclick = ()=>{ calendarDate.setMonth(calendarDate.getMonth()+1); renderCalendar(); };
-
   function renderCalendar(){
-    const events = getevents();
+    const allEvents = getEvents();
     const year = calendarDate.getFullYear();
     const month = calendarDate.getMonth();
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -549,42 +546,43 @@
     const todayDate = today.getDate();
 
     const monthEvents = {};
-    events.forEach(g=>{
-      const d = new Date(g.date);
+    allEvents.forEach(ev=>{
+      const d = new Date(ev.date);
       if (d.getFullYear()===year && d.getMonth()===month){
         const day = d.getDate();
-        if (!monthEvents[day]) monthEvents[day]=[];
-        monthEvents[day].push(g);
+        (monthEvents[day] ||= []).push(ev);
       }
     });
 
+    // prev month trailing days
     for (let i=firstDay-1; i>=0; i--){
       const day = daysInPrevMonth - i;
       const cell = document.createElement('div'); cell.className='cal-day other-month';
       cell.innerHTML = `<div class="cal-day-num">${day}</div>`;
       grid.appendChild(cell);
     }
+
+    // this month
     for (let day=1; day<=daysInMonth; day++){
       const cell = document.createElement('div'); cell.className='cal-day';
-      const eventsToday = monthEvents[day] || [];
-      const hasBandOff = eventsToday.some(g => g.bandOff === true);
-      const hasAnyGig  = eventsToday.length > 0;
+      const todays = monthEvents[day] || [];
+      const hasBandOff = todays.some(ev => ev.bandOff === true);
+      const hasAny = todays.length > 0;
 
       if (hasBandOff) cell.classList.add('band-off');
-      else if (hasAnyGig) cell.classList.add('has-event');
+      else if (hasAny) cell.classList.add('has-event');
 
       if (isCurrentMonth && day===todayDate) cell.classList.add('today');
 
       let html = `<div class="cal-day-num">${day}</div>`;
-      eventsToday.forEach(g=> {
-        const label = g.bandOff ? 'Band Off' : g.title;
-        html += `<div class="cal-event">${g.startTime || ''} ${label}</div>`;
-      });
+      todays.forEach(ev=> { html += `<div class="cal-event">${ev.startTime || ''} ${ev.bandOff ? 'Band Off' : ev.title}</div>`; });
       cell.innerHTML = html;
 
-      if (eventsToday.length) cell.onclick = ()=> showGigDetail(eventsToday[0].id);
+      if (todays.length) cell.onclick = ()=> showGigDetail(todays[0].id);
       grid.appendChild(cell);
     }
+
+    // next month leading days
     const total = firstDay + daysInMonth;
     const rem = total % 7 === 0 ? 0 : 7 - (total % 7);
     for (let day=1; day<=rem; day++){
@@ -592,66 +590,72 @@
       cell.innerHTML = `<div class="cal-day-num">${day}</div>`;
       grid.appendChild(cell);
     }
+
     calendar.appendChild(grid);
   }
 
-  /* ===== events list ===== */
-  function renderevents(){
-    const events = getevents().slice().sort((a,b)=> new Date(a.date) - new Date(b.date));
+  /* ===== Events list ===== */
+  function renderEvents(){
+    const allEvents = getEvents().slice().sort((a,b)=> new Date(a.date) - new Date(b.date));
     const eventsList = document.getElementById('eventsList');
     eventsList.innerHTML = '';
-    events.forEach(g=>{
+    allEvents.forEach(ev=>{
       const div = document.createElement('div');
-      const bandOffPill = g.bandOff ? `<span class="pill" style="border-color:#dc2626;color:#fff;background:#dc2626">Band Off</span>` : '';
+      const bandOffPill = ev.bandOff ? `<span class="pill" style="border-color:#dc2626;color:#fff;background:#dc2626">Band Off</span>` : '';
       div.className='p-3 card cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all';
       div.innerHTML = `
         <div>
-          <div class="text-sm subtle">${g.date}${g.startTime?' • '+g.startTime:''}</div>
-          <div class="font-semibold">${g.title} ${bandOffPill}</div>
-          <div class="text-xs text-slate-400">${g.venue||''}</div>
-          <button class="btn-sec mt-2 text-xs" onclick="showGigDetail(${g.id})">View Details</button>
+          <div class="text-sm subtle">${ev.date}${ev.startTime?' • '+ev.startTime:''}</div>
+          <div class="font-semibold">${ev.title} ${bandOffPill}</div>
+          <div class="text-xs text-slate-400">${ev.venue||''}</div>
+          <button class="btn-sec mt-2 text-xs" onclick="showGigDetail(${ev.id})">View Details</button>
         </div>`;
       eventsList.appendChild(div);
     });
   }
 
-  /* ===== Gig modal (view/edit/delete) ===== */
-  let currentGigId = null;
-
+  /* ===== Event modal (view/edit/delete) ===== */
   window.showGigDetail = function(id, pushHash = true){
-    const events = getevents();
-    const g = events.find(x=> x.id===id); if(!g) return;
-    currentGigId = id;
+    const allEvents = getEvents();
+    const ev = allEvents.find(x=> x.id===id); if(!ev) return;
 
-    document.getElementById('gigTitle').textContent = g.title;
-    const badge = g.bandOff
+    document.getElementById('gigTitle').textContent = ev.title;
+    const badge = ev.bandOff
       ? `<div class="mb-3 text-sm" style="background:#dc2626;color:#fff;padding:.4rem .6rem;border-radius:8px;display:inline-block">Band Off (Greg solo)</div>`
       : '';
     gigView.innerHTML = `
       ${badge}
-      <div class="kv"><div class="subtle">Date</div><div>${g.date}${g.startTime?' at '+g.startTime:''}</div></div>
-      <div class="kv"><div class="subtle">Venue</div><div>${g.venue||''}</div></div>
-      <div class="kv"><div class="subtle">Address</div><div>${g.address||''}</div></div>`;
+      <div class="kv"><div class="subtle">Date</div><div>${ev.date}${ev.startTime?' at '+ev.startTime:''}</div></div>
+      <div class="kv"><div class="subtle">Venue</div><div>${ev.venue||''}</div></div>
+      <div class="kv"><div class="subtle">Address</div><div>${ev.address||''}</div></div>`;
 
     // Admin-only controls visible on session
     editGigBtn.classList.toggle('hidden', !adminLoggedIn());
     deleteGigBtn.classList.toggle('hidden', !adminLoggedIn());
-    bandOffBtn.classList.toggle('hidden', !adminLoggedIn() || g.bandOff === true);
-    clearBandOffBtn.classList.toggle('hidden', !adminLoggedIn() || g.bandOff !== true);
+    bandOffBtn.classList.toggle('hidden', !adminLoggedIn() || ev.bandOff === true);
+    clearBandOffBtn.classList.toggle('hidden', !adminLoggedIn() || ev.bandOff !== true);
 
-    // wire share
+    // share
     shareGigBtn.onclick = ()=> shareGig(id);
 
-    // wire band off
-    bandOffBtn.onclick = ()=> { const events=getevents(); const i=events.findIndex(x=>x.id===id); if(i>=0){ events[i].bandOff=true; setevents(events); renderCalendar(); renderevents(); showGigDetail(id,false);} };
-    clearBandOffBtn.onclick = ()=> { const events=getevents(); const i=events.findIndex(x=>x.id===id); if(i>=0){ delete events[i].bandOff; setevents(events); renderCalendar(); renderevents(); showGigDetail(id,false);} };
+    // band off toggles
+    bandOffBtn.onclick = ()=> {
+      const arr = getEvents();
+      const i = arr.findIndex(x=>x.id===id);
+      if(i>=0){ arr[i].bandOff=true; setEvents(arr); renderCalendar(); renderEvents(); showGigDetail(id,false); }
+    };
+    clearBandOffBtn.onclick = ()=> {
+      const arr = getEvents();
+      const i = arr.findIndex(x=>x.id===id);
+      if(i>=0){ delete arr[i].bandOff; setEvents(arr); renderCalendar(); renderEvents(); showGigDetail(id,false); }
+    };
 
     // edit
-    editGigBtn.onclick = ()=> enterEditMode(g);
+    editGigBtn.onclick = ()=> enterEditMode(ev);
     deleteGigBtn.onclick = ()=> {
-      if (!confirm('Delete this gig?')) return;
-      const events=getevents().filter(x=> x.id!==id);
-      setevents(events); renderCalendar(); renderevents(); gigModal.close();
+      if (!confirm('Delete this event?')) return;
+      const next = getEvents().filter(x=> x.id!==id);
+      setEvents(next); renderCalendar(); renderEvents(); gigModal.close();
     };
 
     // modes
@@ -663,23 +667,23 @@
     if (pushHash) location.hash = `gig-${id}`;
   };
 
-  function enterEditMode(g){
-    egTitle.value = g.title||'';
-    egDate.value = g.date||'';
-    egTime.value = g.startTime||'';
-    egVenue.value = g.venue||'';
-    egAddress.value = g.address||'';
-    egBandOff.checked = !!g.bandOff;
+  function enterEditMode(ev){
+    egTitle.value = ev.title||'';
+    egDate.value = ev.date||'';
+    egTime.value = ev.startTime||'';
+    egVenue.value = ev.venue||'';
+    egAddress.value = ev.address||'';
+    egBandOff.checked = !!ev.bandOff;
 
     gigView.classList.add('hidden');
     gigEdit.classList.remove('hidden');
 
     saveGigBtn.onclick = ()=>{
-      const events = getevents();
-      const i = events.findIndex(x=> x.id===g.id);
+      const arr = getEvents();
+      const i = arr.findIndex(x=> x.id===ev.id);
       if (i>=0){
-        events[i] = {
-          ...events[i],
+        arr[i] = {
+          ...arr[i],
           title: egTitle.value.trim() || 'Untitled',
           date: egDate.value,
           startTime: egTime.value,
@@ -687,8 +691,8 @@
           address: egAddress.value.trim(),
           bandOff: !!egBandOff.checked
         };
-        setevents(events);
-        renderCalendar(); renderevents(); showGigDetail(g.id, false);
+        setEvents(arr);
+        renderCalendar(); renderEvents(); showGigDetail(ev.id, false);
       }
     };
     cancelEditBtn.onclick = ()=> { gigEdit.classList.add('hidden'); gigView.classList.remove('hidden'); };
@@ -711,17 +715,17 @@
   if (location.hash) handleHashOpen();
   closeGigModal.onclick = ()=> { gigModal.close(); if (location.hash.startsWith('#gig-')) history.replaceState(null,'',location.pathname+location.search); };
 
-  /* ===== New gig ===== */
-  addGigBtn.onclick = ()=> {
+  /* ===== New event ===== */
+  addEventBtn.onclick = ()=> {
     if (!adminLoggedIn()) return alert('Admin login required.');
     ngTitle.value=''; ngDate.value=''; ngTime.value=''; ngVenue.value=''; ngAddress.value=''; ngBandOff.checked=false;
     newGigModal.showModal();
   };
   document.getElementById('closeNewGigModal').onclick = ()=> newGigModal.close();
   createGigBtn.onclick = ()=>{
-    const events = getevents();
-    const nextId = (events.reduce((m,g)=> Math.max(m,g.id), 0) || 0) + 1;
-    events.push({
+    const arr = getEvents();
+    const nextId = (arr.reduce((m,g)=> Math.max(m,g.id), 0) || 0) + 1;
+    arr.push({
       id: nextId,
       title: (ngTitle.value||'Untitled').trim(),
       date: ngDate.value,
@@ -731,9 +735,9 @@
       bandOff: !!ngBandOff.checked,
       payments: {}
     });
-    setevents(events);
+    setEvents(arr);
     newGigModal.close();
-    renderCalendar(); renderevents();
+    renderCalendar(); renderEvents();
     showGigDetail(nextId);
   };
 
@@ -760,11 +764,11 @@
   };
   chatInput.addEventListener('keypress', e=>{ if(e.key==='Enter') sendChat.click(); });
 
-  /* ===== Payments (static demo from events.payments) ===== */
+  /* ===== Payments (static demo from event.payments) ===== */
   function renderPayments(){
-    const events = getevents();
+    const allEvents = getEvents();
     const totals = {};
-    BAND_MEMBERS.forEach(m=> totals[m]= events.reduce((sum,g)=> sum + (g.payments?.[m]?.amount || 0), 0));
+    BAND_MEMBERS.forEach(m=> totals[m]= allEvents.reduce((sum,ev)=> sum + (ev.payments?.[m]?.amount || 0), 0));
     ytdSummary.innerHTML = '';
     BAND_MEMBERS.forEach(m=>{
       const card = document.createElement('div');
@@ -776,11 +780,11 @@
       ytdSummary.appendChild(card);
     });
     paymentsList.innerHTML='';
-    events.forEach(g=>{
+    allEvents.forEach(ev=>{
       const div = document.createElement('div'); div.className='payment-gig';
       let inner = '<div class="grid grid-cols-2 md:grid-cols-5 gap-2 mt-2">';
       BAND_MEMBERS.forEach(m=>{
-        const p = g.payments?.[m] || {amount:0,paid:false};
+        const p = ev.payments?.[m] || {amount:0,paid:false};
         inner += `
           <div class="text-center">
             <div class="text-xs subtle">${MEMBER_NAMES[m]}</div>
@@ -792,8 +796,8 @@
       div.innerHTML = `
         <div class="flex items-center justify-between mb-2">
           <div>
-            <div class="font-bold">${g.title}</div>
-            <div class="text-sm subtle">${g.date} • ${g.venue||''}</div>
+            <div class="font-bold">${ev.title}</div>
+            <div class="text-sm subtle">${ev.date} • ${ev.venue||''}</div>
           </div>
         </div>${inner}`;
       paymentsList.appendChild(div);
@@ -859,7 +863,7 @@
       if (delBtn){
         delBtn.onclick = async ()=>{
           const stored = localStorage.getItem(PASS_KEYS.user);
-          if (stored){ // if a user pass is set, ask once per delete
+          if (stored){
             const tryPass = prompt('Enter your passcode to delete');
             if (!tryPass || stored !== await sha256(tryPass)) return alert('Wrong passcode.');
           }
@@ -1055,16 +1059,16 @@
     localStorage.setItem(PASS_KEYS.adminSession, '1');
     adminLoginModal.close();
     updateLockStatusUI();
-    renderevents(); renderCalendar();
+    renderEvents(); renderCalendar();
   };
   adminLogoutBtn.onclick = ()=>{
     localStorage.removeItem(PASS_KEYS.adminSession);
     updateLockStatusUI();
-    renderevents(); renderCalendar();
+    renderEvents(); renderCalendar();
   };
 
   /* ===== Init ===== */
-  function init(){ updateLockStatusUI(); renderCalendar(); renderevents(); }
+  function init(){ updateLockStatusUI(); renderCalendar(); renderEvents(); }
   window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
