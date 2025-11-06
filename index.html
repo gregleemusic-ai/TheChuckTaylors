@@ -27,12 +27,10 @@
     .payment-status{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600}
     .payment-status.paid{background:#10b981;color:#fff}
     .payment-status.unpaid{background:#ef4444;color:#fff}
-
     dialog{border:none;padding:0;max-width:90vw;max-height:90vh;overflow:auto}
     dialog::backdrop{background:rgba(0,0,0,.7)}
     .modal{background:#1a1f2e !important;border:1px solid #2b3547 !important;color:#fff !important}
     .modal .subtle{color:#cbd5e1}
-
     /* Calendar */
     .cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;margin-top:.5rem}
     .cal-header{font-size:.75rem;font-weight:700;color:#cbd5e1;text-align:center;padding:.5rem;background:#1a1f2e}
@@ -45,8 +43,7 @@
     .cal-day-num{font-size:1.1rem;font-weight:700;margin-bottom:.25rem}
     .cal-day.today{outline:3px solid #ffd23f;outline-offset:-3px}
     .cal-event{font-size:.7rem;background:rgba(0,0,0,.2);padding:.2rem .3rem;margin-top:.2rem;border-radius:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-
-    /* Mobile buttons: same width */
+    /* Mobile buttons equal width */
     .nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
     @media (min-width:640px){ .nav-grid{display:flex;gap:.5rem} .nav-grid > *{width:auto} }
     .wfull-sm{width:100%} @media (min-width:640px){ .wfull-sm{width:auto} }
@@ -122,13 +119,19 @@
       </div>
     </div>
 
-    <!-- Payments -->
+    <!-- Payments (personal view) -->
     <div id="paymentsView" class="hidden">
       <div class="card p-6">
-        <h2 class="text-2xl font-bold mb-4">Payment Tracking - YTD 2025</h2>
-        <div id="ytdSummary" class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6"></div>
-        <h3 class="text-xl font-bold mb-3">Recent Events</h3>
+        <div class="flex items-center justify-between mb-4 gap-3 flex-wrap">
+          <h2 class="text-2xl font-bold">Payments</h2>
+          <div class="flex items-center gap-2">
+            <label for="payMemberSelect" class="subtle text-sm">I am</label>
+            <select id="payMemberSelect" class="min-w-[140px]"></select>
+            <span id="payYtd" class="pill">YTD: $0.00</span>
+          </div>
+        </div>
         <div id="paymentsList"></div>
+        <p class="text-xs subtle mt-3">Your selection is saved on this device only.</p>
       </div>
     </div>
 
@@ -139,7 +142,6 @@
           <h2 class="text-2xl font-bold">Charts & PDFs</h2>
           <span class="pill">Public uploads</span>
         </div>
-
         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
           <div class="card p-4">
             <h3 class="text-xl font-semibold mb-2">Upload PDFs</h3>
@@ -151,7 +153,6 @@
             </div>
             <div class="mt-3"><button id="uploadPdfBtn" class="btn">Upload</button></div>
           </div>
-
           <div class="card p-4">
             <h3 class="text-xl font-semibold mb-2">Find Files</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -164,7 +165,6 @@
             </div>
           </div>
         </div>
-
         <div class="mt-6">
           <h3 class="text-xl font-bold mb-3">Repository</h3>
           <div id="pdfList" class="grid sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
@@ -180,7 +180,6 @@
           <h2 class="text-2xl font-bold">YouTube Links</h2>
           <span class="pill">Public links</span>
         </div>
-
         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
           <div class="card p-4">
             <h3 class="text-xl font-semibold mb-2">Add a YouTube Link</h3>
@@ -195,7 +194,6 @@
               <button id="addYtBtn" class="btn">Add Link</button>
             </div>
           </div>
-
           <div class="card p-4">
             <h3 class="text-xl font-semibold mb-2">Find Links</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -208,7 +206,6 @@
             </div>
           </div>
         </div>
-
         <div class="mt-6">
           <h3 class="text-xl font-bold mb-3">Repository</h3>
           <div id="ytList" class="grid sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
@@ -218,7 +215,7 @@
     </div>
   </div>
 
-  <!-- Event Detail Modal (view/edit/delete + band off) -->
+  <!-- Event Detail Modal -->
   <dialog id="gigModal" class="card modal p-0" style="max-width:720px;">
     <div class="p-6">
       <div class="flex items-center justify-between mb-3">
@@ -232,11 +229,8 @@
           <button id="closeGigModal" class="btn">Close</button>
         </div>
       </div>
-
-      <!-- View mode -->
       <div id="gigView" class="space-y-2 text-sm"></div>
 
-      <!-- Edit mode -->
       <div id="gigEdit" class="hidden">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div><label class="subtle text-xs">Title</label><input id="egTitle" /></div>
@@ -265,7 +259,6 @@
           <button id="cancelEditBtn" class="btn-sec">Cancel</button>
         </div>
       </div>
-
       <p id="shareHint" class="text-xs subtle mt-3 hidden">Link copied!</p>
     </div>
   </dialog>
@@ -375,19 +368,35 @@
 
   <script>
   /* ===== Helpers ===== */
-  function parseLocalDate(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y, m-1, d); }
+  function parseLocalDate(s){
+    if (!s) return new Date(NaN);
+    const [y,m,d]=s.split('-').map(Number);
+    return new Date(y, m-1, d);
+  }
   function formatTime12(hhmm){
     if (!hhmm) return '';
     const [h,m]=hhmm.split(':').map(Number);
     const ampm = h>=12?'PM':'AM';
     const h12 = h%12||12;
-    return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+    return `${h12}:${String(m||0).padStart(2,'0')} ${ampm}`;
   }
+  function normalizeEvent(e){
+    let date = (e.date||'').trim();
+    if (date.includes('T')) date = date.split('T')[0];
+    let startTime = (e.startTime||'').trim();
+    if (startTime.includes('T')){
+      const m = startTime.match(/(?:T| )(\d{2}:\d{2})/);
+      startTime = m ? m[1] : '';
+    }
+    if (/^\d{1,2}:\d{2}/.test(startTime)) startTime = startTime.slice(0,5);
+    else startTime = '';
+    return { ...e, date, startTime };
+  }
+  function money(n){ return '$' + (Number(n||0)).toFixed(2); }
 
   /* ===== Data (seed) ===== */
   const BAND_MEMBERS = ['greg','john','tim','brian','mark'];
   const MEMBER_NAMES = { greg:'Greg', john:'John', tim:'Tim', brian:'Brian', mark:'Mark' };
-
   const SEED_EVENTS = [
     { id:1, title:'Sarah & Mike Wedding', date:'2025-11-15', startTime:'18:00', venue:'The Bell Event Centre', address:'312 Elm St, Cincinnati, OH',
       payments:{ greg:{amount:250,paid:true}, john:{amount:200,paid:true}, tim:{amount:200,paid:false}, brian:{amount:225,paid:true}, mark:{amount:200,paid:false} } },
@@ -401,12 +410,20 @@
       payments:{ greg:{amount:400,paid:false}, john:{amount:350,paid:false}, tim:{amount:350,paid:false}, brian:{amount:375,paid:false}, mark:{amount:350,paid:false} } }
   ];
 
-  /* ===== Persistence: events in localStorage ===== */
+  /* ===== Persistence ===== */
   const EVENTS_KEY = 'ct_events_v1';
   function getEvents(){ try { return JSON.parse(localStorage.getItem(EVENTS_KEY)) || SEED_EVENTS.slice(); } catch { return SEED_EVENTS.slice(); } }
   function setEvents(arr){ localStorage.setItem(EVENTS_KEY, JSON.stringify(arr)); }
+  function migrateEventsStore(){
+    try{
+      const current = JSON.parse(localStorage.getItem(EVENTS_KEY)||'[]');
+      if (!Array.isArray(current)) return;
+      const migrated = current.map(normalizeEvent);
+      localStorage.setItem(EVENTS_KEY, JSON.stringify(migrated));
+    }catch{}
+  }
 
-  /* ===== Chat (local) ===== */
+  /* ===== Chat ===== */
   const DEMO_CHAT = [
     { name:'Greg', message:'Great show last night everyone!', time:'2:30 PM' },
     { name:'John', message:'Thanks! That crowd was amazing', time:'2:35 PM' },
@@ -420,7 +437,6 @@
   const DEVICE_KEY = 'ct_device_id_v1';
   let deviceId = localStorage.getItem(DEVICE_KEY);
   if (!deviceId) { deviceId = (crypto.randomUUID && crypto.randomUUID()) || String(Math.random()).slice(2); localStorage.setItem(DEVICE_KEY, deviceId); }
-
   const PASS_KEYS = { user:'ct_user_pass_v1', admin:'ct_admin_pass_v1', adminSession:'ct_admin_session_v1' };
   async function sha256(text){
     const data = new TextEncoder().encode(text);
@@ -467,10 +483,12 @@
   const sendChat=document.getElementById('sendChat');
   const clearChatBtn=document.getElementById('clearChatBtn');
 
-  const ytdSummary=document.getElementById('ytdSummary');
+  const ytdSummary=document.getElementById('ytdSummary'); // (unused in personal view, kept for safety)
   const paymentsList=document.getElementById('paymentsList');
+  const payMemberSelect=document.getElementById('payMemberSelect');
+  const payYtd=document.getElementById('payYtd');
 
-  // Charts repo elements
+  // Charts repo
   const pdfInput=document.getElementById('pdfInput');
   const pdfTitle=document.getElementById('pdfTitle');
   const uploaderName=document.getElementById('uploaderName');
@@ -507,17 +525,17 @@
   const egVenue=document.getElementById('egVenue');
   const egAddress=document.getElementById('egAddress');
   const egBandOff=document.getElementById('egBandOff');
-  const egCeremonyOnsite = document.getElementById('egCeremonyOnsite');
-  const egRoomFlip = document.getElementById('egRoomFlip');
-  const egGuestArrivalTime = document.getElementById('egGuestArrivalTime');
-  const egBandArrivalTime = document.getElementById('egBandArrivalTime');
-  const egIntroTime = document.getElementById('egIntroTime');
-  const egIntroSong = document.getElementById('egIntroSong');
-  const egFirstDanceSong = document.getElementById('egFirstDanceSong');
-  const egParentsDances = document.getElementById('egParentsDances');
-  const egSpecialRequests = document.getElementById('egSpecialRequests');
-  const egLastSong = document.getElementById('egLastSong');
-  const egDoNotPlay = document.getElementById('egDoNotPlay');
+  const egCeremonyOnsite=document.getElementById('egCeremonyOnsite');
+  const egRoomFlip=document.getElementById('egRoomFlip');
+  const egGuestArrivalTime=document.getElementById('egGuestArrivalTime');
+  const egBandArrivalTime=document.getElementById('egBandArrivalTime');
+  const egIntroTime=document.getElementById('egIntroTime');
+  const egIntroSong=document.getElementById('egIntroSong');
+  const egFirstDanceSong=document.getElementById('egFirstDanceSong');
+  const egParentsDances=document.getElementById('egParentsDances');
+  const egSpecialRequests=document.getElementById('egSpecialRequests');
+  const egLastSong=document.getElementById('egLastSong');
+  const egDoNotPlay=document.getElementById('egDoNotPlay');
   const saveGigBtn=document.getElementById('saveGigBtn');
   const cancelEditBtn=document.getElementById('cancelEditBtn');
 
@@ -530,17 +548,17 @@
   const ngVenue=document.getElementById('ngVenue');
   const ngAddress=document.getElementById('ngAddress');
   const ngBandOff=document.getElementById('ngBandOff');
-  const ngCeremonyOnsite = document.getElementById('ngCeremonyOnsite');
-  const ngRoomFlip = document.getElementById('ngRoomFlip');
-  const ngGuestArrivalTime = document.getElementById('ngGuestArrivalTime');
-  const ngBandArrivalTime = document.getElementById('ngBandArrivalTime');
-  const ngIntroTime = document.getElementById('ngIntroTime');
-  const ngIntroSong = document.getElementById('ngIntroSong');
-  const ngFirstDanceSong = document.getElementById('ngFirstDanceSong');
-  const ngParentsDances = document.getElementById('ngParentsDances');
-  const ngSpecialRequests = document.getElementById('ngSpecialRequests');
-  const ngLastSong = document.getElementById('ngLastSong');
-  const ngDoNotPlay = document.getElementById('ngDoNotPlay');
+  const ngCeremonyOnsite=document.getElementById('ngCeremonyOnsite');
+  const ngRoomFlip=document.getElementById('ngRoomFlip');
+  const ngGuestArrivalTime=document.getElementById('ngGuestArrivalTime');
+  const ngBandArrivalTime=document.getElementById('ngBandArrivalTime');
+  const ngIntroTime=document.getElementById('ngIntroTime');
+  const ngIntroSong=document.getElementById('ngIntroSong');
+  const ngFirstDanceSong=document.getElementById('ngFirstDanceSong');
+  const ngParentsDances=document.getElementById('ngParentsDances');
+  const ngSpecialRequests=document.getElementById('ngSpecialRequests');
+  const ngLastSong=document.getElementById('ngLastSong');
+  const ngDoNotPlay=document.getElementById('ngDoNotPlay');
   const createGigBtn=document.getElementById('createGigBtn');
 
   // YouTube
@@ -589,15 +607,14 @@
   toggleChartsBtn.onclick = showChartsView;
   toggleYouTubeBtn.onclick = showYouTubeView;
 
-  /* ===== Calendar ===== */
+  /* ===== Calendar (current month only, abbrev weekdays) ===== */
   let calendarDate = new Date();
-
   function renderCalendar(){
     const allEvents = getEvents();
     const year = calendarDate.getFullYear();
     const month = calendarDate.getMonth();
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; // Abbreviations
+    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     document.getElementById('calTitle').textContent = `${monthNames[month]} ${year}`;
     const calendar = document.getElementById('monthlyCalendar');
     calendar.innerHTML = '';
@@ -620,15 +637,12 @@
       }
     });
 
-    // prev month trailing days
     for (let i=firstDay-1; i>=0; i--){
       const day = daysInPrevMonth - i;
       const cell = document.createElement('div'); cell.className='cal-day other-month';
       cell.innerHTML = `<div class="cal-day-num">${day}</div>`;
       grid.appendChild(cell);
     }
-
-    // this month
     for (let day=1; day<=daysInMonth; day++){
       const cell = document.createElement('div'); cell.className='cal-day';
       const todays = monthEvents[day] || [];
@@ -637,18 +651,555 @@
 
       if (hasBandOff) cell.classList.add('band-off');
       else if (hasAny) cell.classList.add('has-event');
-
       if (isCurrentMonth && day===todayDate) cell.classList.add('today');
 
       let html = `<div class="cal-day-num">${day}</div>`;
-      todays.forEach(ev=> { html += `<div class="cal-event">${ev.startTime?formatTime12(ev.startTime)+' ':''}${ev.bandOff ? 'Band Off' : ev.title}</div>`; });
+      todays.forEach(ev=>{
+        html += `<div class="cal-event">${ev.startTime?formatTime12(ev.startTime)+' ':''}${ev.bandOff ? 'Band Off' : ev.title}</div>`;
+      });
       cell.innerHTML = html;
-
       if (todays.length) cell.onclick = ()=> showGigDetail(todays[0].id);
       grid.appendChild(cell);
     }
-
-    // next month leading days
     const total = firstDay + daysInMonth;
     const rem = total % 7 === 0 ? 0 : 7 - (total % 7);
-   
+    for (let day=1; day<=rem; day++){
+      const cell = document.createElement('div'); cell.className='cal-day other-month';
+      cell.innerHTML = `<div class="cal-day-num">${day}</div>`;
+      grid.appendChild(cell);
+    }
+    calendar.appendChild(grid);
+  }
+
+  /* ===== Events list ===== */
+  function renderEvents(){
+    const list = document.getElementById('eventsList');
+    const events = getEvents().slice().sort((a,b)=> parseLocalDate(a.date) - parseLocalDate(b.date));
+    list.innerHTML = '';
+    events.forEach(ev=>{
+      const div = document.createElement('div');
+      const bandOffPill = ev.bandOff ? `<span class="pill" style="border-color:#dc2626;color:#fff;background:#dc2626">Band Off</span>` : '';
+      div.className='p-3 card cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all';
+      div.innerHTML = `
+        <div>
+          <div class="text-sm subtle">${ev.date}${ev.startTime?' • '+formatTime12(ev.startTime):''}</div>
+          <div class="font-semibold">${ev.title} ${bandOffPill}</div>
+          <div class="text-xs text-slate-400">${ev.venue||''}</div>
+          <button class="btn-sec mt-2 text-xs" onclick="showGigDetail(${ev.id})">View Details</button>
+        </div>`;
+      list.appendChild(div);
+    });
+  }
+
+  /* ===== Event modal (view/edit/delete/share) ===== */
+  let currentGigId = null;
+  window.showGigDetail = function(id, pushHash = true){
+    const events = getEvents();
+    const g = events.find(x=> x.id===id); if(!g) return;
+    currentGigId = id;
+
+    const badge = g.bandOff
+      ? `<div class="mb-3 text-sm" style="background:#dc2626;color:#fff;padding:.4rem .6rem;border-radius:8px;display:inline-block">Band Off</div>`
+      : '';
+
+    document.getElementById('gigTitle').textContent = g.title;
+    const basics = `
+      ${badge}
+      <div class="kv"><div class="subtle">Date</div><div>${g.date}${g.startTime?' at '+formatTime12(g.startTime):''}</div></div>
+      <div class="kv"><div class="subtle">Venue</div><div>${g.venue||''}</div></div>
+      <div class="kv"><div class="subtle">Address</div><div>${g.address||''}</div></div>`;
+
+    const extras = `
+      <div class="font-bold mt-4">Event Details</div>
+      <div class="kv"><div class="subtle">Ceremony onsite?</div><div>${g.ceremonyOnsite ? 'Yes' : 'No'}</div></div>
+      <div class="kv"><div class="subtle">Guest arrival</div><div>${g.guestArrivalTime ? formatTime12(g.guestArrivalTime) : '—'}</div></div>
+      <div class="kv"><div class="subtle">Room flip?</div><div>${g.roomFlip ? 'Yes' : 'No'}</div></div>
+      <div class="kv"><div class="subtle">Band arrival</div><div>${g.bandArrivalTime ? formatTime12(g.bandArrivalTime) : '—'}</div></div>
+      <div class="kv"><div class="subtle">Time of introduction</div><div>${g.introTime ? formatTime12(g.introTime) : '—'}</div></div>
+      <div class="kv"><div class="subtle">Song for introduction</div><div>${g.introSong || '—'}</div></div>
+      <div class="kv"><div class="subtle">First dance</div><div>${g.firstDanceSong || '—'}</div></div>
+      <div class="kv"><div class="subtle">Parents' dances</div><div>${g.parentsDances || '—'}</div></div>
+      <div class="kv"><div class="subtle">Special requests</div><div>${g.specialRequests || '—'}</div></div>
+      <div class="kv"><div class="subtle">Last song</div><div>${g.lastSong || '—'}</div></div>
+      <div class="kv"><div class="subtle">Do-Not-Play</div><div>${g.doNotPlay || '—'}</div></div>`;
+
+    gigView.innerHTML = basics + extras;
+
+    editGigBtn.classList.toggle('hidden', !adminLoggedIn());
+    deleteGigBtn.classList.toggle('hidden', !adminLoggedIn());
+    bandOffBtn.classList.toggle('hidden', !adminLoggedIn() || g.bandOff === true);
+    clearBandOffBtn.classList.toggle('hidden', !adminLoggedIn() || g.bandOff !== true);
+
+    shareGigBtn.onclick = ()=> shareGig(id);
+    bandOffBtn.onclick = ()=> { const arr=getEvents(); const i=arr.findIndex(x=>x.id===id); if(i>=0){ arr[i].bandOff=true; setEvents(arr); renderCalendar(); renderEvents(); showGigDetail(id,false);} };
+    clearBandOffBtn.onclick = ()=> { const arr=getEvents(); const i=arr.findIndex(x=>x.id===id); if(i>=0){ delete arr[i].bandOff; setEvents(arr); renderCalendar(); renderEvents(); showGigDetail(id,false);} };
+    editGigBtn.onclick = ()=> enterEditMode(g);
+    deleteGigBtn.onclick = ()=> {
+      if (!confirm('Delete this event?')) return;
+      const arr = getEvents().filter(x=> x.id!==id);
+      setEvents(arr); renderCalendar(); renderEvents(); gigModal.close();
+    };
+
+    gigView.classList.remove('hidden');
+    gigEdit.classList.add('hidden');
+    document.getElementById('shareHint').classList.add('hidden');
+    gigModal.showModal();
+    if (pushHash) location.hash = `gig-${id}`;
+  };
+
+  function enterEditMode(g){
+    egTitle.value = g.title||''; egDate.value = g.date||''; egTime.value = g.startTime||'';
+    egVenue.value = g.venue||''; egAddress.value = g.address||''; egBandOff.checked = !!g.bandOff;
+    egCeremonyOnsite.checked = !!g.ceremonyOnsite; egRoomFlip.checked = !!g.roomFlip;
+    egGuestArrivalTime.value = g.guestArrivalTime||''; egBandArrivalTime.value = g.bandArrivalTime||'';
+    egIntroTime.value = g.introTime||''; egIntroSong.value = g.introSong||'';
+    egFirstDanceSong.value = g.firstDanceSong||''; egParentsDances.value = g.parentsDances||'';
+    egSpecialRequests.value = g.specialRequests||''; egLastSong.value = g.lastSong||'';
+    egDoNotPlay.value = g.doNotPlay||'';
+
+    gigView.classList.add('hidden'); gigEdit.classList.remove('hidden');
+
+    saveGigBtn.onclick = ()=>{
+      const arr = getEvents();
+      const i = arr.findIndex(x=> x.id===g.id);
+      if (i>=0){
+        arr[i] = normalizeEvent({
+          ...arr[i],
+          title: egTitle.value.trim() || 'Untitled',
+          date: egDate.value,
+          startTime: egTime.value,
+          venue: egVenue.value.trim(),
+          address: egAddress.value.trim(),
+          bandOff: !!egBandOff.checked,
+          ceremonyOnsite: !!egCeremonyOnsite.checked,
+          roomFlip: !!egRoomFlip.checked,
+          guestArrivalTime: egGuestArrivalTime.value || '',
+          bandArrivalTime: egBandArrivalTime.value || '',
+          introTime: egIntroTime.value || '',
+          introSong: egIntroSong.value.trim(),
+          firstDanceSong: egFirstDanceSong.value.trim(),
+          parentsDances: egParentsDances.value.trim(),
+          specialRequests: egSpecialRequests.value.trim(),
+          lastSong: egLastSong.value.trim(),
+          doNotPlay: egDoNotPlay.value.trim()
+        });
+        setEvents(arr);
+        renderCalendar(); renderEvents(); showGigDetail(g.id, false);
+      }
+    };
+    cancelEditBtn.onclick = ()=> { gigEdit.classList.add('hidden'); gigView.classList.remove('hidden'); };
+  }
+
+  function shareGig(id){
+    const url = `${location.origin}${location.pathname}#gig-${id}`;
+    navigator.clipboard?.writeText(url).then(()=>{
+      document.getElementById('shareHint').classList.remove('hidden');
+      setTimeout(()=> document.getElementById('shareHint').classList.add('hidden'), 1500);
+    });
+  }
+  window.addEventListener('hashchange', handleHashOpen);
+  function handleHashOpen(){
+    const g = location.hash.match(/#gig-(\d+)/);
+    const y = location.hash.match(/#yt-([a-z0-9-]+)/i);
+    if (g){ const id = parseInt(g[1],10); showGigDetail(id, false); }
+    if (y){ const id = y[1]; const item = ytGetRepo().find(x=> x.id===id); if (item) ytOpen(item, false); }
+  }
+  if (location.hash) handleHashOpen();
+  closeGigModal.onclick = ()=> { gigModal.close(); if (location.hash.startsWith('#gig-')) history.replaceState(null,'',location.pathname+location.search); };
+
+  /* ===== New event ===== */
+  addEventBtn.onclick = ()=> {
+    if (!adminLoggedIn()) return alert('Admin login required.');
+    ngTitle.value=''; ngDate.value=''; ngTime.value=''; ngVenue.value=''; ngAddress.value='';
+    ngBandOff.checked=false; ngCeremonyOnsite.checked=false; ngRoomFlip.checked=false;
+    ngGuestArrivalTime.value=''; ngBandArrivalTime.value=''; ngIntroTime.value='';
+    ngIntroSong.value=''; ngFirstDanceSong.value=''; ngParentsDances.value='';
+    ngSpecialRequests.value=''; ngLastSong.value=''; ngDoNotPlay.value='';
+    newGigModal.showModal();
+  };
+  closeNewGigModal.onclick = ()=> newGigModal.close();
+  createGigBtn.onclick = ()=>{
+    const arr = getEvents();
+    const nextId = (arr.reduce((m,g)=> Math.max(m,g.id), 0) || 0) + 1;
+    const obj = normalizeEvent({
+      id: nextId,
+      title: (ngTitle.value||'Untitled').trim(),
+      date: ngDate.value,
+      startTime: ngTime.value,
+      venue: (ngVenue.value||'').trim(),
+      address: (ngAddress.value||'').trim(),
+      bandOff: !!ngBandOff.checked,
+      ceremonyOnsite: !!ngCeremonyOnsite.checked,
+      roomFlip: !!ngRoomFlip.checked,
+      guestArrivalTime: ngGuestArrivalTime.value || '',
+      bandArrivalTime: ngBandArrivalTime.value || '',
+      introTime: ngIntroTime.value || '',
+      introSong: (ngIntroSong.value||'').trim(),
+      firstDanceSong: (ngFirstDanceSong.value||'').trim(),
+      parentsDances: (ngParentsDances.value||'').trim(),
+      specialRequests: (ngSpecialRequests.value||'').trim(),
+      lastSong: (ngLastSong.value||'').trim(),
+      doNotPlay: (ngDoNotPlay.value||'').trim(),
+      payments: {}
+    });
+    arr.push(obj);
+    setEvents(arr);
+    newGigModal.close();
+    renderCalendar(); renderEvents();
+    showGigDetail(nextId);
+  };
+
+  /* ===== Chat ===== */
+  function renderChat(){
+    const canAdmin = adminLoggedIn();
+    chatMessagesEl.innerHTML = '';
+    chatMessages.forEach((m,i)=>{
+      const div = document.createElement('div');
+      div.className='chat-msg';
+      div.innerHTML = `
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="font-semibold text-orange-400">${m.name||'Guest'}</span>
+            <span class="subtle ml-2">${m.time||''}</span>
+          </div>
+          ${canAdmin ? `<button class="btn-sec text-xs" data-del="${i}">Delete</button>` : ''}
+        </div>
+        <div class="mt-1">${m.message}</div>`;
+      chatMessagesEl.appendChild(div);
+    });
+    if (canAdmin){
+      chatMessagesEl.querySelectorAll('[data-del]').forEach(btn=>{
+        btn.onclick = ()=>{
+          const idx = parseInt(btn.getAttribute('data-del'), 10);
+          chatMessages.splice(idx, 1);
+          localStorage.setItem('ct_chat_v1', JSON.stringify(chatMessages));
+          renderChat();
+        };
+      });
+    }
+    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+  }
+  sendChat.onclick = ()=>{
+    const msg = (chatInput.value||'').trim(); if(!msg) return;
+    const name = (chatName.value||'Guest').trim();
+    const time = new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    chatMessages.push({ name, message: msg, time });
+    chatInput.value=''; localStorage.setItem('ct_chat_v1', JSON.stringify(chatMessages)); renderChat();
+  };
+  chatInput.addEventListener('keypress', e=>{ if(e.key==='Enter') sendChat.click(); });
+  clearChatBtn.onclick = ()=>{
+    if (!adminLoggedIn()) return alert('Admin login required.');
+    if (!confirm('Clear all chat messages?')) return;
+    chatMessages = [];
+    localStorage.setItem('ct_chat_v1', JSON.stringify(chatMessages));
+    renderChat();
+  };
+
+  /* ===== Payments (personal) ===== */
+  const PAY_PICK_KEY = 'ct_pay_member_v1';
+  function hydratePayMemberSelect(){
+    if (!payMemberSelect.options.length){
+      BAND_MEMBERS.forEach(k=>{
+        const opt = document.createElement('option');
+        opt.value = k; opt.textContent = MEMBER_NAMES[k];
+        payMemberSelect.appendChild(opt);
+      });
+    }
+    const saved = localStorage.getItem(PAY_PICK_KEY);
+    if (saved && BAND_MEMBERS.includes(saved)) payMemberSelect.value = saved;
+    else payMemberSelect.value = BAND_MEMBERS[0];
+  }
+  function renderPayments(){
+    hydratePayMemberSelect();
+    const who = payMemberSelect.value;
+    localStorage.setItem(PAY_PICK_KEY, who);
+
+    const listEl = document.getElementById('paymentsList');
+    listEl.innerHTML = '';
+
+    const all = getEvents().slice().sort((a,b)=> parseLocalDate(a.date) - parseLocalDate(b.date));
+    const yr = new Date().getFullYear();
+    const thisYear = all.filter(e => parseLocalDate(e.date).getFullYear() === yr);
+
+    let ytdTotal = 0;
+    thisYear.forEach(ev=>{
+      const p = ev.payments?.[who];
+      if (!p) return;
+      ytdTotal += Number(p.amount||0);
+      const statusClass = p.paid ? 'paid' : 'unpaid';
+      const statusText  = p.paid ? 'event paid' : 'event owed';
+      const row = document.createElement('div');
+      row.className = 'payment-gig';
+      row.innerHTML = `
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-bold">${ev.title}</div>
+            <div class="text-sm subtle">${ev.date}${ev.startTime ? ' • ' + formatTime12(ev.startTime) : ''}${ev.venue ? ' • ' + ev.venue : ''}</div>
+          </div>
+          <div class="text-right">
+            <div class="text-lg font-extrabold">${money(p.amount)}</div>
+            <div class="payment-status ${statusClass}" style="text-transform:capitalize">${statusText}</div>
+          </div>
+        </div>`;
+      listEl.appendChild(row);
+    });
+    payYtd.textContent = `YTD ${yr}: ${money(ytdTotal)}`;
+    if (!listEl.children.length){
+      listEl.innerHTML = `<div class="text-slate-400 text-sm">No payment records for ${MEMBER_NAMES[who]} this year yet.</div>`;
+    }
+  }
+  payMemberSelect?.addEventListener('change', renderPayments);
+
+  /* ===== Charts Repo ===== */
+  const REPO_KEY = 'ct_pdf_repo_v2_public';
+  function getRepo(){ try{ return JSON.parse(localStorage.getItem(REPO_KEY)) || []; }catch{ return []; } }
+  function setRepo(arr){ localStorage.setItem(REPO_KEY, JSON.stringify(arr)); }
+  function hydrateUploaderFilter(){
+    const repo = getRepo();
+    const names = Array.from(new Set(repo.map(f=> f.uploaderName || 'Guest')));
+    uploaderFilter.innerHTML = '<option value="">All uploaders</option>';
+    names.forEach(n=>{ const opt=document.createElement('option'); opt.value=n; opt.textContent=n; uploaderFilter.appendChild(opt); });
+  }
+  function renderRepo(){
+    const q = (searchPdf.value||'').toLowerCase();
+    const u = uploaderFilter.value || '';
+    const repo = getRepo().sort((a,b)=> b.ts - a.ts);
+    const filtered = repo.filter(item=>{
+      const text = `${item.name} ${item.notes||''}`.toLowerCase();
+      const matchesQ = !q || text.includes(q);
+      const matchesU = !u || (item.uploaderName||'Guest') === u;
+      return matchesQ && matchesU;
+    });
+    pdfList.innerHTML = '';
+    emptyRepo.classList.toggle('hidden', filtered.length !== 0);
+    filtered.forEach(item=>{
+      const card = document.createElement('div');
+      card.className = 'card p-4';
+      const sizeKB = Math.round(item.size/1024);
+      const when = new Date(item.ts).toLocaleString();
+      const canDelete = item.deviceId === deviceId;
+      card.innerHTML = `
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <div class="font-semibold">${item.name}</div>
+            <div class="text-xs subtle mt-1">
+              ${item.notes ? `<span class="pill mr-2">${item.notes}</span>` : ''}
+              <span class="pill">by ${item.uploaderName||'Guest'}</span>
+              <span class="pill">${sizeKB} KB</span>
+              <span class="pill">${when}</span>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn-sec" data-act="view">View</button>
+            <a class="btn-sec" data-act="download" download="${item.name}">Download</a>
+            ${canDelete ? '<button class="btn-sec" data-act="delete">Delete</button>' : ''}
+          </div>
+        </div>`;
+      const viewBtn = card.querySelector('[data-act="view"]');
+      const dlBtn   = card.querySelector('[data-act="download"]');
+      const delBtn  = card.querySelector('[data-act="delete"]');
+      viewBtn.onclick = ()=> openPdfModal(item);
+      dlBtn.href = item.dataUrl;
+      if (delBtn){
+        delBtn.onclick = async ()=>{
+          const stored = localStorage.getItem(PASS_KEYS.user);
+          if (stored){
+            const tryPass = prompt('Enter your passcode to delete');
+            if (!tryPass || stored !== await sha256(tryPass)) return alert('Wrong passcode.');
+          }
+          const next = getRepo().filter(x=> x.id !== item.id);
+          setRepo(next); hydrateUploaderFilter(); renderRepo();
+        };
+      }
+      pdfList.appendChild(card);
+    });
+  }
+  function openPdfModal(item){
+    pdfModalTitle.textContent = item.name;
+    pdfMeta.textContent = `${item.uploaderName||'Guest'} • ${(item.size/1024|0)} KB • ${new Date(item.ts).toLocaleString()}${item.notes? ' • '+item.notes:''}`;
+    pdfObject.data = item.dataUrl;
+    pdfDownloadBtn.href = item.dataUrl;
+    pdfDownloadBtn.download = item.name;
+    pdfModal.showModal();
+  }
+  closePdfModal.onclick = ()=> pdfModal.close();
+  uploadPdfBtn.onclick = async ()=>{
+    const files = Array.from(pdfInput.files||[]);
+    if (!files.length){ alert('Select one or more PDF files.'); return; }
+    const repo = getRepo();
+    for (const f of files){
+      if (f.type !== 'application/pdf'){ alert(`'${f.name}' is not a PDF.`); continue; }
+      const dataUrl = await fileToDataUrl(f);
+      const entry = { id: crypto.randomUUID(), name: f.name, size: f.size, notes: (pdfTitle.value||'').trim(),
+        uploaderName: (uploaderName.value||'Guest').trim() || 'Guest', deviceId, ts: Date.now(), dataUrl };
+      repo.push(entry);
+    }
+    setRepo(repo);
+    pdfInput.value=''; pdfTitle.value='';
+    hydrateUploaderFilter(); renderRepo();
+  };
+  function fileToDataUrl(file){
+    return new Promise((resolve,reject)=>{
+      const r=new FileReader(); r.onload=()=>resolve(r.result); r.onerror=reject; r.readAsDataURL(file);
+    });
+  }
+  clearFiltersBtn.onclick = ()=>{ searchPdf.value=''; uploaderFilter.value=''; renderRepo(); };
+  exportRepoBtn.onclick = ()=>{
+    const index = getRepo().map(({id,name,size,uploaderName,notes,ts})=>({id,name,size,uploaderName,notes,ts}));
+    const blob = new Blob([JSON.stringify(index,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='charts_index.json'; a.click(); URL.revokeObjectURL(url);
+  };
+
+  /* ===== YouTube Repo ===== */
+  const YT_KEY = 'ct_yt_repo_v1';
+  function ytGetRepo(){ try{ return JSON.parse(localStorage.getItem(YT_KEY)) || []; }catch{ return []; } }
+  function ytSetRepo(arr){ localStorage.setItem(YT_KEY, JSON.stringify(arr)); }
+  function parseYouTubeId(input){
+    if (!input) return null; input=input.trim();
+    if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+    const m = input.match(/(?:v=|\/embed\/|\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/) || input.match(/v=([a-zA-Z0-9_-]{11})/);
+    return m ? m[1] : null;
+  }
+  function ytHydrateUploaderFilter(){
+    const repo = ytGetRepo();
+    const names = Array.from(new Set(repo.map(f=> f.uploaderName || 'Guest')));
+    ytUploaderFilter.innerHTML = '<option value="">All uploaders</option>';
+    names.forEach(n=>{ const opt=document.createElement('option'); opt.value=n; opt.textContent=n; ytUploaderFilter.appendChild(opt); });
+  }
+  function ytRenderRepo(){
+    const q = (ytSearch.value||'').toLowerCase();
+    const u = ytUploaderFilter.value || '';
+    const repo = ytGetRepo().sort((a,b)=> b.ts - a.ts);
+    const filtered = repo.filter(item=>{
+      const text = `${item.title||''} ${item.notes||''}`.toLowerCase();
+      const matchesQ = !q || text.includes(q);
+      const matchesU = !u || (item.uploaderName||'Guest') === u;
+      return matchesQ && matchesU;
+    });
+    ytList.innerHTML = '';
+    ytEmpty.classList.toggle('hidden', filtered.length !== 0);
+    filtered.forEach(item=>{
+      const thumb = `https://i.ytimg.com/vi/${item.videoId}/hqdefault.jpg`;
+      const canDelete = item.deviceId === deviceId;
+      const card = document.createElement('div');
+      card.className = 'card p-3';
+      card.innerHTML = `
+        <div class="rounded overflow-hidden">
+          <img src="${thumb}" alt="Thumbnail" class="w-full" loading="lazy">
+        </div>
+        <div class="mt-2 font-semibold">${item.title || 'YouTube Video'}</div>
+        <div class="text-xs subtle mt-1">
+          ${item.notes ? `<span class="pill mr-2">${item.notes}</span>` : ''}
+          <span class="pill">by ${item.uploaderName||'Guest'}</span>
+          <span class="pill">${new Date(item.ts).toLocaleString()}</span>
+        </div>
+        <div class="flex gap-2 mt-3 flex-wrap">
+          <button class="btn-sec" data-act="play">Play</button>
+          <a class="btn-sec" data-act="open" href="https://youtu.be/${item.videoId}" target="_blank" rel="noopener">Open</a>
+          <button class="btn-sec" data-act="share">Share</button>
+          ${canDelete ? '<button class="btn-sec" data-act="delete">Delete</button>' : ''}
+        </div>`;
+      const playBtn = card.querySelector('[data-act="play"]');
+      const shareBtn = card.querySelector('[data-act="share"]');
+      const delBtn = card.querySelector('[data-act="delete"]');
+      playBtn.onclick = ()=> ytOpen(item);
+      shareBtn.onclick = ()=> ytShare(item);
+      if (delBtn){
+        delBtn.onclick = async ()=>{
+          const stored = localStorage.getItem(PASS_KEYS.user);
+          if (stored){
+            const tryPass = prompt('Enter your passcode to delete');
+            if (!tryPass || stored !== await sha256(tryPass)) return alert('Wrong passcode.');
+          }
+          ytSetRepo(ytGetRepo().filter(x=> x.id !== item.id));
+          ytHydrateUploaderFilter(); ytRenderRepo();
+        };
+      }
+      ytList.appendChild(card);
+    });
+  }
+  function ytOpen(item, pushHash = true){
+    ytModalTitle.textContent = item.title || 'YouTube';
+    ytIframe.src = `https://www.youtube.com/embed/${item.videoId}?rel=0`;
+    ytMeta.textContent = `${item.uploaderName||'Guest'} • ${new Date(item.ts).toLocaleString()}${item.notes? ' • '+item.notes:''}`;
+    ytShareBtn.onclick = ()=> ytShare(item);
+    ytShareHint.classList.add('hidden');
+    ytModal.showModal();
+    if (pushHash) location.hash = `yt-${item.id}`;
+  }
+  function ytShare(item){
+    const url = `${location.origin}${location.pathname}#yt-${item.id}`;
+    navigator.clipboard?.writeText(url).then(()=>{
+      ytShareHint.classList.remove('hidden');
+      setTimeout(()=> ytShareHint.classList.add('hidden'), 1500);
+    });
+  }
+  ytCloseBtn.onclick = ()=>{
+    ytIframe.src = '';
+    ytModal.close();
+    if (location.hash.startsWith('#yt-')) history.replaceState(null,'',location.pathname+location.search);
+  };
+  addYtBtn.onclick = ()=>{
+    const id = parseYouTubeId(ytUrl.value);
+    if (!id){ alert('Please enter a valid YouTube URL or 11-character video ID.'); return; }
+    const repo = ytGetRepo();
+    const item = { id: crypto.randomUUID(), videoId: id, title:(ytTitle.value||'').trim(), notes:(ytNotes.value||'').trim(),
+                   uploaderName:(ytUploader.value||'Guest').trim() || 'Guest', deviceId, ts: Date.now() };
+    repo.push(item);
+    ytSetRepo(repo);
+    ytUrl.value=''; ytTitle.value=''; ytNotes.value='';
+    ytHydrateUploaderFilter(); ytRenderRepo();
+  };
+  ytSearch.addEventListener('input', ytRenderRepo);
+  ytUploaderFilter.addEventListener('change', ytRenderRepo);
+  ytClearFilters.onclick = ()=>{ ytSearch.value=''; ytUploaderFilter.value=''; ytRenderRepo(); };
+  ytExportBtn.onclick = ()=>{
+    const index = ytGetRepo().map(({id,videoId,title,notes,uploaderName,ts})=>({id,videoId,title,notes,uploaderName,ts}));
+    const blob = new Blob([JSON.stringify(index,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='youtube_index.json'; a.click(); URL.revokeObjectURL(url);
+  };
+
+  /* ===== Pass & Admin login ===== */
+  setPassBtn.onclick = ()=> passModal.showModal();
+  closePassBtn.onclick = ()=> passModal.close();
+  savePassBtn.onclick = async ()=>{
+    const u = document.getElementById('userPass').value.trim();
+    const a = document.getElementById('adminPass').value.trim();
+    await setPasscodes({ user: u || null, admin: a || null });
+    document.getElementById('userPass').value=''; document.getElementById('adminPass').value='';
+    passModal.close();
+  };
+  adminLoginBtn.onclick = ()=>{
+    if (!localStorage.getItem(PASS_KEYS.admin)) return alert('Set an admin passcode first (🔒 Set Passcode).');
+    adminLoginInput.value=''; adminLoginModal.showModal();
+  };
+  adminLoginClose.onclick = ()=> adminLoginModal.close();
+  adminLoginSubmit.onclick = async ()=>{
+    const stored = localStorage.getItem(PASS_KEYS.admin);
+    const tryPass = adminLoginInput.value.trim();
+    if (!tryPass) return;
+    const ok = stored === await sha256(tryPass);
+    if (!ok) return alert('Incorrect admin passcode.');
+    localStorage.setItem(PASS_KEYS.adminSession, '1');
+    adminLoginModal.close();
+    updateLockStatusUI();
+    renderEvents(); renderCalendar();
+  };
+  adminLogoutBtn.onclick = ()=>{
+    localStorage.removeItem(PASS_KEYS.adminSession);
+    updateLockStatusUI();
+    renderEvents(); renderCalendar();
+  };
+
+  /* ===== Init ===== */
+  function init(){
+    migrateEventsStore();
+    updateLockStatusUI();
+    renderCalendar();
+    renderEvents();
+    hydratePayMemberSelect();
+  }
+  window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
