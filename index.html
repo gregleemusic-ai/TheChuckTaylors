@@ -10,90 +10,125 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root{--accent:#ff6b35}
-    body{font-family:Inter,system-ui,sans-serif;background:#0d1117;color:#e5e7eb}
-    .card{background:rgba(255,255,255,.06);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.08);border-radius:14px}
-    .btn{background:var(--accent);color:#0d1117;font-weight:700;border-radius:10px;padding:.6rem .9rem;cursor:pointer;border:none}
-    .btn-sec{background:transparent;border:1px solid var(--accent);color:var(--accent);border-radius:10px;padding:.5rem .8rem;cursor:pointer}
-    .btn:hover{background:#ff8555}
+    :root{
+      --bg:#0d1117; --card:rgba(255,255,255,.06); --card-b:#2b3547; --text:#e5e7eb; --sub:#a3b0c2;
+      --brand:#ff6b35; --brand-2:#ffd23f; --danger:#dc2626; --navy:#1e3a8a;
+    }
+    body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text)}
+    .card{background:var(--card);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.08);border-radius:14px}
+    .btn{background:var(--brand);color:#0d1117;font-weight:700;border-radius:10px;padding:.6rem .9rem;cursor:pointer;border:none}
+    .btn:hover{background:#ff865e}
+    .btn-sec{background:transparent;border:1px solid var(--brand);color:var(--brand);border-radius:10px;padding:.5rem .8rem;cursor:pointer}
     .btn-sec:hover{background:rgba(255,107,53,.1)}
-    input,select,textarea{background:#0b1220;border:1px solid #2b3547;border-radius:10px;padding:.55rem .7rem;width:100%;color:#e5e7eb}
-    textarea{min-height:84px}
-    .subtle{color:#a3b0c2}
-    .pill{display:inline-block;font-size:.75rem;padding:.25rem .5rem;border:1px solid #2b3547;border-radius:999px}
-    .kv{display:grid;grid-template-columns:180px 1fr;gap:.6rem}
-    .chat-msg{background:rgba(255,255,255,.05);padding:.75rem;border-radius:8px;border-left:3px solid var(--accent);margin-bottom:.5rem}
-    .payment-gig{background:rgba(255,255,255,.03);border:1px solid #2b3547;border-radius:8px;padding:1rem;margin-bottom:.75rem}
+    .btn-dark{background:#0b1220;border:1px solid var(--card-b);color:var(--text);border-radius:10px;padding:.5rem .8rem;cursor:pointer}
+    .btn-dark:hover{background:#141b2b}
+    input,select,textarea{background:#0b1220;border:1px solid var(--card-b);border-radius:10px;padding:.55rem .7rem;width:100%;color:var(--text)}
+    textarea{min-height:70px}
+    label{font-size:.8rem;color:#cbd5e1}
+    .subtle{color:var(--sub)}
+    .pill{display:inline-block;font-size:.72rem;padding:.2rem .5rem;border:1px solid var(--card-b);border-radius:999px}
+    .kv{display:grid;grid-template-columns:160px 1fr;gap:.5rem}
+    @media (max-width:640px){.kv{grid-template-columns:1fr}}
+    .chat-msg{background:rgba(255,255,255,.05);padding:.75rem;border-radius:8px;border-left:3px solid var(--brand);margin-bottom:.5rem}
+    .payment-gig{background:rgba(255,255,255,.03);border:1px solid var(--card-b);border-radius:8px;padding:1rem;margin-bottom:.75rem}
     .payment-status{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600}
     .payment-status.paid{background:#10b981;color:#fff}
     .payment-status.unpaid{background:#ef4444;color:#fff}
-    dialog{border:none;padding:0;max-width:90vw;max-height:90vh;overflow:auto}
+
+    dialog{border:none;padding:0;max-width:95vw;max-height:90vh;overflow:auto}
     dialog::backdrop{background:rgba(0,0,0,.7)}
-    .modal{background:#1a1f2e !important;border:1px solid #2b3547 !important;color:#fff !important}
+    .modal{background:#1a1f2e !important;border:1px solid var(--card-b) !important;color:#fff !important}
     .modal .subtle{color:#cbd5e1}
+
+    /* Modal shell improvements */
+    .dialog-inner{display:flex;flex-direction:column;max-height:85vh}
+    .dialog-head{position:sticky;top:0;background:#1a1f2e;z-index:1;padding:1rem 1.25rem;border-bottom:1px solid var(--card-b)}
+    .dialog-body{overflow:auto;padding:1rem 1.25rem}
+    .dialog-actions{position:sticky;bottom:0;background:#1a1f2e;border-top:1px solid var(--card-b);padding:1rem 1.25rem;display:flex;gap:.5rem;flex-wrap:wrap}
+    .dialog-actions .btn,.dialog-actions .btn-sec{flex:1 1 140px}
+
+    /* Form grid */
+    .form-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:.75rem}
+    .field{grid-column:span 12}
+    @media (min-width:768px){.field{grid-column:span 6}}
+    .field-full{grid-column:span 12}
+    .check{display:flex;align-items:center;gap:.5rem}
+
     /* Calendar */
     .cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;margin-top:.5rem}
-    .cal-header{font-size:.75rem;font-weight:700;color:#cbd5e1;text-align:center;padding:.5rem;background:#1a1f2e}
-    .cal-day{min-height:80px;background:#fff;color:#0d1117;padding:.5rem;border-radius:4px;position:relative;cursor:pointer;transition:all .2s}
+    .cal-header{font-size:.8rem;font-weight:700;color:#cbd5e1;text-align:center;padding:.5rem;background:#1a1f2e}
+    .cal-day{min-height:86px;background:#fff;color:#0d1117;padding:.5rem;border-radius:4px;position:relative;cursor:pointer;transition:all .2s}
     .cal-day:hover{transform:scale(1.02);box-shadow:0 4px 12px rgba(255,107,53,.3)}
-    .cal-day.has-event{background:var(--accent);color:#fff;font-weight:700}
-    .cal-day.band-off{background:#dc2626 !important;color:#fff !important;font-weight:700}
-    .cal-day.band-off .cal-event{background:rgba(255,255,255,.25)}
-    .cal-day.other-month{opacity:.3}
-    .cal-day-num{font-size:1.1rem;font-weight:700;margin-bottom:.25rem}
-    .cal-day.today{outline:3px solid #ffd23f;outline-offset:-3px}
-    .cal-event{font-size:.7rem;background:rgba(0,0,0,.2);padding:.2rem .3rem;margin-top:.2rem;border-radius:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    /* Mobile buttons equal width */
-    .nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-    @media (min-width:640px){ .nav-grid{display:flex;gap:.5rem} .nav-grid > *{width:auto} }
-    .wfull-sm{width:100%} @media (min-width:640px){ .wfull-sm{width:auto} }
+    .cal-day.has-event{background:var(--brand);color:#fff;font-weight:700}
+    .cal-day.hold{background:var(--navy) !important;color:#fff !important;font-weight:700}
+    .cal-day.band-off{background:var(--danger) !important;color:#fff !important;font-weight:700}
+    .cal-day .cal-event{font-size:.72rem;background:rgba(0,0,0,.18);padding:.18rem .3rem;margin-top:.2rem;border-radius:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .cal-day.other-month{opacity:.35}
+    .cal-day-num{font-size:1.05rem;font-weight:800;margin-bottom:.25rem}
+    .cal-day.today{outline:3px solid var(--brand-2);outline-offset:1px}
+    .cal-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+
+    /* Repo actions */
+    .repo-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+    @media (max-width:640px){
+      .repo-actions .btn-dark{flex:1 1 calc(33.33% - .5rem);min-width:110px;text-align:center}
+    }
+
+    /* Mobile refinements */
+    .stack-sm{display:grid;gap:.75rem}
+    @media (min-width:1280px){.xl-grid-3{display:grid;grid-template-columns:2fr 1fr;gap:1.25rem}}
   </style>
 </head>
 <body>
   <div class="max-w-6xl mx-auto p-4 md:p-8">
-    <header class="flex items-center justify-between mb-6">
+    <header class="flex items-center justify-between mb-6 gap-3">
       <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">The Chuck Taylors — Events</h1>
       <div class="flex items-center gap-2 flex-wrap text-sm text-slate-300">
-        <button id="setPassBtn" class="btn-sec wfull-sm">🔒 Set Passcode</button>
-        <button id="adminLoginBtn" class="btn-sec wfull-sm">👤 Admin Login</button>
-        <button id="adminLogoutBtn" class="btn-sec hidden wfull-sm">↩︎ Logout</button>
-        <span id="lockStatus" class="text-xs subtle block w-full sm:w-auto sm:block"></span>
+        <button id="setProfileBtn" class="btn-sec">🙋 Set My Profile</button>
+        <button id="setPassBtn" class="btn-sec">🔒 Set Passcode</button>
+        <button id="adminLoginBtn" class="btn-sec">👤 Admin Login</button>
+        <button id="adminLogoutBtn" class="btn-sec hidden">↩︎ Logout</button>
+        <span id="profileStatus" class="text-xs subtle"></span>
+        <span id="lockStatus" class="text-xs subtle"></span>
       </div>
     </header>
 
     <!-- Control bar -->
     <div class="card p-3 md:p-4 mb-6">
-      <div class="flex flex-col gap-3">
-        <div class="text-sm text-slate-300">Events, chat, payments, charts, and YouTube links.</div>
-        <div class="nav-grid">
-          <button id="showEventsBtn" class="btn-sec wfull-sm">📅 Dates</button>
-          <button id="toggleChatBtn" class="btn-sec wfull-sm">💬 Chat</button>
-          <button id="togglePaymentsBtn" class="btn-sec wfull-sm">💰 Payments</button>
-          <button id="toggleChartsBtn" class="btn-sec wfull-sm">📊 Charts</button>
-          <button id="toggleYouTubeBtn" class="btn-sec wfull-sm">🎬 YouTube</button>
-          <button id="addEventBtn" class="btn hidden wfull-sm">+ New Event</button>
+      <div class="flex items-center justify-between gap-2 flex-wrap">
+        <div class="text-sm text-slate-300">Events • Chat • Payments • Charts • YouTube</div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <button id="showeventsBtn" class="btn-sec">📅 Dates</button>
+          <button id="toggleChatBtn" class="btn-sec">💬 Chat</button>
+          <button id="togglePaymentsBtn" class="btn-sec">💰 Payments</button>
+          <button id="toggleChartsBtn" class="btn-sec">📊 Charts</button>
+          <button id="toggleYouTubeBtn" class="btn-sec">🎬 YouTube</button>
+          <button id="addGigBtn" class="btn hidden">+ New Event</button>
         </div>
       </div>
     </div>
 
     <!-- Events View -->
     <div id="eventsView">
-      <div class="grid xl:grid-cols-3 gap-6">
-        <div class="xl:col-span-2 card p-4 min-w-0">
-          <div class="flex items-center justify-center mb-3">
-            <h2 id="calTitle" class="text-2xl font-bold text-center"></h2>
+      <div class="xl-grid-3">
+        <div class="card p-4 min-w-0">
+          <div class="cal-nav">
+            <h2 id="calTitle" class="text-2xl font-bold"></h2>
+            <!-- (Prev/Next removed per earlier instruction) -->
           </div>
-          <div class="flex gap-4 mb-3 text-sm flex-wrap justify-center">
+          <div class="flex gap-4 mb-3 text-sm flex-wrap">
             <div class="flex items-center gap-2"><div class="w-4 h-4 bg-white rounded"></div><span>Open Date</span></div>
-            <div class="flex items-center gap-2"><div class="w-4 h-4 bg-orange-500 rounded"></div><span>Event Scheduled</span></div>
+            <div class="flex items-center gap-2"><div class="w-4 h-4 bg-orange-500 rounded"></div><span>Gig Scheduled</span></div>
             <div class="flex items-center gap-2"><div class="w-4 h-4 bg-red-600 rounded"></div><span>Band Off</span></div>
+            <div class="flex items-center gap-2"><div class="w-4 h-4 bg-blue-900 rounded"></div><span>Hold</span></div>
             <div class="flex items-center gap-2"><div class="w-4 h-4 border-4 border-yellow-400 rounded"></div><span>Today</span></div>
           </div>
           <div id="monthlyCalendar"></div>
         </div>
-        <div class="card p-4 min-w-0">
+
+        <div class="card p-4 min-w-0 mt-6 xl:mt-0">
           <div class="flex items-center justify-between">
-            <h2 class="text-xl font-bold mb-4">Upcoming Dates</h2>
+            <h2 class="text-xl font-bold mb-4">Upcoming Events</h2>
           </div>
           <div id="eventsList" class="space-y-3"></div>
         </div>
@@ -102,12 +137,14 @@
 
     <!-- Chat -->
     <div id="chatView" class="hidden">
-      <div class="card p-6">
-        <div class="flex items-center justify-between mb-4">
+      <div class="card p-6 stack-sm">
+        <div class="flex items-center justify-between flex-wrap gap-2">
           <h2 class="text-2xl font-bold">Band Chat</h2>
-          <button id="clearChatBtn" class="btn-sec hidden">🗑️ Clear Chat</button>
+          <div class="flex gap-2">
+            <button id="clearChatBtn" class="btn-sec hidden">🗑️ Clear Chat (Admin)</button>
+          </div>
         </div>
-        <div id="chatMessages" class="bg-black bg-opacity-30 rounded-lg p-4 h-96 overflow-y-auto mb-4"></div>
+        <div id="chatMessages" class="bg-black bg-opacity-30 rounded-lg p-4 h-96 overflow-y-auto"></div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           <input id="chatName" type="text" placeholder="Your name (optional)" />
           <div class="flex gap-2">
@@ -115,37 +152,31 @@
             <button id="sendChat" class="btn">Send</button>
           </div>
         </div>
-        <p class="text-xs subtle mt-2">Messages are stored only in this browser.</p>
+        <p class="text-xs subtle">Messages are stored only in this browser.</p>
       </div>
     </div>
 
-    <!-- Payments (personal view) -->
+    <!-- Payments -->
     <div id="paymentsView" class="hidden">
       <div class="card p-6">
-        <div class="flex items-center justify-between mb-4 gap-3 flex-wrap">
-          <h2 class="text-2xl font-bold">Payments</h2>
-          <div class="flex items-center gap-2">
-            <label for="payMemberSelect" class="subtle text-sm">I am</label>
-            <select id="payMemberSelect" class="min-w-[140px]"></select>
-            <span id="payYtd" class="pill">YTD: $0.00</span>
-          </div>
-        </div>
+        <h2 class="text-2xl font-bold mb-4">Payments — YTD 2025</h2>
+        <div id="ytdSummary" class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6"></div>
         <div id="paymentsList"></div>
-        <p class="text-xs subtle mt-3">Your selection is saved on this device only.</p>
       </div>
     </div>
 
-    <!-- Charts -->
+    <!-- Charts / PDFs -->
     <div id="chartsView" class="hidden">
       <div class="card p-6">
         <div class="flex items-center justify-between flex-wrap gap-3">
           <h2 class="text-2xl font-bold">Charts & PDFs</h2>
           <span class="pill">Public uploads</span>
         </div>
+
         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
           <div class="card p-4">
             <h3 class="text-xl font-semibold mb-2">Upload PDFs</h3>
-            <p class="text-sm subtle mb-3">Stage plots, setlists, tech riders, song charts… (PDF only)</p>
+            <p class="text-sm subtle mb-3">Stage plots, setlists, riders, song charts… (PDF only)</p>
             <input id="pdfInput" type="file" accept="application/pdf" multiple />
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
               <input id="pdfTitle" type="text" placeholder="Optional: title/notes" />
@@ -153,6 +184,7 @@
             </div>
             <div class="mt-3"><button id="uploadPdfBtn" class="btn">Upload</button></div>
           </div>
+
           <div class="card p-4">
             <h3 class="text-xl font-semibold mb-2">Find Files</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -165,6 +197,7 @@
             </div>
           </div>
         </div>
+
         <div class="mt-6">
           <h3 class="text-xl font-bold mb-3">Repository</h3>
           <div id="pdfList" class="grid sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
@@ -180,6 +213,7 @@
           <h2 class="text-2xl font-bold">YouTube Links</h2>
           <span class="pill">Public links</span>
         </div>
+
         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
           <div class="card p-4">
             <h3 class="text-xl font-semibold mb-2">Add a YouTube Link</h3>
@@ -194,6 +228,7 @@
               <button id="addYtBtn" class="btn">Add Link</button>
             </div>
           </div>
+
           <div class="card p-4">
             <h3 class="text-xl font-semibold mb-2">Find Links</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -206,6 +241,7 @@
             </div>
           </div>
         </div>
+
         <div class="mt-6">
           <h3 class="text-xl font-bold mb-3">Repository</h3>
           <div id="ytList" class="grid sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
@@ -216,133 +252,139 @@
   </div>
 
   <!-- Event Detail Modal -->
-  <dialog id="gigModal" class="card modal p-0" style="max-width:760px;">
-    <div class="p-6">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-xl font-bold" id="gigTitle"></h3>
-        <div class="flex gap-2 flex-wrap">
-          <button id="bandOffBtn" class="btn-sec hidden">Mark Band Off</button>
-          <button id="clearBandOffBtn" class="btn-sec hidden">Clear Band Off</button>
-          <button id="editGigBtn" class="btn-sec hidden">Edit</button>
-          <button id="deleteGigBtn" class="btn-sec hidden">Delete</button>
-          <button id="shareGigBtn" class="btn-sec">Share</button>
-          <button id="closeGigModal" class="btn">Close</button>
-        </div>
-      </div>
-      <div id="gigView" class="space-y-2 text-sm"></div>
-
-      <div id="gigEdit" class="hidden">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div><label class="subtle text-xs">Title</label><input id="egTitle" /></div>
-          <div><label class="subtle text-xs">Date</label><input id="egDate" type="date" /></div>
-          <div><label class="subtle text-xs">Start Time</label><input id="egTime" type="time" /></div>
-          <div><label class="subtle text-xs">Venue</label><input id="egVenue" /></div>
-          <div class="md:col-span-2"><label class="subtle text-xs">Address</label><input id="egAddress" /></div>
-
-          <label class="flex items-center gap-2 md:col-span-2"><input id="egBandOff" type="checkbox" /><span>Band Off (Greg solo)</span></label>
-
-          <label class="flex items-center gap-2"><input id="egCeremonyOnsite" type="checkbox" /><span>Ceremony onsite?</span></label>
-          <label class="flex items-center gap-2"><input id="egRoomFlip" type="checkbox" /><span>Room flip?</span></label>
-
-          <div><label class="subtle text-xs">Guest Arrival</label><input id="egGuestArrivalTime" type="time" /></div>
-
-          <!-- Conditionally shown when Ceremony Onsite = true -->
-          <div id="egCeremonyGuestArrivalRow" class="hidden">
-            <label class="subtle text-xs">Guest Arrival (Ceremony)</label>
-            <input id="egCeremonyGuestArrivalTime" type="time" />
+  <dialog id="gigModal" class="card modal p-0" style="max-width:820px;">
+    <div class="dialog-inner">
+      <div class="dialog-head">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <h3 class="text-xl font-bold" id="gigTitle"></h3>
+          <div class="flex gap-2 flex-wrap">
+            <button id="bandOffBtn" class="btn-sec hidden">Mark Band Off</button>
+            <button id="clearBandOffBtn" class="btn-sec hidden">Clear Band Off</button>
+            <button id="holdBtn" class="btn-sec hidden">Mark Hold</button>
+            <button id="clearHoldBtn" class="btn-sec hidden">Clear Hold</button>
+            <button id="editGigBtn" class="btn-sec hidden">Edit</button>
+            <button id="deleteGigBtn" class="btn-sec hidden">Delete</button>
+            <button id="shareGigBtn" class="btn-sec">Share</button>
+            <button id="closeGigModal" class="btn">Close</button>
           </div>
-
-          <div><label class="subtle text-xs">Band Arrival</label><input id="egBandArrivalTime" type="time" /></div>
-          <div><label class="subtle text-xs">Time of Introduction</label><input id="egIntroTime" type="time" /></div>
-          <div><label class="subtle text-xs">Song for Introduction</label><input id="egIntroSong" /></div>
-
-          <!-- Dances -->
-          <div><label class="subtle text-xs">First Dance (song)</label><input id="egFirstDanceSong" /></div>
-          <label class="flex items-center gap-2">
-            <input id="egFirstDancePlay" type="checkbox" />
-            <span>Band to play First Dance</span>
-          </label>
-
-          <div><label class="subtle text-xs">Father / Daughter (song)</label><input id="egFatherDaughterSong" /></div>
-          <label class="flex items-center gap-2">
-            <input id="egFatherDaughterPlay" type="checkbox" />
-            <span>Band to play F/D</span>
-          </label>
-
-          <div><label class="subtle text-xs">Mother / Son (song)</label><input id="egMotherSonSong" /></div>
-          <label class="flex items-center gap-2">
-            <input id="egMotherSonPlay" type="checkbox" />
-            <span>Band to play M/S</span>
-          </label>
-
-          <div class="md:col-span-2"><label class="subtle text-xs">Special Requests</label><textarea id="egSpecialRequests"></textarea></div>
-          <div><label class="subtle text-xs">Last Song</label><input id="egLastSong" /></div>
-          <div class="md:col-span-2"><label class="subtle text-xs">Do-Not-Play Songs</label><textarea id="egDoNotPlay"></textarea></div>
-        </div>
-        <div class="flex justify-end gap-2 mt-4">
-          <button id="saveGigBtn" class="btn">Save</button>
-          <button id="cancelEditBtn" class="btn-sec">Cancel</button>
         </div>
       </div>
-      <p id="shareHint" class="text-xs subtle mt-3 hidden">Link copied!</p>
+
+      <div class="dialog-body">
+        <!-- View mode -->
+        <div id="gigView" class="space-y-2 text-sm"></div>
+
+        <!-- Edit mode -->
+        <div id="gigEdit" class="hidden">
+          <div class="form-grid">
+            <div class="field"><label>Title</label><input id="egTitle" /></div>
+            <div class="field"><label>Date</label><input id="egDate" type="date" /></div>
+            <div class="field"><label>Start Time</label><input id="egTime" type="time" /></div>
+            <div class="field"><label>Venue</label><input id="egVenue" /></div>
+            <div class="field-full"><label>Address</label><input id="egAddress" /></div>
+
+            <div class="field check"><input id="egBandOff" type="checkbox" /><label>Band Off</label></div>
+            <div class="field check"><input id="egHold" type="checkbox" /><label>Hold</label></div>
+
+            <div class="field check"><input id="egCeremonyOnsite" type="checkbox" /><label>Ceremony onsite?</label></div>
+            <div class="field check"><input id="egRoomFlip" type="checkbox" /><label>Room flip?</label></div>
+
+            <div class="field"><label>Guest Arrival</label><input id="egGuestArrivalTime" type="time" /></div>
+            <div id="egCeremonyGuestArrivalRow" class="field hidden">
+              <label>Guest Arrival (Ceremony)</label>
+              <input id="egCeremonyGuestArrivalTime" type="time" />
+            </div>
+
+            <div class="field"><label>Band Arrival</label><input id="egBandArrivalTime" type="time" /></div>
+            <div class="field"><label>Time of Introduction</label><input id="egIntroTime" type="time" /></div>
+            <div class="field-full"><label>Song for Introduction</label><input id="egIntroSong" /></div>
+
+            <!-- Cocktails -->
+            <div class="field-full"><label>Cocktails</label><input id="egCocktails" placeholder="e.g., 5:30–6:30pm in foyer" /></div>
+            <div class="field check"><input id="egCocktailsSeparate" type="checkbox" /><label>Separate location?</label></div>
+            <div class="field check"><input id="egCocktailsBandPlay" type="checkbox" /><label>Band playing cocktails?</label></div>
+
+            <!-- Dances -->
+            <div class="field"><label>First Dance (song)</label><input id="egFirstDanceSong" /></div>
+            <div class="field check"><input id="egFirstDancePlay" type="checkbox" /><label>Band to play First Dance</label></div>
+
+            <div class="field"><label>Father / Daughter (song)</label><input id="egFatherDaughterSong" /></div>
+            <div class="field check"><input id="egFatherDaughterPlay" type="checkbox" /><label>Band to play F/D</label></div>
+
+            <div class="field"><label>Mother / Son (song)</label><input id="egMotherSonSong" /></div>
+            <div class="field check"><input id="egMotherSonPlay" type="checkbox" /><label>Band to play M/S</label></div>
+
+            <div class="field-full"><label>Meals</label><textarea id="egMeals" placeholder="e.g., 5 vendor meals; 1 vegetarian; served 6:30pm"></textarea></div>
+            <div class="field"><label>Last Song</label><input id="egLastSong" /></div>
+            <div class="field-full"><label>Special Requests</label><textarea id="egSpecialRequests"></textarea></div>
+            <div class="field-full"><label>Do-Not-Play Songs</label><textarea id="egDoNotPlay"></textarea></div>
+          </div>
+        </div>
+        <p id="shareHint" class="text-xs subtle mt-3 hidden">Link copied!</p>
+      </div>
+
+      <div class="dialog-actions">
+        <button id="saveGigBtn" class="btn hidden">Save</button>
+        <button id="cancelEditBtn" class="btn-sec hidden">Cancel</button>
+      </div>
     </div>
   </dialog>
 
   <!-- New Event Modal -->
-  <dialog id="newGigModal" class="card modal p-0" style="max-width:760px;">
-    <div class="p-6">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-xl font-bold">New Event</h3>
-        <button id="closeNewGigModal" class="btn-sec">Close</button>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div><label class="subtle text-xs">Title</label><input id="ngTitle" /></div>
-        <div><label class="subtle text-xs">Date</label><input id="ngDate" type="date" /></div>
-        <div><label class="subtle text-xs">Start Time</label><input id="ngTime" type="time" /></div>
-        <div><label class="subtle text-xs">Venue</label><input id="ngVenue" /></div>
-        <div class="md:col-span-2"><label class="subtle text-xs">Address</label><input id="ngAddress" /></div>
-
-        <label class="flex items-center gap-2 md:col-span-2"><input id="ngBandOff" type="checkbox" /><span>Band Off (Greg solo)</span></label>
-
-        <label class="flex items-center gap-2"><input id="ngCeremonyOnsite" type="checkbox" /><span>Ceremony onsite?</span></label>
-        <label class="flex items-center gap-2"><input id="ngRoomFlip" type="checkbox" /><span>Room flip?</span></label>
-
-        <div><label class="subtle text-xs">Guest Arrival</label><input id="ngGuestArrivalTime" type="time" /></div>
-
-        <!-- Conditionally shown when Ceremony Onsite = true -->
-        <div id="ngCeremonyGuestArrivalRow" class="hidden">
-          <label class="subtle text-xs">Guest Arrival (Ceremony)</label>
-          <input id="ngCeremonyGuestArrivalTime" type="time" />
+  <dialog id="newGigModal" class="card modal p-0" style="max-width:820px;">
+    <div class="dialog-inner">
+      <div class="dialog-head">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-bold">New Event</h3>
+          <button id="closeNewGigModal" class="btn-sec">Close</button>
         </div>
-
-        <div><label class="subtle text-xs">Band Arrival</label><input id="ngBandArrivalTime" type="time" /></div>
-        <div><label class="subtle text-xs">Time of Introduction</label><input id="ngIntroTime" type="time" /></div>
-        <div><label class="subtle text-xs">Song for Introduction</label><input id="ngIntroSong" /></div>
-
-        <!-- Dances -->
-        <div><label class="subtle text-xs">First Dance (song)</label><input id="ngFirstDanceSong" /></div>
-        <label class="flex items-center gap-2">
-          <input id="ngFirstDancePlay" type="checkbox" />
-          <span>Band to play First Dance</span>
-        </label>
-
-        <div><label class="subtle text-xs">Father / Daughter (song)</label><input id="ngFatherDaughterSong" /></div>
-        <label class="flex items-center gap-2">
-          <input id="ngFatherDaughterPlay" type="checkbox" />
-          <span>Band to play F/D</span>
-        </label>
-
-        <div><label class="subtle text-xs">Mother / Son (song)</label><input id="ngMotherSonSong" /></div>
-        <label class="flex items-center gap-2">
-          <input id="ngMotherSonPlay" type="checkbox" />
-          <span>Band to play M/S</span>
-        </label>
-
-        <div class="md:col-span-2"><label class="subtle text-xs">Special Requests</label><textarea id="ngSpecialRequests"></textarea></div>
-        <div><label class="subtle text-xs">Last Song</label><input id="ngLastSong" /></div>
-        <div class="md:col-span-2"><label class="subtle text-xs">Do-Not-Play Songs</label><textarea id="ngDoNotPlay"></textarea></div>
       </div>
-      <div class="flex justify-end gap-2 mt-4">
+      <div class="dialog-body">
+        <div class="form-grid">
+          <div class="field"><label>Title</label><input id="ngTitle" /></div>
+          <div class="field"><label>Date</label><input id="ngDate" type="date" /></div>
+          <div class="field"><label>Start Time</label><input id="ngTime" type="time" /></div>
+          <div class="field"><label>Venue</label><input id="ngVenue" /></div>
+          <div class="field-full"><label>Address</label><input id="ngAddress" /></div>
+
+          <div class="field check"><input id="ngBandOff" type="checkbox" /><label>Band Off</label></div>
+          <div class="field check"><input id="ngHold" type="checkbox" /><label>Hold</label></div>
+
+          <div class="field check"><input id="ngCeremonyOnsite" type="checkbox" /><label>Ceremony onsite?</label></div>
+          <div class="field check"><input id="ngRoomFlip" type="checkbox" /><label>Room flip?</label></div>
+
+          <div class="field"><label>Guest Arrival</label><input id="ngGuestArrivalTime" type="time" /></div>
+          <div id="ngCeremonyGuestArrivalRow" class="field hidden">
+            <label>Guest Arrival (Ceremony)</label>
+            <input id="ngCeremonyGuestArrivalTime" type="time" />
+          </div>
+
+          <div class="field"><label>Band Arrival</label><input id="ngBandArrivalTime" type="time" /></div>
+          <div class="field"><label>Time of Introduction</label><input id="ngIntroTime" type="time" /></div>
+          <div class="field-full"><label>Song for Introduction</label><input id="ngIntroSong" /></div>
+
+          <!-- Cocktails -->
+          <div class="field-full"><label>Cocktails</label><input id="ngCocktails" placeholder="e.g., 5:30–6:30pm in foyer" /></div>
+          <div class="field check"><input id="ngCocktailsSeparate" type="checkbox" /><label>Separate location?</label></div>
+          <div class="field check"><input id="ngCocktailsBandPlay" type="checkbox" /><label>Band playing cocktails?</label></div>
+
+          <!-- Dances -->
+          <div class="field"><label>First Dance (song)</label><input id="ngFirstDanceSong" /></div>
+          <div class="field check"><input id="ngFirstDancePlay" type="checkbox" /><label>Band to play First Dance</label></div>
+
+          <div class="field"><label>Father / Daughter (song)</label><input id="ngFatherDaughterSong" /></div>
+          <div class="field check"><input id="ngFatherDaughterPlay" type="checkbox" /><label>Band to play F/D</label></div>
+
+          <div class="field"><label>Mother / Son (song)</label><input id="ngMotherSonSong" /></div>
+          <div class="field check"><input id="ngMotherSonPlay" type="checkbox" /><label>Band to play M/S</label></div>
+
+          <div class="field-full"><label>Meals</label><textarea id="ngMeals" placeholder="e.g., 5 vendor meals; 1 vegetarian; served 6:30pm"></textarea></div>
+          <div class="field"><label>Last Song</label><input id="ngLastSong" /></div>
+          <div class="field-full"><label>Special Requests</label><textarea id="ngSpecialRequests"></textarea></div>
+          <div class="field-full"><label>Do-Not-Play Songs</label><textarea id="ngDoNotPlay"></textarea></div>
+        </div>
+      </div>
+      <div class="dialog-actions">
         <button id="createGigBtn" class="btn">Create</button>
       </div>
     </div>
@@ -393,7 +435,7 @@
       <h3 class="text-lg font-bold mb-3">Set/Update Passcodes (optional)</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
         <input id="userPass" type="password" placeholder="Your passcode (this device)" />
-        <input id="adminPass" type="password" placeholder="Admin passcode (Band Off & Admin Login)" />
+        <input id="adminPass" type="password" placeholder="Admin passcode (Admin & Band Off/Hold)" />
       </div>
       <div class="flex justify-end gap-2 mt-4">
         <button id="savePassBtn" class="btn">Save</button>
@@ -416,751 +458,821 @@
     </div>
   </dialog>
 
+  <!-- Profile Modal -->
+  <dialog id="profileModal" class="card modal p-0" style="max-width:420px;">
+    <div class="p-5">
+      <h3 class="text-lg font-bold mb-3">Choose Your Profile</h3>
+      <label class="subtle text-xs mb-1 block">This device belongs to</label>
+      <select id="profileSelect" class="w-full">
+        <option value="">— Select band member —</option>
+        <option value="greg">Greg</option>
+        <option value="john">John</option>
+        <option value="tim">Tim</option>
+        <option value="brian">Brian</option>
+        <option value="mark">Mark</option>
+      </select>
+      <div class="flex justify-end gap-2 mt-4">
+        <button id="saveProfileBtn" class="btn">Save</button>
+        <button id="closeProfileBtn" class="btn-sec">Cancel</button>
+      </div>
+      <p class="text-xs subtle mt-2">Saved to this browser only.</p>
+    </div>
+  </dialog>
+
   <script>
-  /* ===== Helpers ===== */
-  function parseLocalDate(s){
-    if (!s) return new Date(NaN);
-    const [y,m,d]=s.split('-').map(Number);
-    return new Date(y, m-1, d);
-  }
-  function formatTime12(hhmm){
-    if (!hhmm) return '';
-    const [h,m]=hhmm.split(':').map(Number);
-    const ampm = h>=12?'PM':'AM';
-    const h12 = h%12||12;
-    return `${h12}:${String(m||0).padStart(2,'0')} ${ampm}`;
-  }
-  function normTime(t){
-    if (!t) return '';
-    if (t.includes('T')) {
-      const m = t.match(/(?:T| )(\d{2}:\d{2})/);
-      t = m ? m[1] : '';
+    /* ===== Seed Data ===== */
+    const BAND_MEMBERS = ['greg','john','tim','brian','mark'];
+    const MEMBER_NAMES = { greg:'Greg', john:'John', tim:'Tim', brian:'Brian', mark:'Mark' };
+
+    const SEED_events = [
+      { id:1, title:'Sarah & Mike Wedding', date:'2025-11-15', startTime:'18:00', venue:'The Bell Event Centre', address:'312 Elm St, Cincinnati, OH',
+        payments:{ greg:{amount:250,paid:true}, john:{amount:200,paid:true}, tim:{amount:200,paid:false}, brian:{amount:225,paid:true}, mark:{amount:200,paid:false} } },
+      { id:2, title:'Jazz Night at The Blue Note', date:'2025-11-08', startTime:'20:00', venue:'The Blue Note', address:'456 Main St, Cincinnati, OH',
+        payments:{ greg:{amount:180,paid:true}, john:{amount:150,paid:true}, tim:{amount:150,paid:true}, brian:{amount:165,paid:true}, mark:{amount:150,paid:true} } },
+      { id:3, title:'Corporate Holiday Party', date:'2025-11-22', startTime:'19:00', venue:'Marriott Downtown', address:'11 W 5th St, Cincinnati, OH',
+        payments:{ greg:{amount:300,paid:false}, john:{amount:250,paid:false}, tim:{amount:250,paid:false}, brian:{amount:275,paid:false}, mark:{amount:250,paid:false} } },
+      { id:4, title:'Thanksgiving Eve Show', date:'2025-11-26', startTime:'21:00', venue:'The Riverfront Club', address:'789 River Rd, Cincinnati, OH',
+        payments:{ greg:{amount:220,paid:false}, john:{amount:180,paid:false}, tim:{amount:180,paid:false}, brian:{amount:195,paid:false}, mark:{amount:180,paid:false} } },
+      { id:5, title:'New Years Eve Party', date:'2025-12-31', startTime:'21:00', venue:'Cincinnati Music Hall', address:'1241 Elm St, Cincinnati, OH',
+        payments:{ greg:{amount:400,paid:false}, john:{amount:350,paid:false}, tim:{amount:350,paid:false}, brian:{amount:375,paid:false}, mark:{amount:350,paid:false} } }
+    ];
+
+    /* ===== Persistence ===== */
+    const events_KEY = 'ct_events_v3';
+    function getevents(){ try { return JSON.parse(localStorage.getItem(events_KEY)) || SEED_events.slice(); } catch { return SEED_events.slice(); } }
+    function setevents(arr){ localStorage.setItem(events_KEY, JSON.stringify(arr)); }
+
+    /* ===== Chat (local) ===== */
+    const DEMO_CHAT = [
+      { name:'Greg', message:'Great show last night everyone!', time:'2:30 PM' },
+      { name:'John', message:'Thanks! That crowd was amazing', time:'2:35 PM' },
+      { name:'Tim', message:'When is our next rehearsal?', time:'2:40 PM' },
+      { name:'Greg', message:'Thursday at 7pm, my place', time:'2:42 PM' },
+      { name:'Brian', message:'I\'ll bring the setlist', time:'2:45 PM' },
+    ];
+    let chatMessages = JSON.parse(localStorage.getItem('ct_chat_v1')||'null') || [...DEMO_CHAT];
+
+    /* ===== Device + Passcodes ===== */
+    const DEVICE_KEY = 'ct_device_id_v1';
+    let deviceId = localStorage.getItem(DEVICE_KEY);
+    if (!deviceId) { deviceId = (crypto.randomUUID && crypto.randomUUID()) || String(Math.random()).slice(2); localStorage.setItem(DEVICE_KEY, deviceId); }
+
+    const PASS_KEYS = { user:'ct_user_pass_v1', admin:'ct_admin_pass_v1', adminSession:'ct_admin_session_v1' };
+    async function sha256(text){
+      const data = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
     }
-    return /^\d{2}:\d{2}$/.test(t) ? t : '';
-  }
-  function normalizeEvent(e){
-    let date = (e.date||'').trim();
-    if (date.includes('T')) date = date.split('T')[0];
-    // keep only HH:MM
-    return {
-      ...e,
-      date,
-      startTime: normTime(e.startTime),
-      guestArrivalTime: normTime(e.guestArrivalTime),
-      ceremonyGuestArrivalTime: normTime(e.ceremonyGuestArrivalTime),
-      bandArrivalTime: normTime(e.bandArrivalTime),
-      introTime: normTime(e.introTime)
-    };
-  }
-  function money(n){ return '$' + (Number(n||0)).toFixed(2); }
-
-  /* ===== Data (seed) ===== */
-  const BAND_MEMBERS = ['greg','john','tim','brian','mark'];
-  const MEMBER_NAMES = { greg:'Greg', john:'John', tim:'Tim', brian:'Brian', mark:'Mark' };
-  const SEED_EVENTS = [
-    { id:1, title:'Sarah & Mike Wedding', date:'2025-11-15', startTime:'18:00', venue:'The Bell Event Centre', address:'312 Elm St, Cincinnati, OH',
-      payments:{ greg:{amount:250,paid:true}, john:{amount:200,paid:true}, tim:{amount:200,paid:false}, brian:{amount:225,paid:true}, mark:{amount:200,paid:false} } },
-    { id:2, title:'Jazz Night at The Blue Note', date:'2025-11-08', startTime:'20:00', venue:'The Blue Note', address:'456 Main St, Cincinnati, OH',
-      payments:{ greg:{amount:180,paid:true}, john:{amount:150,paid:true}, tim:{amount:150,paid:true}, brian:{amount:165,paid:true}, mark:{amount:150,paid:true} } },
-    { id:3, title:'Corporate Holiday Party', date:'2025-11-22', startTime:'19:00', venue:'Marriott Downtown', address:'11 W 5th St, Cincinnati, OH',
-      payments:{ greg:{amount:300,paid:false}, john:{amount:250,paid:false}, tim:{amount:250,paid:false}, brian:{amount:275,paid:false}, mark:{amount:250,paid:false} } },
-    { id:4, title:'Thanksgiving Eve Show', date:'2025-11-26', startTime:'21:00', venue:'The Riverfront Club', address:'789 River Rd, Cincinnati, OH',
-      payments:{ greg:{amount:220,paid:false}, john:{amount:180,paid:false}, tim:{amount:180,paid:false}, brian:{amount:195,paid:false}, mark:{amount:180,paid:false} } },
-    { id:5, title:'New Years Eve Party', date:'2025-12-31', startTime:'21:00', venue:'Cincinnati Music Hall', address:'1241 Elm St, Cincinnati, OH',
-      payments:{ greg:{amount:400,paid:false}, john:{amount:350,paid:false}, tim:{amount:350,paid:false}, brian:{amount:375,paid:false}, mark:{amount:350,paid:false} } }
-  ];
-
-  /* ===== Persistence ===== */
-  const EVENTS_KEY = 'ct_events_v1';
-  function getEvents(){ try { return JSON.parse(localStorage.getItem(EVENTS_KEY)) || SEED_EVENTS.slice(); } catch { return SEED_EVENTS.slice(); } }
-  function setEvents(arr){ localStorage.setItem(EVENTS_KEY, JSON.stringify(arr)); }
-
-  // (8) Optional cleanup: migrate legacy fields into the new schema safely
-  function migrateLegacyFields(){
-    let arr = getEvents();
-    let changed = false;
-
-    arr = arr.map(ev=>{
-      const e = {...ev};
-
-      // Normalize core fields
-      Object.assign(e, normalizeEvent(e));
-
-      // Migrate legacy `parentsDances` into Father/Mother or Special Requests
-      if (e.parentsDances && (!e.fatherDaughterSong && !e.motherSonSong)) {
-        const txt = String(e.parentsDances).trim();
-
-        // Simple heuristics: try to split if it contains "father"/"mother"
-        const lower = txt.toLowerCase();
-
-        const fdMatch = lower.match(/father.*daughter.*?:?\s*([^;|,]+)|f\/d.*?:?\s*([^;|,]+)/i);
-        const msMatch = lower.match(/mother.*son.*?:?\s*([^;|,]+)|m\/s.*?:?\s*([^;|,]+)/i);
-
-        if (fdMatch && !e.fatherDaughterSong) {
-          e.fatherDaughterSong = (fdMatch[1] || fdMatch[2] || '').trim();
-        }
-        if (msMatch && !e.motherSonSong) {
-          e.motherSonSong = (msMatch[1] || msMatch[2] || '').trim();
-        }
-
-        // If we didn't extract anything meaningful, append to specialRequests
-        if (!e.fatherDaughterSong && !e.motherSonSong) {
-          e.specialRequests = (e.specialRequests ? e.specialRequests + ' | ' : '') + `Parents' dances: ${txt}`;
-        }
-
-        delete e.parentsDances; // drop legacy field after migration
-        changed = true;
-      }
-
-      return e;
-    });
-
-    if (changed) setEvents(arr);
-  }
-
-  /* ===== Chat ===== */
-  const DEMO_CHAT = [
-    { name:'Greg', message:'Great show last night everyone!', time:'2:30 PM' },
-    { name:'John', message:'Thanks! That crowd was amazing', time:'2:35 PM' },
-    { name:'Tim', message:'When is our next rehearsal?', time:'2:40 PM' },
-    { name:'Greg', message:'Thursday at 7pm, my place', time:'2:42 PM' },
-    { name:'Brian', message:'I\'ll bring the setlist', time:'2:45 PM' },
-  ];
-  let chatMessages = JSON.parse(localStorage.getItem('ct_chat_v1')||'null') || [...DEMO_CHAT];
-
-  /* ===== Device + Passcodes ===== */
-  const DEVICE_KEY = 'ct_device_id_v1';
-  let deviceId = localStorage.getItem(DEVICE_KEY);
-  if (!deviceId) { deviceId = (crypto.randomUUID && crypto.randomUUID()) || String(Math.random()).slice(2); localStorage.setItem(DEVICE_KEY, deviceId); }
-  const PASS_KEYS = { user:'ct_user_pass_v1', admin:'ct_admin_pass_v1', adminSession:'ct_admin_session_v1' };
-  async function sha256(text){
-    const data = new TextEncoder().encode(text);
-    const buf = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-  }
-  async function setPasscodes({user, admin}){
-    if (user) localStorage.setItem(PASS_KEYS.user, await sha256(user));
-    if (admin) localStorage.setItem(PASS_KEYS.admin, await sha256(admin));
-    updateLockStatusUI();
-  }
-  function adminLoggedIn(){ return localStorage.getItem(PASS_KEYS.adminSession) === '1'; }
-  function ensureAdminUI(){
-    document.getElementById('addEventBtn').classList.toggle('hidden', !adminLoggedIn());
-    document.getElementById('adminLoginBtn').classList.toggle('hidden', adminLoggedIn());
-    document.getElementById('adminLogoutBtn').classList.toggle('hidden', !adminLoggedIn());
-    clearChatBtn.classList.toggle('hidden', !adminLoggedIn());
-  }
-  function updateLockStatusUI(){
-    const hasUser = !!localStorage.getItem(PASS_KEYS.user);
-    const hasAdmin = !!localStorage.getItem(PASS_KEYS.admin);
-    document.getElementById('lockStatus').textContent =
-      `${hasUser?'User🔒':'User🔓'} • ${hasAdmin?'Admin🔒':'Admin🔓'} • ${adminLoggedIn()?'Logged-in':'Logged-out'}`;
-    ensureAdminUI();
-  }
-
-  /* ===== Elements ===== */
-  const showEventsBtn=document.getElementById('showEventsBtn');
-  const toggleChatBtn=document.getElementById('toggleChatBtn');
-  const togglePaymentsBtn=document.getElementById('togglePaymentsBtn');
-  const toggleChartsBtn=document.getElementById('toggleChartsBtn');
-  const toggleYouTubeBtn=document.getElementById('toggleYouTubeBtn');
-  const addEventBtn=document.getElementById('addEventBtn');
-
-  const eventsView=document.getElementById('eventsView');
-  const chatView=document.getElementById('chatView');
-  const paymentsView=document.getElementById('paymentsView');
-  const chartsView=document.getElementById('chartsView');
-  const youtubeView=document.getElementById('youtubeView');
-
-  const chatMessagesEl=document.getElementById('chatMessages');
-  const chatInput=document.getElementById('chatInput');
-  const chatName=document.getElementById('chatName');
-  const sendChat=document.getElementById('sendChat');
-  const clearChatBtn=document.getElementById('clearChatBtn');
-
-  const paymentsList=document.getElementById('paymentsList');
-  const payMemberSelect=document.getElementById('payMemberSelect');
-  const payYtd=document.getElementById('payYtd');
-
-  // Charts repo
-  const pdfInput=document.getElementById('pdfInput');
-  const pdfTitle=document.getElementById('pdfTitle');
-  const uploaderName=document.getElementById('uploaderName');
-  const uploadPdfBtn=document.getElementById('uploadPdfBtn');
-  const searchPdf=document.getElementById('searchPdf');
-  const uploaderFilter=document.getElementById('uploaderFilter');
-  const clearFiltersBtn=document.getElementById('clearFiltersBtn');
-  const exportRepoBtn=document.getElementById('exportRepoBtn');
-  const pdfList=document.getElementById('pdfList');
-  const emptyRepo=document.getElementById('emptyRepo');
-
-  const pdfModal=document.getElementById('pdfModal');
-  const pdfObject=document.getElementById('pdfObject');
-  const pdfModalTitle=document.getElementById('pdfModalTitle');
-  const pdfMeta=document.getElementById('pdfMeta');
-  const pdfDownloadBtn=document.getElementById('pdfDownloadBtn');
-  const closePdfModal=document.getElementById('closePdfModal');
-
-  // Event modal
-  const gigModal=document.getElementById('gigModal');
-  const gigView=document.getElementById('gigView');
-  const gigEdit=document.getElementById('gigEdit');
-  const shareGigBtn=document.getElementById('shareGigBtn');
-  const shareHint=document.getElementById('shareHint');
-  const bandOffBtn=document.getElementById('bandOffBtn');
-  const clearBandOffBtn=document.getElementById('clearBandOffBtn');
-  const editGigBtn=document.getElementById('editGigBtn');
-  const deleteGigBtn=document.getElementById('deleteGigBtn');
-  const closeGigModal=document.getElementById('closeGigModal');
-
-  const egTitle=document.getElementById('egTitle');
-  const egDate=document.getElementById('egDate');
-  const egTime=document.getElementById('egTime');
-  const egVenue=document.getElementById('egVenue');
-  const egAddress=document.getElementById('egAddress');
-  const egBandOff=document.getElementById('egBandOff');
-  const egCeremonyOnsite=document.getElementById('egCeremonyOnsite');
-  const egRoomFlip=document.getElementById('egRoomFlip');
-  const egGuestArrivalTime=document.getElementById('egGuestArrivalTime');
-  const egCeremonyGuestArrivalRow=document.getElementById('egCeremonyGuestArrivalRow');
-  const egCeremonyGuestArrivalTime=document.getElementById('egCeremonyGuestArrivalTime');
-  const egBandArrivalTime=document.getElementById('egBandArrivalTime');
-  const egIntroTime=document.getElementById('egIntroTime');
-  const egIntroSong=document.getElementById('egIntroSong');
-
-  // Dances (Edit)
-  const egFirstDanceSong=document.getElementById('egFirstDanceSong');
-  const egFirstDancePlay=document.getElementById('egFirstDancePlay');
-  const egFatherDaughterSong=document.getElementById('egFatherDaughterSong');
-  const egFatherDaughterPlay=document.getElementById('egFatherDaughterPlay');
-  const egMotherSonSong=document.getElementById('egMotherSonSong');
-  const egMotherSonPlay=document.getElementById('egMotherSonPlay');
-
-  const egSpecialRequests=document.getElementById('egSpecialRequests');
-  const egLastSong=document.getElementById('egLastSong');
-  const egDoNotPlay=document.getElementById('egDoNotPlay');
-  const saveGigBtn=document.getElementById('saveGigBtn');
-  const cancelEditBtn=document.getElementById('cancelEditBtn');
-
-  // New event modal
-  const newGigModal=document.getElementById('newGigModal');
-  const closeNewGigModal=document.getElementById('closeNewGigModal');
-  const ngTitle=document.getElementById('ngTitle');
-  const ngDate=document.getElementById('ngDate');
-  const ngTime=document.getElementById('ngTime');
-  const ngVenue=document.getElementById('ngVenue');
-  const ngAddress=document.getElementById('ngAddress');
-  const ngBandOff=document.getElementById('ngBandOff');
-  const ngCeremonyOnsite=document.getElementById('ngCeremonyOnsite');
-  const ngRoomFlip=document.getElementById('ngRoomFlip');
-  const ngGuestArrivalTime=document.getElementById('ngGuestArrivalTime');
-  const ngCeremonyGuestArrivalRow=document.getElementById('ngCeremonyGuestArrivalRow');
-  const ngCeremonyGuestArrivalTime=document.getElementById('ngCeremonyGuestArrivalTime');
-  const ngBandArrivalTime=document.getElementById('ngBandArrivalTime');
-  const ngIntroTime=document.getElementById('ngIntroTime');
-  const ngIntroSong=document.getElementById('ngIntroSong');
-
-  // Dances (New)
-  const ngFirstDanceSong=document.getElementById('ngFirstDanceSong');
-  const ngFirstDancePlay=document.getElementById('ngFirstDancePlay');
-  const ngFatherDaughterSong=document.getElementById('ngFatherDaughterSong');
-  const ngFatherDaughterPlay=document.getElementById('ngFatherDaughterPlay');
-  const ngMotherSonSong=document.getElementById('ngMotherSonSong');
-  const ngMotherSonPlay=document.getElementById('ngMotherSonPlay');
-
-  const ngSpecialRequests=document.getElementById('ngSpecialRequests');
-  const ngLastSong=document.getElementById('ngLastSong');
-  const ngDoNotPlay=document.getElementById('ngDoNotPlay');
-  const createGigBtn=document.getElementById('createGigBtn');
-
-  // YouTube
-  const ytUrl=document.getElementById('ytUrl');
-  const ytTitle=document.getElementById('ytTitle');
-  const ytNotes=document.getElementById('ytNotes');
-  const ytUploader=document.getElementById('ytUploader');
-  const addYtBtn=document.getElementById('addYtBtn');
-  const ytSearch=document.getElementById('ytSearch');
-  const ytUploaderFilter=document.getElementById('ytUploaderFilter');
-  const ytClearFilters=document.getElementById('ytClearFilters');
-  const ytExportBtn=document.getElementById('ytExportBtn');
-  const ytList=document.getElementById('ytList');
-  const ytEmpty=document.getElementById('ytEmpty');
-  const ytModal=document.getElementById('ytModal');
-  const ytModalTitle=document.getElementById('ytModalTitle');
-  const ytIframe=document.getElementById('ytIframe');
-  const ytMeta=document.getElementById('ytMeta');
-  const ytCloseBtn=document.getElementById('ytCloseBtn');
-  const ytShareBtn=document.getElementById('ytShareBtn');
-  const ytShareHint=document.getElementById('ytShareHint');
-
-  // Pass modal + admin login
-  const passModal=document.getElementById('passModal');
-  const setPassBtn=document.getElementById('setPassBtn');
-  const savePassBtn=document.getElementById('savePassBtn');
-  const closePassBtn=document.getElementById('closePassBtn');
-  const adminLoginModal=document.getElementById('adminLoginModal');
-  const adminLoginBtn=document.getElementById('adminLoginBtn');
-  const adminLogoutBtn=document.getElementById('adminLogoutBtn');
-  const adminLoginInput=document.getElementById('adminLoginInput');
-  const adminLoginSubmit=document.getElementById('adminLoginSubmit');
-  const adminLoginClose=document.getElementById('adminLoginClose');
-
-  /* ===== View switching ===== */
-  function hideAllViews(){ eventsView.classList.add('hidden'); chatView.classList.add('hidden'); paymentsView.classList.add('hidden'); chartsView.classList.add('hidden'); youtubeView.classList.add('hidden'); }
-  function showEventsView(){ hideAllViews(); eventsView.classList.remove('hidden'); renderCalendar(); renderEvents(); }
-  function showChatView(){ hideAllViews(); chatView.classList.remove('hidden'); renderChat(); }
-  function showPaymentsView(){ hideAllViews(); paymentsView.classList.remove('hidden'); renderPayments(); }
-  function showChartsView(){ hideAllViews(); chartsView.classList.remove('hidden'); hydrateUploaderFilter(); renderRepo(); }
-  function showYouTubeView(){ hideAllViews(); youtubeView.classList.remove('hidden'); ytHydrateUploaderFilter(); ytRenderRepo(); }
-
-  showEventsBtn.onclick = showEventsView;
-  toggleChatBtn.onclick = showChatView;
-  togglePaymentsBtn.onclick = showPaymentsView;
-  toggleChartsBtn.onclick = showChartsView;
-  toggleYouTubeBtn.onclick = showYouTubeView;
-
-  /* ===== Calendar (current month only, abbrev weekdays) ===== */
-  let calendarDate = new Date();
-  function renderCalendar(){
-    const allEvents = getEvents();
-    const year = calendarDate.getFullYear();
-    const month = calendarDate.getMonth();
-    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-    document.getElementById('calTitle').textContent = `${monthNames[month]} ${year}`;
-    const calendar = document.getElementById('monthlyCalendar');
-    calendar.innerHTML = '';
-    const grid = document.createElement('div'); grid.className='cal-grid';
-    dayNames.forEach(d=>{ const h=document.createElement('div'); h.className='cal-header'; h.textContent=d; grid.appendChild(h); });
-
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month+1, 0).getDate();
-    const daysInPrevMonth = new Date(year, month, 0).getDate();
-    const today = new Date();
-    const isCurrentMonth = today.getFullYear()===year && today.getMonth()===month;
-    const todayDate = today.getDate();
-
-    const monthEvents = {};
-    allEvents.forEach(ev=>{
-      const d = parseLocalDate(ev.date);
-      if (d.getFullYear()===year && d.getMonth()===month){
-        const day = d.getDate();
-        (monthEvents[day] ||= []).push(ev);
-      }
-    });
-
-    for (let i=firstDay-1; i>=0; i--){
-      const day = daysInPrevMonth - i;
-      const cell = document.createElement('div'); cell.className='cal-day other-month';
-      cell.innerHTML = `<div class="cal-day-num">${day}</div>`;
-      grid.appendChild(cell);
+    async function setPasscodes({user, admin}){
+      if (user) localStorage.setItem(PASS_KEYS.user, await sha256(user));
+      if (admin) localStorage.setItem(PASS_KEYS.admin, await sha256(admin));
+      updateLockStatusUI();
     }
-    for (let day=1; day<=daysInMonth; day++){
-      const cell = document.createElement('div'); cell.className='cal-day';
-      const todays = monthEvents[day] || [];
-      const hasBandOff = todays.some(ev => ev.bandOff === true);
-      const hasAny = todays.length > 0;
+    function adminLoggedIn(){ return localStorage.getItem(PASS_KEYS.adminSession) === '1'; }
+    function ensureAdminUI(){
+      document.getElementById('addGigBtn').classList.toggle('hidden', !adminLoggedIn());
+      document.getElementById('adminLoginBtn').classList.toggle('hidden', adminLoggedIn());
+      document.getElementById('adminLogoutBtn').classList.toggle('hidden', !adminLoggedIn());
+      document.getElementById('clearChatBtn').classList.toggle('hidden', !adminLoggedIn());
+      // Edit/save controls in modal get toggled when opening
+    }
+    function updateLockStatusUI(){
+      const hasUser = !!localStorage.getItem(PASS_KEYS.user);
+      const hasAdmin = !!localStorage.getItem(PASS_KEYS.admin);
+      document.getElementById('lockStatus').textContent =
+        `${hasUser?'User🔒':'User🔓'} • ${hasAdmin?'Admin🔒':'Admin🔓'} • ${adminLoggedIn()?'Logged-in':'Logged-out'}`;
+      ensureAdminUI();
+    }
 
-      if (hasBandOff) cell.classList.add('band-off');
-      else if (hasAny) cell.classList.add('has-event');
-      if (isCurrentMonth && day===todayDate) cell.classList.add('today');
+    /* ===== Member profile (device identity) ===== */
+    const MEMBER_KEY = 'ct_member_v1';
+    function getCurrentMember(){ return localStorage.getItem(MEMBER_KEY) || ''; }
+    function setCurrentMember(m){ m ? localStorage.setItem(MEMBER_KEY, m) : localStorage.removeItem(MEMBER_KEY); updateProfileStatus(); }
+    function updateProfileStatus(){
+      const me = getCurrentMember();
+      const el = document.getElementById('profileStatus');
+      el.textContent = me ? `• Profile: ${MEMBER_NAMES[me]}` : '• No profile set';
+    }
 
-      let html = `<div class="cal-day-num">${day}</div>`;
-      todays.forEach(ev=>{
-        html += `<div class="cal-event">${ev.startTime?formatTime12(ev.startTime)+' ':''}${ev.bandOff ? 'Band Off' : ev.title}</div>`;
+    /* ===== Elements ===== */
+    const showeventsBtn=document.getElementById('showeventsBtn');
+    const toggleChatBtn=document.getElementById('toggleChatBtn');
+    const togglePaymentsBtn=document.getElementById('togglePaymentsBtn');
+    const toggleChartsBtn=document.getElementById('toggleChartsBtn');
+    const toggleYouTubeBtn=document.getElementById('toggleYouTubeBtn');
+    const addGigBtn=document.getElementById('addGigBtn');
+
+    const eventsView=document.getElementById('eventsView');
+    const chatView=document.getElementById('chatView');
+    const paymentsView=document.getElementById('paymentsView');
+    const chartsView=document.getElementById('chartsView');
+    const youtubeView=document.getElementById('youtubeView');
+
+    const chatMessagesEl=document.getElementById('chatMessages');
+    const chatInput=document.getElementById('chatInput');
+    const chatName=document.getElementById('chatName');
+    const sendChat=document.getElementById('sendChat');
+    const clearChatBtn=document.getElementById('clearChatBtn');
+
+    const ytdSummary=document.getElementById('ytdSummary');
+    const paymentsList=document.getElementById('paymentsList');
+
+    // Charts repo elements
+    const pdfInput=document.getElementById('pdfInput');
+    const pdfTitle=document.getElementById('pdfTitle');
+    const uploaderName=document.getElementById('uploaderName');
+    const uploadPdfBtn=document.getElementById('uploadPdfBtn');
+    const searchPdf=document.getElementById('searchPdf');
+    const uploaderFilter=document.getElementById('uploaderFilter');
+    const clearFiltersBtn=document.getElementById('clearFiltersBtn');
+    const exportRepoBtn=document.getElementById('exportRepoBtn');
+    const pdfList=document.getElementById('pdfList');
+    const emptyRepo=document.getElementById('emptyRepo');
+
+    const pdfModal=document.getElementById('pdfModal');
+    const pdfObject=document.getElementById('pdfObject');
+    const pdfModalTitle=document.getElementById('pdfModalTitle');
+    const pdfMeta=document.getElementById('pdfMeta');
+    const pdfDownloadBtn=document.getElementById('pdfDownloadBtn');
+    const closePdfModal=document.getElementById('closePdfModal');
+
+    // Event modal
+    const gigModal=document.getElementById('gigModal');
+    const gigTitleEl=document.getElementById('gigTitle');
+    const gigView=document.getElementById('gigView');
+    const gigEdit=document.getElementById('gigEdit');
+    const shareGigBtn=document.getElementById('shareGigBtn');
+    const shareHint=document.getElementById('shareHint');
+    const bandOffBtn=document.getElementById('bandOffBtn');
+    const clearBandOffBtn=document.getElementById('clearBandOffBtn');
+    const holdBtn=document.getElementById('holdBtn');
+    const clearHoldBtn=document.getElementById('clearHoldBtn');
+    const editGigBtn=document.getElementById('editGigBtn');
+    const deleteGigBtn=document.getElementById('deleteGigBtn');
+    const closeGigModal=document.getElementById('closeGigModal');
+
+    const egTitle=document.getElementById('egTitle');
+    const egDate=document.getElementById('egDate');
+    const egTime=document.getElementById('egTime');
+    const egVenue=document.getElementById('egVenue');
+    const egAddress=document.getElementById('egAddress');
+    const egBandOff=document.getElementById('egBandOff');
+    const egHold=document.getElementById('egHold');
+
+    const egCeremonyOnsite=document.getElementById('egCeremonyOnsite');
+    const egRoomFlip=document.getElementById('egRoomFlip');
+    const egGuestArrivalTime=document.getElementById('egGuestArrivalTime');
+    const egCeremonyGuestArrivalRow=document.getElementById('egCeremonyGuestArrivalRow');
+    const egCeremonyGuestArrivalTime=document.getElementById('egCeremonyGuestArrivalTime');
+    const egBandArrivalTime=document.getElementById('egBandArrivalTime');
+    const egIntroTime=document.getElementById('egIntroTime');
+    const egIntroSong=document.getElementById('egIntroSong');
+
+    const egCocktails=document.getElementById('egCocktails');
+    const egCocktailsSeparate=document.getElementById('egCocktailsSeparate');
+    const egCocktailsBandPlay=document.getElementById('egCocktailsBandPlay');
+
+    const egFirstDanceSong=document.getElementById('egFirstDanceSong');
+    const egFirstDancePlay=document.getElementById('egFirstDancePlay');
+
+    const egFatherDaughterSong=document.getElementById('egFatherDaughterSong');
+    const egFatherDaughterPlay=document.getElementById('egFatherDaughterPlay');
+
+    const egMotherSonSong=document.getElementById('egMotherSonSong');
+    const egMotherSonPlay=document.getElementById('egMotherSonPlay');
+
+    const egMeals=document.getElementById('egMeals');
+    const egLastSong=document.getElementById('egLastSong');
+    const egSpecialRequests=document.getElementById('egSpecialRequests');
+    const egDoNotPlay=document.getElementById('egDoNotPlay');
+
+    const saveGigBtn=document.getElementById('saveGigBtn');
+    const cancelEditBtn=document.getElementById('cancelEditBtn');
+
+    // New event modal
+    const newGigModal=document.getElementById('newGigModal');
+    const closeNewGigModal=document.getElementById('closeNewGigModal');
+    const ngTitle=document.getElementById('ngTitle');
+    const ngDate=document.getElementById('ngDate');
+    const ngTime=document.getElementById('ngTime');
+    const ngVenue=document.getElementById('ngVenue');
+    const ngAddress=document.getElementById('ngAddress');
+    const ngBandOff=document.getElementById('ngBandOff');
+    const ngHold=document.getElementById('ngHold');
+
+    const ngCeremonyOnsite=document.getElementById('ngCeremonyOnsite');
+    const ngRoomFlip=document.getElementById('ngRoomFlip');
+    const ngGuestArrivalTime=document.getElementById('ngGuestArrivalTime');
+    const ngCeremonyGuestArrivalRow=document.getElementById('ngCeremonyGuestArrivalRow');
+    const ngCeremonyGuestArrivalTime=document.getElementById('ngCeremonyGuestArrivalTime');
+    const ngBandArrivalTime=document.getElementById('ngBandArrivalTime');
+    const ngIntroTime=document.getElementById('ngIntroTime');
+    const ngIntroSong=document.getElementById('ngIntroSong');
+
+    const ngCocktails=document.getElementById('ngCocktails');
+    const ngCocktailsSeparate=document.getElementById('ngCocktailsSeparate');
+    const ngCocktailsBandPlay=document.getElementById('ngCocktailsBandPlay');
+
+    const ngFirstDanceSong=document.getElementById('ngFirstDanceSong');
+    const ngFirstDancePlay=document.getElementById('ngFirstDancePlay');
+
+    const ngFatherDaughterSong=document.getElementById('ngFatherDaughterSong');
+    const ngFatherDaughterPlay=document.getElementById('ngFatherDaughterPlay');
+
+    const ngMotherSonSong=document.getElementById('ngMotherSonSong');
+    const ngMotherSonPlay=document.getElementById('ngMotherSonPlay');
+
+    const ngMeals=document.getElementById('ngMeals');
+    const ngLastSong=document.getElementById('ngLastSong');
+    const ngSpecialRequests=document.getElementById('ngSpecialRequests');
+    const ngDoNotPlay=document.getElementById('ngDoNotPlay');
+
+    const createGigBtn=document.getElementById('createGigBtn');
+
+    // YouTube
+    const ytUrl=document.getElementById('ytUrl');
+    const ytTitle=document.getElementById('ytTitle');
+    const ytNotes=document.getElementById('ytNotes');
+    const ytUploader=document.getElementById('ytUploader');
+    const addYtBtn=document.getElementById('addYtBtn');
+    const ytSearch=document.getElementById('ytSearch');
+    const ytUploaderFilter=document.getElementById('ytUploaderFilter');
+    const ytClearFilters=document.getElementById('ytClearFilters');
+    const ytExportBtn=document.getElementById('ytExportBtn');
+    const ytList=document.getElementById('ytList');
+    const ytEmpty=document.getElementById('ytEmpty');
+    const ytModal=document.getElementById('ytModal');
+    const ytModalTitle=document.getElementById('ytModalTitle');
+    const ytIframe=document.getElementById('ytIframe');
+    const ytMeta=document.getElementById('ytMeta');
+    const ytCloseBtn=document.getElementById('ytCloseBtn');
+    const ytShareBtn=document.getElementById('ytShareBtn');
+    const ytShareHint=document.getElementById('ytShareHint');
+
+    // Pass + Admin
+    const passModal=document.getElementById('passModal');
+    const setPassBtn=document.getElementById('setPassBtn');
+    const savePassBtn=document.getElementById('savePassBtn');
+    const closePassBtn=document.getElementById('closePassBtn');
+    const adminLoginModal=document.getElementById('adminLoginModal');
+    const adminLoginBtn=document.getElementById('adminLoginBtn');
+    const adminLogoutBtn=document.getElementById('adminLogoutBtn');
+    const adminLoginInput=document.getElementById('adminLoginInput');
+    const adminLoginSubmit=document.getElementById('adminLoginSubmit');
+    const adminLoginClose=document.getElementById('adminLoginClose');
+
+    // Profile modal
+    const setProfileBtn = document.getElementById('setProfileBtn');
+    const profileModal = document.getElementById('profileModal');
+    const profileSelect = document.getElementById('profileSelect');
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
+    const closeProfileBtn = document.getElementById('closeProfileBtn');
+
+    /* ===== View switching ===== */
+    function hideAllViews(){ eventsView.classList.add('hidden'); chatView.classList.add('hidden'); paymentsView.classList.add('hidden'); chartsView.classList.add('hidden'); youtubeView.classList.add('hidden'); }
+    function showeventsView(){ hideAllViews(); eventsView.classList.remove('hidden'); renderCalendar(); renderevents(); }
+    function showChatView(){ hideAllViews(); chatView.classList.remove('hidden'); renderChat(); }
+    function showPaymentsView(){ hideAllViews(); paymentsView.classList.remove('hidden'); renderPayments(); }
+    function showChartsView(){ hideAllViews(); chartsView.classList.remove('hidden'); hydrateUploaderFilter(); renderRepo(); }
+    function showYouTubeView(){ hideAllViews(); youtubeView.classList.remove('hidden'); ytHydrateUploaderFilter(); ytRenderRepo(); }
+
+    showeventsBtn.onclick = showeventsView;
+    toggleChatBtn.onclick = showChatView;
+    togglePaymentsBtn.onclick = showPaymentsView;
+    toggleChartsBtn.onclick = showChartsView;
+    toggleYouTubeBtn.onclick = showYouTubeView;
+
+    /* ===== Dates/Time helpers ===== */
+    function parseYMD(yyyy_mm_dd){
+      // Local (no timezone drift)
+      const [y,m,d] = (yyyy_mm_dd||'').split('-').map(Number);
+      return new Date(y, (m||1)-1, d||1, 0,0,0,0);
+    }
+    function formatTime12(hhmm){
+      if(!hhmm) return '';
+      const [hStr,mStr] = hhmm.split(':');
+      let h = parseInt(hStr,10); const m = parseInt(mStr||'0',10);
+      const ampm = h>=12?'PM':'AM';
+      h = h%12; if (h===0) h=12;
+      return `${h}:${String(m).padStart(2,'0')} ${ampm}`;
+    }
+
+    /* ===== Calendar ===== */
+    let calendarDate = new Date();
+    function renderCalendar(){
+      const events = getevents();
+      const year = calendarDate.getFullYear();
+      const month = calendarDate.getMonth();
+
+      const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const dayAbbr = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      document.getElementById('calTitle').textContent = `${monthNames[month]} ${year}`;
+
+      const calendar = document.getElementById('monthlyCalendar');
+      calendar.innerHTML = '';
+      const grid = document.createElement('div'); grid.className='cal-grid';
+      dayAbbr.forEach(d=>{ const h=document.createElement('div'); h.className='cal-header'; h.textContent=d; grid.appendChild(h); });
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month+1, 0).getDate();
+      const daysInPrevMonth = new Date(year, month, 0).getDate();
+      const today = new Date();
+      const isCurrentMonth = today.getFullYear()===year && today.getMonth()===month;
+      const todayDate = today.getDate();
+
+      const monthEvents = {};
+      events.forEach(g=>{
+        const d = parseYMD(g.date);
+        if (d.getFullYear()===year && d.getMonth()===month){
+          const day = d.getDate();
+          (monthEvents[day] ||= []).push(g);
+        }
       });
-      cell.innerHTML = html;
-      if (todays.length) cell.onclick = ()=> showGigDetail(todays[0].id);
-      grid.appendChild(cell);
-    }
-    const total = firstDay + daysInMonth;
-    const rem = total % 7 === 0 ? 0 : 7 - (total % 7);
-    for (let day=1; day<=rem; day++){
-      const cell = document.createElement('div'); cell.className='cal-day other-month';
-      cell.innerHTML = `<div class="cal-day-num">${day}</div>`;
-      grid.appendChild(cell);
-    }
-    calendar.appendChild(grid);
-  }
 
-  /* ===== Events list ===== */
-  function renderEvents(){
-    const list = document.getElementById('eventsList');
-    const events = getEvents().slice().sort((a,b)=> parseLocalDate(a.date) - parseLocalDate(b.date));
-    list.innerHTML = '';
-    events.forEach(ev=>{
-      const div = document.createElement('div');
-      const bandOffPill = ev.bandOff ? `<span class="pill" style="border-color:#dc2626;color:#fff;background:#dc2626">Band Off</span>` : '';
-      div.className='p-3 card cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all';
-      div.innerHTML = `
-        <div>
-          <div class="text-sm subtle">${ev.date}${ev.startTime?' • '+formatTime12(ev.startTime):''}</div>
-          <div class="font-semibold">${ev.title} ${bandOffPill}</div>
-          <div class="text-xs text-slate-400">${ev.venue||''}</div>
-          <button class="btn-sec mt-2 text-xs" onclick="showGigDetail(${ev.id})">View Details</button>
-        </div>`;
-      list.appendChild(div);
-    });
-  }
+      for (let i=firstDay-1; i>=0; i--){
+        const day = daysInPrevMonth - i;
+        const cell = document.createElement('div'); cell.className='cal-day other-month';
+        cell.innerHTML = `<div class="cal-day-num">${day}</div>`;
+        grid.appendChild(cell);
+      }
+      for (let day=1; day<=daysInMonth; day++){
+        const cell = document.createElement('div'); cell.className='cal-day';
+        const eventsToday = monthEvents[day] || [];
+        const hasHold = eventsToday.some(g => g.hold === true);
+        const hasBandOff = eventsToday.some(g => g.bandOff === true);
+        const hasAnyGig  = eventsToday.length > 0;
 
-  /* ===== Event modal (view/edit/delete/share) ===== */
-  let currentGigId = null;
-  window.showGigDetail = function(id, pushHash = true){
-    const events = getEvents();
-    const g = events.find(x=> x.id===id); if(!g) return;
-    currentGigId = id;
+        if (hasHold) cell.classList.add('hold');
+        else if (hasBandOff) cell.classList.add('band-off');
+        else if (hasAnyGig) cell.classList.add('has-event');
 
-    const badge = g.bandOff
-      ? `<div class="mb-3 text-sm" style="background:#dc2626;color:#fff;padding:.4rem .6rem;border-radius:8px;display:inline-block">Band Off</div>`
-      : '';
+        if (isCurrentMonth && day===todayDate) cell.classList.add('today');
 
-    document.getElementById('gigTitle').textContent = g.title;
-    const basics = `
-      ${badge}
-      <div class="kv"><div class="subtle">Date</div><div>${g.date}${g.startTime?' at '+formatTime12(g.startTime):''}</div></div>
-      <div class="kv"><div class="subtle">Venue</div><div>${g.venue||''}</div></div>
-      <div class="kv"><div class="subtle">Address</div><div>${g.address||''}</div></div>`;
-
-    const extras = `
-      <div class="font-bold mt-4">Event Details</div>
-      <div class="kv"><div class="subtle">Ceremony onsite?</div><div>${g.ceremonyOnsite ? 'Yes' : 'No'}</div></div>
-      <div class="kv"><div class="subtle">Guest arrival</div><div>${g.guestArrivalTime ? formatTime12(g.guestArrivalTime) : '—'}</div></div>
-      <div class="kv"><div class="subtle">Guest arrival (ceremony)</div><div>${
-        (g.ceremonyOnsite && g.ceremonyGuestArrivalTime)
-          ? formatTime12(g.ceremonyGuestArrivalTime)
-          : (g.ceremonyOnsite ? '—' : 'n/a')
-      }</div></div>
-      <div class="kv"><div class="subtle">Room flip?</div><div>${g.roomFlip ? 'Yes' : 'No'}</div></div>
-      <div class="kv"><div class="subtle">Band arrival</div><div>${g.bandArrivalTime ? formatTime12(g.bandArrivalTime) : '—'}</div></div>
-      <div class="kv"><div class="subtle">Time of introduction</div><div>${g.introTime ? formatTime12(g.introTime) : '—'}</div></div>
-      <div class="kv"><div class="subtle">Song for introduction</div><div>${g.introSong || '—'}</div></div>
-
-      <div class="kv"><div class="subtle">First Dance</div><div>${
-        g.firstDanceSong ? `${g.firstDanceSong} ${g.firstDancePlay ? '(Band: Yes)' : '(Band: No)'}`
-                         : '—'
-      }</div></div>
-
-      <div class="kv"><div class="subtle">Father / Daughter</div><div>${
-        g.fatherDaughterSong ? `${g.fatherDaughterSong} ${g.fatherDaughterPlay ? '(Band: Yes)' : '(Band: No)'}`
-                             : '—'
-      }</div></div>
-
-      <div class="kv"><div class="subtle">Mother / Son</div><div>${
-        g.motherSonSong ? `${g.motherSonSong} ${g.motherSonPlay ? '(Band: Yes)' : '(Band: No)'}`
-                        : '—'
-      }</div></div>
-
-      <div class="kv"><div class="subtle">Special requests</div><div>${g.specialRequests || '—'}</div></div>
-      <div class="kv"><div class="subtle">Last song</div><div>${g.lastSong || '—'}</div></div>
-      <div class="kv"><div class="subtle">Do-Not-Play</div><div>${g.doNotPlay || '—'}</div></div>`;
-
-    gigView.innerHTML = basics + extras;
-
-    editGigBtn.classList.toggle('hidden', !adminLoggedIn());
-    deleteGigBtn.classList.toggle('hidden', !adminLoggedIn());
-    bandOffBtn.classList.toggle('hidden', !adminLoggedIn() || g.bandOff === true);
-    clearBandOffBtn.classList.toggle('hidden', !adminLoggedIn() || g.bandOff !== true);
-
-    shareGigBtn.onclick = ()=> shareGig(id);
-    bandOffBtn.onclick = ()=> { const arr=getEvents(); const i=arr.findIndex(x=>x.id===id); if(i>=0){ arr[i].bandOff=true; setEvents(arr); renderCalendar(); renderEvents(); showGigDetail(id,false);} };
-    clearBandOffBtn.onclick = ()=> { const arr=getEvents(); const i=arr.findIndex(x=>x.id===id); if(i>=0){ delete arr[i].bandOff; setEvents(arr); renderCalendar(); renderEvents(); showGigDetail(id,false);} };
-    editGigBtn.onclick = ()=> enterEditMode(g);
-    deleteGigBtn.onclick = ()=> {
-      if (!confirm('Delete this event?')) return;
-      const arr = getEvents().filter(x=> x.id!==id);
-      setEvents(arr); renderCalendar(); renderEvents(); gigModal.close();
-    };
-
-    gigView.classList.remove('hidden');
-    gigEdit.classList.add('hidden');
-    document.getElementById('shareHint').classList.add('hidden');
-    gigModal.showModal();
-    if (pushHash) location.hash = `gig-${id}`;
-  };
-
-  function toggleCeremonyGuestArrivalRow(isOnsite, rowEl){
-    if (!rowEl) return;
-    rowEl.classList.toggle('hidden', !isOnsite);
-  }
-
-  function enterEditMode(g){
-    egTitle.value = g.title||''; egDate.value = g.date||''; egTime.value = g.startTime||'';
-    egVenue.value = g.venue||''; egAddress.value = g.address||''; egBandOff.checked = !!g.bandOff;
-
-    egCeremonyOnsite.checked = !!g.ceremonyOnsite;
-    egRoomFlip.checked = !!g.roomFlip;
-    egGuestArrivalTime.value = g.guestArrivalTime||'';
-
-    toggleCeremonyGuestArrivalRow(egCeremonyOnsite.checked, egCeremonyGuestArrivalRow);
-    egCeremonyOnsite.onchange = ()=> toggleCeremonyGuestArrivalRow(egCeremonyOnsite.checked, egCeremonyGuestArrivalRow);
-    egCeremonyGuestArrivalTime.value = g.ceremonyGuestArrivalTime||'';
-
-    egBandArrivalTime.value = g.bandArrivalTime||'';
-    egIntroTime.value = g.introTime||'';
-    egIntroSong.value = g.introSong||'';
-
-    // Dances
-    egFirstDanceSong.value = g.firstDanceSong||'';
-    egFirstDancePlay.checked = !!g.firstDancePlay;
-    egFatherDaughterSong.value = g.fatherDaughterSong||'';
-    egFatherDaughterPlay.checked = !!g.fatherDaughterPlay;
-    egMotherSonSong.value = g.motherSonSong||'';
-    egMotherSonPlay.checked = !!g.motherSonPlay;
-
-    egSpecialRequests.value = g.specialRequests||'';
-    egLastSong.value = g.lastSong||'';
-    egDoNotPlay.value = g.doNotPlay||'';
-
-    gigView.classList.add('hidden'); gigEdit.classList.remove('hidden');
-
-    saveGigBtn.onclick = ()=>{
-      const arr = getEvents();
-      const i = arr.findIndex(x=> x.id===g.id);
-      if (i>=0){
-        arr[i] = normalizeEvent({
-          ...arr[i],
-          title: egTitle.value.trim() || 'Untitled',
-          date: egDate.value,
-          startTime: egTime.value,
-          venue: egVenue.value.trim(),
-          address: egAddress.value.trim(),
-          bandOff: !!egBandOff.checked,
-          ceremonyOnsite: !!egCeremonyOnsite.checked,
-          roomFlip: !!egRoomFlip.checked,
-          guestArrivalTime: egGuestArrivalTime.value || '',
-          ceremonyGuestArrivalTime: egCeremonyOnsite.checked ? (egCeremonyGuestArrivalTime.value || '') : '',
-          bandArrivalTime: egBandArrivalTime.value || '',
-          introTime: egIntroTime.value || '',
-          introSong: egIntroSong.value.trim(),
-
-          firstDanceSong: egFirstDanceSong.value.trim(),
-          firstDancePlay: !!egFirstDancePlay.checked,
-
-          fatherDaughterSong: egFatherDaughterSong.value.trim(),
-          fatherDaughterPlay: !!egFatherDaughterPlay.checked,
-
-          motherSonSong: egMotherSonSong.value.trim(),
-          motherSonPlay: !!egMotherSonPlay.checked,
-
-          specialRequests: egSpecialRequests.value.trim(),
-          lastSong: egLastSong.value.trim(),
-          doNotPlay: egDoNotPlay.value.trim()
+        let html = `<div class="cal-day-num">${day}</div>`;
+        eventsToday.forEach(g=> {
+          const label = g.bandOff ? 'Band Off' : (g.hold ? 'Hold' : g.title);
+          html += `<div class="cal-event">${g.startTime ? formatTime12(g.startTime)+' • ' : ''}${label}</div>`;
         });
-        setEvents(arr);
-        renderCalendar(); renderEvents(); showGigDetail(g.id, false);
+        cell.innerHTML = html;
+
+        if (eventsToday.length) cell.onclick = ()=> showGigDetail(eventsToday[0].id);
+        grid.appendChild(cell);
       }
+      const total = firstDay + daysInMonth;
+      const rem = total % 7 === 0 ? 0 : 7 - (total % 7);
+      for (let day=1; day<=rem; day++){
+        const cell = document.createElement('div'); cell.className='cal-day other-month';
+        cell.innerHTML = `<div class="cal-day-num">${day}</div>`;
+        grid.appendChild(cell);
+      }
+      calendar.appendChild(grid);
+    }
+
+    /* ===== Events list ===== */
+    function renderevents(){
+      const events = getevents().slice().sort((a,b)=> parseYMD(a.date) - parseYMD(b.date));
+      const eventsList = document.getElementById('eventsList');
+      eventsList.innerHTML = '';
+      events.forEach(g=>{
+        const div = document.createElement('div');
+        const cat = g.hold ? `<span class="pill" style="border-color:#1e3a8a;color:#fff;background:#1e3a8a">Hold</span>` :
+                    g.bandOff ? `<span class="pill" style="border-color:#dc2626;color:#fff;background:#dc2626">Band Off</span>` : '';
+        div.className='p-3 card cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all';
+        div.innerHTML = `
+          <div>
+            <div class="text-sm subtle">${g.date}${g.startTime?' • '+formatTime12(g.startTime):''}</div>
+            <div class="font-semibold">${g.title} ${cat}</div>
+            <div class="text-xs text-slate-400">${g.venue||''}</div>
+            <button class="btn-sec mt-2 text-xs" onclick="showGigDetail(${g.id})">View Details</button>
+          </div>`;
+        eventsList.appendChild(div);
+      });
+    }
+
+    /* ===== Event modal (view/edit/delete) ===== */
+    let currentGigId = null;
+
+    window.showGigDetail = function(id, pushHash = true){
+      const events = getevents();
+      const g = events.find(x=> x.id===id); if(!g) return;
+      currentGigId = id;
+
+      document.getElementById('gigTitle').textContent = g.title;
+      const badge = g.bandOff
+        ? `<div class="mb-3 text-sm" style="background:#dc2626;color:#fff;padding:.4rem .6rem;border-radius:8px;display:inline-block">Band Off</div>`
+        : g.hold
+        ? `<div class="mb-3 text-sm" style="background:#1e3a8a;color:#fff;padding:.4rem .6rem;border-radius:8px;display:inline-block">Hold</div>`
+        : '';
+
+      // Optional rows
+      const mealsRow = g.meals ? `<div class="kv"><div class="subtle">Meals</div><div>${g.meals}</div></div>` : '';
+
+      const cocktailsRows = `
+        ${g.cocktails ? `<div class="kv"><div class="subtle">Cocktails</div><div>${g.cocktails}</div></div>` : ''}
+        ${g.cocktailsSeparate ? `<div class="kv"><div class="subtle">Separate Location</div><div>Yes</div></div>` : ''}
+        ${g.cocktailsBandPlay ? `<div class="kv"><div class="subtle">Band Playing Cocktails</div><div>Yes</div></div>` : ''}
+      `;
+
+      const ceremonyArrivalRow = (g.ceremonyOnsite && g.ceremonyGuestArrivalTime)
+        ? `<div class="kv"><div class="subtle">Guest Arrival (Ceremony)</div><div>${formatTime12(g.ceremonyGuestArrivalTime)}</div></div>` : '';
+
+      const firstDanceRow = g.firstDanceSong || g.firstDancePlay
+        ? `<div class="kv"><div class="subtle">First Dance</div><div>${g.firstDanceSong||''}${g.firstDancePlay?' • Band to play':''}</div></div>` : '';
+
+      const fdRow = g.fatherDaughterSong || g.fatherDaughterPlay
+        ? `<div class="kv"><div class="subtle">Father / Daughter</div><div>${g.fatherDaughterSong||''}${g.fatherDaughterPlay?' • Band to play':''}</div></div>` : '';
+
+      const msRow = g.motherSonSong || g.motherSonPlay
+        ? `<div class="kv"><div class="subtle">Mother / Son</div><div>${g.motherSonSong||''}${g.motherSonPlay?' • Band to play':''}</div></div>` : '';
+
+      const specialRow = g.specialRequests ? `<div class="kv"><div class="subtle">Special Requests</div><div>${g.specialRequests}</div></div>` : '';
+      const dnpRow = g.doNotPlay ? `<div class="kv"><div class="subtle">Do-Not-Play</div><div>${g.doNotPlay}</div></div>` : '';
+      const lastSongRow = g.lastSong ? `<div class="kv"><div class="subtle">Last Song</div><div>${g.lastSong}</div></div>` : '';
+
+      gigView.innerHTML = `
+        ${badge}
+        <div class="kv"><div class="subtle">Date</div><div>${g.date}${g.startTime?' at '+formatTime12(g.startTime):''}</div></div>
+        <div class="kv"><div class="subtle">Venue</div><div>${g.venue||''}</div></div>
+        <div class="kv"><div class="subtle">Address</div><div>${g.address||''}</div></div>
+
+        <div class="kv"><div class="subtle">Ceremony Onsite</div><div>${g.ceremonyOnsite?'Yes':'No'}</div></div>
+        <div class="kv"><div class="subtle">Room Flip</div><div>${g.roomFlip?'Yes':'No'}</div></div>
+        ${g.guestArrivalTime ? `<div class="kv"><div class="subtle">Guest Arrival</div><div>${formatTime12(g.guestArrivalTime)}</div></div>`:''}
+        ${ceremonyArrivalRow}
+        ${g.bandArrivalTime ? `<div class="kv"><div class="subtle">Band Arrival</div><div>${formatTime12(g.bandArrivalTime)}</div></div>`:''}
+        ${g.introTime ? `<div class="kv"><div class="subtle">Time of Introduction</div><div>${formatTime12(g.introTime)}</div></div>`:''}
+        ${g.introSong ? `<div class="kv"><div class="subtle">Song for Introduction</div><div>${g.introSong}</div></div>`:''}
+
+        ${cocktailsRows}
+        ${firstDanceRow}
+        ${fdRow}
+        ${msRow}
+        ${mealsRow}
+        ${lastSongRow}
+        ${specialRow}
+        ${dnpRow}
+      `;
+
+      // Admin-only controls visible on session
+      const isAdmin = adminLoggedIn();
+      editGigBtn.classList.toggle('hidden', !isAdmin);
+      deleteGigBtn.classList.toggle('hidden', !isAdmin);
+      bandOffBtn.classList.toggle('hidden', !isAdmin || g.bandOff === true);
+      clearBandOffBtn.classList.toggle('hidden', !isAdmin || g.bandOff !== true);
+      holdBtn.classList.toggle('hidden', !isAdmin || g.hold === true);
+      clearHoldBtn.classList.toggle('hidden', !isAdmin || g.hold !== true);
+
+      // wire share
+      shareGigBtn.onclick = ()=> shareGig(id);
+
+      // wire Band Off / Hold toggles
+      bandOffBtn.onclick = ()=> { const ev=getevents(); const i=ev.findIndex(x=>x.id===id); if(i>=0){ ev[i].bandOff=true; setevents(ev); renderCalendar(); renderevents(); showGigDetail(id,false);} };
+      clearBandOffBtn.onclick = ()=> { const ev=getevents(); const i=ev.findIndex(x=>x.id===id); if(i>=0){ delete ev[i].bandOff; setevents(ev); renderCalendar(); renderevents(); showGigDetail(id,false);} };
+      holdBtn.onclick = ()=> { const ev=getevents(); const i=ev.findIndex(x=>x.id===id); if(i>=0){ ev[i].hold=true; setevents(ev); renderCalendar(); renderevents(); showGigDetail(id,false);} };
+      clearHoldBtn.onclick = ()=> { const ev=getevents(); const i=ev.findIndex(x=>x.id===id); if(i>=0){ delete ev[i].hold; setevents(ev); renderCalendar(); renderevents(); showGigDetail(id,false);} };
+
+      // edit handlers
+      editGigBtn.onclick = ()=> enterEditMode(g);
+      deleteGigBtn.onclick = ()=> {
+        if (!confirm('Delete this event?')) return;
+        const ev=getevents().filter(x=> x.id!==id);
+        setevents(ev); renderCalendar(); renderevents(); gigModal.close();
+      };
+
+      // modes
+      gigView.classList.remove('hidden');
+      gigEdit.classList.add('hidden');
+      saveGigBtn.classList.add('hidden');
+      cancelEditBtn.classList.add('hidden');
+
+      document.getElementById('shareHint').classList.add('hidden');
+      gigModal.showModal();
+      if (pushHash) location.hash = `gig-${id}`;
     };
-    cancelEditBtn.onclick = ()=> { gigEdit.classList.add('hidden'); gigView.classList.remove('hidden'); };
-  }
 
-  function shareGig(id){
-    const url = `${location.origin}${location.pathname}#gig-${id}`;
-    navigator.clipboard?.writeText(url).then(()=>{
-      document.getElementById('shareHint').classList.remove('hidden');
-      setTimeout(()=> document.getElementById('shareHint').classList.add('hidden'), 1500);
-    });
-  }
-  window.addEventListener('hashchange', handleHashOpen);
-  function handleHashOpen(){
-    const g = location.hash.match(/#gig-(\d+)/);
-    const y = location.hash.match(/#yt-([a-z0-9-]+)/i);
-    if (g){ const id = parseInt(g[1],10); showGigDetail(id, false); }
-    if (y){ const id = y[1]; const item = ytGetRepo().find(x=> x.id===id); if (item) ytOpen(item, false); }
-  }
-  if (location.hash) handleHashOpen();
-  closeGigModal.onclick = ()=> { gigModal.close(); if (location.hash.startsWith('#gig-')) history.replaceState(null,'',location.pathname+location.search); };
+    function enterEditMode(g){
+      const isAdmin = adminLoggedIn();
+      if (!isAdmin) return alert('Admin login required.');
 
-  /* ===== New event ===== */
-  addEventBtn.onclick = ()=> {
-    if (!adminLoggedIn()) return alert('Admin login required.');
-    ngTitle.value=''; ngDate.value=''; ngTime.value=''; ngVenue.value=''; ngAddress.value='';
-    ngBandOff.checked=false; ngCeremonyOnsite.checked=false; ngRoomFlip.checked=false;
-    ngGuestArrivalTime.value=''; ngCeremonyGuestArrivalTime.value=''; ngBandArrivalTime.value=''; ngIntroTime.value='';
-    ngIntroSong.value='';
+      egTitle.value = g.title||'';
+      egDate.value = g.date||'';
+      egTime.value = g.startTime||'';
+      egVenue.value = g.venue||'';
+      egAddress.value = g.address||'';
+      egBandOff.checked = !!g.bandOff;
+      egHold.checked = !!g.hold;
 
-    ngFirstDanceSong.value=''; ngFirstDancePlay.checked=false;
-    ngFatherDaughterSong.value=''; ngFatherDaughterPlay.checked=false;
-    ngMotherSonSong.value=''; ngMotherSonPlay.checked=false;
+      egCeremonyOnsite.checked = !!g.ceremonyOnsite;
+      egRoomFlip.checked = !!g.roomFlip;
+      egGuestArrivalTime.value = g.guestArrivalTime||'';
+      egCeremonyGuestArrivalTime.value = g.ceremonyGuestArrivalTime||'';
+      egBandArrivalTime.value = g.bandArrivalTime||'';
+      egIntroTime.value = g.introTime||'';
+      egIntroSong.value = g.introSong||'';
 
-    ngSpecialRequests.value=''; ngLastSong.value=''; ngDoNotPlay.value='';
+      egCocktails.value = g.cocktails||'';
+      egCocktailsSeparate.checked = !!g.cocktailsSeparate;
+      egCocktailsBandPlay.checked = !!g.cocktailsBandPlay;
 
-    toggleCeremonyGuestArrivalRow(ngCeremonyOnsite.checked, ngCeremonyGuestArrivalRow);
-    ngCeremonyOnsite.onchange = ()=> toggleCeremonyGuestArrivalRow(ngCeremonyOnsite.checked, ngCeremonyGuestArrivalRow);
+      egFirstDanceSong.value = g.firstDanceSong||'';
+      egFirstDancePlay.checked = !!g.firstDancePlay;
 
-    newGigModal.showModal();
-  };
-  closeNewGigModal.onclick = ()=> newGigModal.close();
-  createGigBtn.onclick = ()=>{
-    const arr = getEvents();
-    const nextId = (arr.reduce((m,g)=> Math.max(m,g.id), 0) || 0) + 1;
-    const obj = normalizeEvent({
-      id: nextId,
-      title: (ngTitle.value||'Untitled').trim(),
-      date: ngDate.value,
-      startTime: ngTime.value,
-      venue: (ngVenue.value||'').trim(),
-      address: (ngAddress.value||'').trim(),
-      bandOff: !!ngBandOff.checked,
-      ceremonyOnsite: !!ngCeremonyOnsite.checked,
-      roomFlip: !!ngRoomFlip.checked,
-      guestArrivalTime: ngGuestArrivalTime.value || '',
-      ceremonyGuestArrivalTime: ngCeremonyOnsite.checked ? (ngCeremonyGuestArrivalTime.value || '') : '',
-      bandArrivalTime: ngBandArrivalTime.value || '',
-      introTime: ngIntroTime.value || '',
-      introSong: (ngIntroSong.value||'').trim(),
+      egFatherDaughterSong.value = g.fatherDaughterSong||'';
+      egFatherDaughterPlay.checked = !!g.fatherDaughterPlay;
 
-      firstDanceSong: (ngFirstDanceSong.value||'').trim(),
-      firstDancePlay: !!ngFirstDancePlay.checked,
+      egMotherSonSong.value = g.motherSonSong||'';
+      egMotherSonPlay.checked = !!g.motherSonPlay;
 
-      fatherDaughterSong: (ngFatherDaughterSong.value||'').trim(),
-      fatherDaughterPlay: !!ngFatherDaughterPlay.checked,
+      egMeals.value = g.meals||'';
+      egLastSong.value = g.lastSong||'';
+      egSpecialRequests.value = g.specialRequests||'';
+      egDoNotPlay.value = g.doNotPlay||'';
 
-      motherSonSong: (ngMotherSonSong.value||'').trim(),
-      motherSonPlay: !!ngMotherSonPlay.checked,
+      // conditional row
+      egCeremonyGuestArrivalRow.classList.toggle('hidden', !egCeremonyOnsite.checked);
+      egCeremonyOnsite.onchange = ()=> egCeremonyGuestArrivalRow.classList.toggle('hidden', !egCeremonyOnsite.checked);
 
-      specialRequests: (ngSpecialRequests.value||'').trim(),
-      lastSong: (ngLastSong.value||'').trim(),
-      doNotPlay: (ngDoNotPlay.value||'').trim(),
-      payments: {}
-    });
-    arr.push(obj);
-    setEvents(arr);
-    newGigModal.close();
-    renderCalendar(); renderEvents();
-    showGigDetail(nextId);
-  };
+      gigView.classList.add('hidden');
+      gigEdit.classList.remove('hidden');
+      saveGigBtn.classList.remove('hidden');
+      cancelEditBtn.classList.remove('hidden');
 
-  /* ===== Chat ===== */
-  function renderChat(){
-    const canAdmin = adminLoggedIn();
-    chatMessagesEl.innerHTML = '';
-    chatMessages.forEach((m,i)=>{
-      const div = document.createElement('div');
-      div.className='chat-msg';
-      div.innerHTML = `
-        <div class="flex items-center justify-between">
-          <div>
-            <span class="font-semibold text-orange-400">${m.name||'Guest'}</span>
-            <span class="subtle ml-2">${m.time||''}</span>
-          </div>
-          ${canAdmin ? `<button class="btn-sec text-xs" data-del="${i}">Delete</button>` : ''}
-        </div>
-        <div class="mt-1">${m.message}</div>`;
-      chatMessagesEl.appendChild(div);
-    });
-    if (canAdmin){
-      chatMessagesEl.querySelectorAll('[data-del]').forEach(btn=>{
-        btn.onclick = ()=>{
-          const idx = parseInt(btn.getAttribute('data-del'), 10);
-          chatMessages.splice(idx, 1);
-          localStorage.setItem('ct_chat_v1', JSON.stringify(chatMessages));
-          renderChat();
-        };
+      saveGigBtn.onclick = ()=>{
+        const ev = getevents();
+        const i = ev.findIndex(x=> x.id===g.id);
+        if (i>=0){
+          ev[i] = {
+            ...ev[i],
+            title: egTitle.value.trim() || 'Untitled',
+            date: egDate.value,
+            startTime: egTime.value,
+            venue: egVenue.value.trim(),
+            address: egAddress.value.trim(),
+            bandOff: !!egBandOff.checked,
+            hold: !!egHold.checked,
+            ceremonyOnsite: !!egCeremonyOnsite.checked,
+            roomFlip: !!egRoomFlip.checked,
+            guestArrivalTime: egGuestArrivalTime.value,
+            ceremonyGuestArrivalTime: egCeremonyOnsite.checked ? egCeremonyGuestArrivalTime.value : '',
+            bandArrivalTime: egBandArrivalTime.value,
+            introTime: egIntroTime.value,
+            introSong: egIntroSong.value.trim(),
+            cocktails: egCocktails.value.trim(),
+            cocktailsSeparate: !!egCocktailsSeparate.checked,
+            cocktailsBandPlay: !!egCocktailsBandPlay.checked,
+            firstDanceSong: egFirstDanceSong.value.trim(),
+            firstDancePlay: !!egFirstDancePlay.checked,
+            fatherDaughterSong: egFatherDaughterSong.value.trim(),
+            fatherDaughterPlay: !!egFatherDaughterPlay.checked,
+            motherSonSong: egMotherSonSong.value.trim(),
+            motherSonPlay: !!egMotherSonPlay.checked,
+            meals: egMeals.value.trim(),
+            lastSong: egLastSong.value.trim(),
+            specialRequests: egSpecialRequests.value.trim(),
+            doNotPlay: egDoNotPlay.value.trim()
+          };
+          setevents(ev);
+          renderCalendar(); renderevents(); showGigDetail(g.id, false);
+        }
+      };
+      cancelEditBtn.onclick = ()=> { gigEdit.classList.add('hidden'); gigView.classList.remove('hidden'); saveGigBtn.classList.add('hidden'); cancelEditBtn.classList.add('hidden'); };
+    }
+
+    function shareGig(id){
+      const url = `${location.origin}${location.pathname}#gig-${id}`;
+      navigator.clipboard?.writeText(url).then(()=>{
+        document.getElementById('shareHint').classList.remove('hidden');
+        setTimeout(()=> document.getElementById('shareHint').classList.add('hidden'), 1500);
       });
     }
-    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-  }
-  sendChat.onclick = ()=>{
-    const msg = (chatInput.value||'').trim(); if(!msg) return;
-    const name = (chatName.value||'Guest').trim();
-    const time = new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-    chatMessages.push({ name, message: msg, time });
-    chatInput.value=''; localStorage.setItem('ct_chat_v1', JSON.stringify(chatMessages)); renderChat();
-  };
-  chatInput.addEventListener('keypress', e=>{ if(e.key==='Enter') sendChat.click(); });
-  clearChatBtn.onclick = ()=>{
-    if (!adminLoggedIn()) return alert('Admin login required.');
-    if (!confirm('Clear all chat messages?')) return;
-    chatMessages = [];
-    localStorage.setItem('ct_chat_v1', JSON.stringify(chatMessages));
-    renderChat();
-  };
+    window.addEventListener('hashchange', handleHashOpen);
+    function handleHashOpen(){
+      const g = location.hash.match(/#gig-(\d+)/);
+      const y = location.hash.match(/#yt-([a-z0-9-]+)/i);
+      if (g){ const id = parseInt(g[1],10); showGigDetail(id, false); }
+      if (y){ const id = y[1]; const item = ytGetRepo().find(x=> x.id===id); if (item) ytOpen(item, false); }
+    }
+    if (location.hash) handleHashOpen();
+    closeGigModal.onclick = ()=> { gigModal.close(); if (location.hash.startsWith('#gig-')) history.replaceState(null,'',location.pathname+location.search); };
 
-  /* ===== Payments (personal) ===== */
-  const PAY_PICK_KEY = 'ct_pay_member_v1';
-  function hydratePayMemberSelect(){
-    if (!payMemberSelect.options.length){
-      BAND_MEMBERS.forEach(k=>{
-        const opt = document.createElement('option');
-        opt.value = k; opt.textContent = MEMBER_NAMES[k];
-        payMemberSelect.appendChild(opt);
+    /* ===== New event ===== */
+    addGigBtn.onclick = ()=> {
+      if (!adminLoggedIn()) return alert('Admin login required.');
+      // reset fields
+      ngTitle.value=''; ngDate.value=''; ngTime.value=''; ngVenue.value=''; ngAddress.value='';
+      ngBandOff.checked=false; ngHold.checked=false;
+      ngCeremonyOnsite.checked=false; ngRoomFlip.checked=false;
+      ngGuestArrivalTime.value=''; ngCeremonyGuestArrivalTime.value='';
+      ngBandArrivalTime.value=''; ngIntroTime.value=''; ngIntroSong.value='';
+      ngCocktails.value=''; ngCocktailsSeparate.checked=false; ngCocktailsBandPlay.checked=false;
+      ngFirstDanceSong.value=''; ngFirstDancePlay.checked=false;
+      ngFatherDaughterSong.value=''; ngFatherDaughterPlay.checked=false;
+      ngMotherSonSong.value=''; ngMotherSonPlay.checked=false;
+      ngMeals.value=''; ngLastSong.value=''; ngSpecialRequests.value=''; ngDoNotPlay.value='';
+      ngCeremonyGuestArrivalRow.classList.add('hidden');
+      newGigModal.showModal();
+    };
+    document.getElementById('closeNewGigModal').onclick = ()=> newGigModal.close();
+    ngCeremonyOnsite.onchange = ()=> ngCeremonyGuestArrivalRow.classList.toggle('hidden', !ngCeremonyOnsite.checked);
+    createGigBtn.onclick = ()=>{
+      const ev = getevents();
+      const nextId = (ev.reduce((m,g)=> Math.max(m,g.id), 0) || 0) + 1;
+      ev.push({
+        id: nextId,
+        title: (ngTitle.value||'Untitled').trim(),
+        date: ngDate.value,
+        startTime: ngTime.value,
+        venue: (ngVenue.value||'').trim(),
+        address: (ngAddress.value||'').trim(),
+        bandOff: !!ngBandOff.checked,
+        hold: !!ngHold.checked,
+        ceremonyOnsite: !!ngCeremonyOnsite.checked,
+        roomFlip: !!ngRoomFlip.checked,
+        guestArrivalTime: ngGuestArrivalTime.value,
+        ceremonyGuestArrivalTime: ngCeremonyOnsite.checked ? ngCeremonyGuestArrivalTime.value : '',
+        bandArrivalTime: ngBandArrivalTime.value,
+        introTime: ngIntroTime.value,
+        introSong: (ngIntroSong.value||'').trim(),
+        cocktails: (ngCocktails.value||'').trim(),
+        cocktailsSeparate: !!ngCocktailsSeparate.checked,
+        cocktailsBandPlay: !!ngCocktailsBandPlay.checked,
+        firstDanceSong: (ngFirstDanceSong.value||'').trim(),
+        firstDancePlay: !!ngFirstDancePlay.checked,
+        fatherDaughterSong: (ngFatherDaughterSong.value||'').trim(),
+        fatherDaughterPlay: !!ngFatherDaughterPlay.checked,
+        motherSonSong: (ngMotherSonSong.value||'').trim(),
+        motherSonPlay: !!ngMotherSonPlay.checked,
+        meals: (ngMeals.value||'').trim(),
+        lastSong: (ngLastSong.value||'').trim(),
+        specialRequests: (ngSpecialRequests.value||'').trim(),
+        doNotPlay: (ngDoNotPlay.value||'').trim(),
+        payments: {}
+      });
+      setevents(ev);
+      newGigModal.close();
+      renderCalendar(); renderevents();
+      showGigDetail(nextId);
+    };
+
+    /* ===== Chat ===== */
+    function renderChat(){
+      chatMessagesEl.innerHTML = '';
+      chatMessages.forEach(m=>{
+        const div = document.createElement('div');
+        div.className='chat-msg';
+        div.innerHTML = `
+          <div><span class="font-semibold text-orange-400">${m.name||'Guest'}</span>
+          <span class="subtle ml-2">${m.time||''}</span></div>
+          <div>${m.message}</div>`;
+        chatMessagesEl.appendChild(div);
+      });
+      chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+    }
+    sendChat.onclick = ()=>{
+      const msg = (chatInput.value||'').trim(); if(!msg) return;
+      const name = (chatName.value||'Guest').trim();
+      const time = new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+      chatMessages.push({ name, message: msg, time });
+      chatInput.value='';
+      localStorage.setItem('ct_chat_v1', JSON.stringify(chatMessages));
+      renderChat();
+    };
+    chatInput.addEventListener('keypress', e=>{ if(e.key==='Enter') sendChat.click(); });
+    clearChatBtn.onclick = ()=>{
+      if (!adminLoggedIn()) return alert('Admin login required.');
+      if (!confirm('Clear all chat messages?')) return;
+      chatMessages = [];
+      localStorage.setItem('ct_chat_v1', JSON.stringify(chatMessages));
+      renderChat();
+    };
+
+    /* ===== Payments ===== */
+    function renderPayments(){
+      const events = getevents();
+      const isAdmin = adminLoggedIn();
+      const me = getCurrentMember();
+      const fmt = v => `$${(v||0).toFixed(2)}`;
+
+      if (isAdmin){
+        const totals = {};
+        BAND_MEMBERS.forEach(m=> totals[m] = events.reduce((sum,g)=> sum + (g.payments?.[m]?.amount || 0), 0));
+        ytdSummary.innerHTML = '';
+        BAND_MEMBERS.forEach(m=>{
+          const card = document.createElement('div');
+          card.className = 'ytd-card';
+          card.innerHTML = `
+            <div class="text-sm">${MEMBER_NAMES[m]}</div>
+            <div class="text-2xl font-bold text-orange-400">${fmt(totals[m])}</div>
+            <div class="text-xs subtle mt-1">YTD 2025</div>`;
+          ytdSummary.appendChild(card);
+        });
+
+        paymentsList.innerHTML = '';
+        events.forEach(g=>{
+          const div = document.createElement('div'); div.className='payment-gig';
+          let inner = '<div class="grid grid-cols-2 md:grid-cols-5 gap-2 mt-2">';
+          BAND_MEMBERS.forEach(m=>{
+            const p = g.payments?.[m] || {amount:0,paid:false};
+            inner += `
+              <div class="text-center">
+                <div class="text-xs subtle">${MEMBER_NAMES[m]}</div>
+                <div class="font-bold">${fmt(p.amount)}</div>
+                <div class="payment-status ${p.paid?'paid':'unpaid'}">${p.paid?'✓ Event Paid':'Event Owed'}</div>
+              </div>`;
+          });
+          inner += '</div>';
+          div.innerHTML = `
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <div class="font-bold">${g.title}</div>
+                <div class="text-sm subtle">${g.date}${g.venue? ' • '+g.venue : ''}</div>
+              </div>
+              <span class="text-xs subtle">Admin view</span>
+            </div>${inner}`;
+          paymentsList.appendChild(div);
+        });
+        return;
+      }
+
+      // User view
+      if (!me){
+        ytdSummary.innerHTML = '';
+        paymentsList.innerHTML = `
+          <div class="payment-gig">
+            <div class="text-sm subtle">
+              Choose your profile to see your payments. Click <strong>“Set My Profile”</strong> at the top.
+            </div>
+          </div>`;
+        return;
+      }
+
+      const myYTD = events.reduce((sum,g)=> sum + (g.payments?.[me]?.amount || 0), 0);
+      ytdSummary.innerHTML = '';
+      const myCard = document.createElement('div');
+      myCard.className = 'ytd-card';
+      myCard.innerHTML = `
+        <div class="text-sm">${MEMBER_NAMES[me]}</div>
+        <div class="text-2xl font-bold text-orange-400">${fmt(myYTD)}</div>
+        <div class="text-xs subtle mt-1">YTD 2025</div>`;
+      ytdSummary.appendChild(myCard);
+
+      paymentsList.innerHTML = '';
+      events.forEach(g=>{
+        const p = g.payments?.[me];
+        if (!p) return;
+        const statusClass = p.paid ? 'paid' : 'unpaid';
+        const statusText  = p.paid ? '✓ Event Paid' : 'Event Owed';
+
+        const div = document.createElement('div'); div.className='payment-gig';
+        div.innerHTML = `
+          <div class="flex items-center justify-between mb-2">
+            <div>
+              <div class="font-bold">${g.title}</div>
+              <div class="text-sm subtle">${g.date}${g.venue? ' • '+g.venue : ''}</div>
+            </div>
+            <div class="text-right">
+              <div class="font-bold">${fmt(p.amount)}</div>
+              <div class="payment-status ${statusClass}">${statusText}</div>
+            </div>
+          </div>`;
+        paymentsList.appendChild(div);
       });
     }
-    const saved = localStorage.getItem(PAY_PICK_KEY);
-    if (saved && BAND_MEMBERS.includes(saved)) payMemberSelect.value = saved;
-    else payMemberSelect.value = BAND_MEMBERS[0];
-  }
-  function renderPayments(){
-    hydratePayMemberSelect();
-    const who = payMemberSelect.value;
-    localStorage.setItem(PAY_PICK_KEY, who);
 
-    const listEl = document.getElementById('paymentsList');
-    listEl.innerHTML = '';
+    /* ===== Charts Repo (local) ===== */
+    const REPO_KEY = 'ct_pdf_repo_v2_public';
+    function getRepo(){ try{ return JSON.parse(localStorage.getItem(REPO_KEY)) || []; }catch{ return []; } }
+    function setRepo(arr){ localStorage.setItem(REPO_KEY, JSON.stringify(arr)); }
 
-    const all = getEvents().slice().sort((a,b)=> parseLocalDate(a.date) - parseLocalDate(b.date));
-    const yr = new Date().getFullYear();
-    const thisYear = all.filter(e => parseLocalDate(e.date).getFullYear() === yr);
-
-    let ytdTotal = 0;
-    thisYear.forEach(ev=>{
-      const p = ev.payments?.[who];
-      if (!p) return;
-      ytdTotal += Number(p.amount||0);
-      const statusClass = p.paid ? 'paid' : 'unpaid';
-      const statusText  = p.paid ? 'event paid' : 'event owed';
-      const row = document.createElement('div');
-      row.className = 'payment-gig';
-      row.innerHTML = `
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="font-bold">${ev.title}</div>
-            <div class="text-sm subtle">${ev.date}${ev.startTime ? ' • ' + formatTime12(ev.startTime) : ''}${ev.venue ? ' • ' + ev.venue : ''}</div>
-          </div>
-          <div class="text-right">
-            <div class="text-lg font-extrabold">${money(p.amount)}</div>
-            <div class="payment-status ${statusClass}" style="text-transform:capitalize">${statusText}</div>
-          </div>
-        </div>`;
-      listEl.appendChild(row);
-    });
-    payYtd.textContent = `YTD ${yr}: ${money(ytdTotal)}`;
-    if (!listEl.children.length){
-      listEl.innerHTML = `<div class="text-slate-400 text-sm">No payment records for ${MEMBER_NAMES[who]} this year yet.</div>`;
+    function hydrateUploaderFilter(){
+      const repo = getRepo();
+      const names = Array.from(new Set(repo.map(f=> f.uploaderName || 'Guest')));
+      uploaderFilter.innerHTML = '<option value="">All uploaders</option>';
+      names.forEach(n=>{ const opt=document.createElement('option'); opt.value=n; opt.textContent=n; uploaderFilter.appendChild(opt); });
     }
-  }
-  payMemberSelect?.addEventListener('change', renderPayments);
 
-  /* ===== Charts Repo ===== */
-  const REPO_KEY = 'ct_pdf_repo_v2_public';
-  function getRepo(){ try{ return JSON.parse(localStorage.getItem(REPO_KEY)) || []; }catch{ return []; } }
-  function setRepo(arr){ localStorage.setItem(REPO_KEY, JSON.stringify(arr)); }
-  function hydrateUploaderFilter(){
-    const repo = getRepo();
-    const names = Array.from(new Set(repo.map(f=> f.uploaderName || 'Guest')));
-    uploaderFilter.innerHTML = '<option value="">All uploaders</option>';
-    names.forEach(n=>{ const opt=document.createElement('option'); opt.value=n; opt.textContent=n; uploaderFilter.appendChild(opt); });
-  }
-  function renderRepo(){
-    const q = (searchPdf.value||'').toLowerCase();
-    const u = uploaderFilter.value || '';
-    const repo = getRepo().sort((a,b)=> b.ts - a.ts);
-    const filtered = repo.filter(item=>{
-      const text = `${item.name} ${item.notes||''}`.toLowerCase();
-      const matchesQ = !q || text.includes(q);
-      const matchesU = !u || (item.uploaderName||'Guest') === u;
-      return matchesQ && matchesU;
-    });
-    pdfList.innerHTML = '';
-    emptyRepo.classList.toggle('hidden', filtered.length !== 0);
-    filtered.forEach(item=>{
-      const card = document.createElement('div');
-      card.className = 'card p-4';
-      const sizeKB = Math.round(item.size/1024);
-      const when = new Date(item.ts).toLocaleString();
-      const canDelete = item.deviceId === deviceId;
-      card.innerHTML = `
-        <div class="flex items-start justify-between gap-3">
+    function renderRepo(){
+      const q = (searchPdf.value||'').toLowerCase();
+      const u = uploaderFilter.value || '';
+      const repo = getRepo().sort((a,b)=> b.ts - a.ts);
+      const filtered = repo.filter(item=>{
+        const text = `${item.name} ${item.notes||''}`.toLowerCase();
+        const matchesQ = !q || text.includes(q);
+        const matchesU = !u || (item.uploaderName||'Guest') === u;
+        return matchesQ && matchesU;
+      });
+
+      pdfList.innerHTML = '';
+      emptyRepo.classList.toggle('hidden', filtered.length !== 0);
+
+      filtered.forEach(item=>{
+        const card = document.createElement('div');
+        card.className = 'card p-4';
+        const sizeKB = Math.round(item.size/1024);
+        const when = new Date(item.ts).toLocaleString();
+        const canDelete = item.deviceId === deviceId;
+
+        card.innerHTML = `
           <div>
             <div class="font-semibold">${item.name}</div>
             <div class="text-xs subtle mt-1">
@@ -1170,217 +1282,245 @@
               <span class="pill">${when}</span>
             </div>
           </div>
-          <div class="flex gap-2">
-            <button class="btn-sec" data-act="view">View</button>
-            <a class="btn-sec" data-act="download" download="${item.name}">Download</a>
-            ${canDelete ? '<button class="btn-sec" data-act="delete">Delete</button>' : ''}
+          <div class="repo-actions mt-3">
+            <button class="btn-dark" data-act="view">View</button>
+            <a class="btn-dark" data-act="download" download="${item.name}">Download</a>
+            ${canDelete ? '<button class="btn-dark" data-act="delete">Delete</button>' : ''}
           </div>
-        </div>`;
-      const viewBtn = card.querySelector('[data-act="view"]');
-      const dlBtn   = card.querySelector('[data-act="download"]');
-      const delBtn  = card.querySelector('[data-act="delete"]');
-      viewBtn.onclick = ()=> openPdfModal(item);
-      dlBtn.href = item.dataUrl;
-      if (delBtn){
-        delBtn.onclick = async ()=>{
-          const stored = localStorage.getItem(PASS_KEYS.user);
-          if (stored){
-            const tryPass = prompt('Enter your passcode to delete');
-            if (!tryPass || stored !== await sha256(tryPass)) return alert('Wrong passcode.');
-          }
-          const next = getRepo().filter(x=> x.id !== item.id);
-          setRepo(next); hydrateUploaderFilter(); renderRepo();
-        };
-      }
-      pdfList.appendChild(card);
-    });
-  }
-  function openPdfModal(item){
-    pdfModalTitle.textContent = item.name;
-    pdfMeta.textContent = `${item.uploaderName||'Guest'} • ${(item.size/1024|0)} KB • ${new Date(item.ts).toLocaleString()}${item.notes? ' • '+item.notes:''}`;
-    pdfObject.data = item.dataUrl;
-    pdfDownloadBtn.href = item.dataUrl;
-    pdfDownloadBtn.download = item.name;
-    pdfModal.showModal();
-  }
-  closePdfModal.onclick = ()=> pdfModal.close();
-  uploadPdfBtn.onclick = async ()=>{
-    const files = Array.from(pdfInput.files||[]);
-    if (!files.length){ alert('Select one or more PDF files.'); return; }
-    const repo = getRepo();
-    for (const f of files){
-      if (f.type !== 'application/pdf'){ alert(`'${f.name}' is not a PDF.`); continue; }
-      const dataUrl = await fileToDataUrl(f);
-      const entry = { id: crypto.randomUUID(), name: f.name, size: f.size, notes: (pdfTitle.value||'').trim(),
-        uploaderName: (uploaderName.value||'Guest').trim() || 'Guest', deviceId, ts: Date.now(), dataUrl };
-      repo.push(entry);
+        `;
+        const viewBtn = card.querySelector('[data-act="view"]');
+        const dlBtn   = card.querySelector('[data-act="download"]');
+        const delBtn  = card.querySelector('[data-act="delete"]');
+
+        viewBtn.onclick = ()=> openPdfModal(item);
+        dlBtn.href = item.dataUrl;
+        if (delBtn){
+          delBtn.onclick = async ()=>{
+            const stored = localStorage.getItem(PASS_KEYS.user);
+            if (stored){
+              const tryPass = prompt('Enter your passcode to delete');
+              if (!tryPass || stored !== await sha256(tryPass)) return alert('Wrong passcode.');
+            }
+            const next = getRepo().filter(x=> x.id !== item.id);
+            setRepo(next); hydrateUploaderFilter(); renderRepo();
+          };
+        }
+        pdfList.appendChild(card);
+      });
     }
-    setRepo(repo);
-    pdfInput.value=''; pdfTitle.value='';
-    hydrateUploaderFilter(); renderRepo();
-  };
-  function fileToDataUrl(file){
-    return new Promise((resolve,reject)=>{
-      const r=new FileReader(); r.onload=()=>resolve(r.result); r.onerror=reject; r.readAsDataURL(file);
-    });
-  }
-  clearFiltersBtn.onclick = ()=>{ searchPdf.value=''; uploaderFilter.value=''; renderRepo(); };
-  exportRepoBtn.onclick = ()=>{
-    const index = getRepo().map(({id,name,size,uploaderName,notes,ts})=>({id,name,size,uploaderName,notes,ts}));
-    const blob = new Blob([JSON.stringify(index,null,2)], {type:'application/json'});
-    const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='charts_index.json'; a.click(); URL.revokeObjectURL(url);
-  };
 
-  /* ===== YouTube Repo ===== */
-  const YT_KEY = 'ct_yt_repo_v1';
-  function ytGetRepo(){ try{ return JSON.parse(localStorage.getItem(YT_KEY)) || []; }catch{ return []; } }
-  function ytSetRepo(arr){ localStorage.setItem(YT_KEY, JSON.stringify(arr)); }
-  function parseYouTubeId(input){
-    if (!input) return null; input=input.trim();
-    if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
-    const m = input.match(/(?:v=|\/embed\/|\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/) || input.match(/v=([a-zA-Z0-9_-]{11})/);
-    return m ? m[1] : null;
-  }
-  function ytHydrateUploaderFilter(){
-    const repo = ytGetRepo();
-    const names = Array.from(new Set(repo.map(f=> f.uploaderName || 'Guest')));
-    ytUploaderFilter.innerHTML = '<option value="">All uploaders</option>';
-    names.forEach(n=>{ const opt=document.createElement('option'); opt.value=n; opt.textContent=n; ytUploaderFilter.appendChild(opt); });
-  }
-  function ytRenderRepo(){
-    const q = (ytSearch.value||'').toLowerCase();
-    const u = ytUploaderFilter.value || '';
-    const repo = ytGetRepo().sort((a,b)=> b.ts - a.ts);
-    const filtered = repo.filter(item=>{
-      const text = `${item.title||''} ${item.notes||''}`.toLowerCase();
-      const matchesQ = !q || text.includes(q);
-      const matchesU = !u || (item.uploaderName||'Guest') === u;
-      return matchesQ && matchesU;
-    });
-    ytList.innerHTML = '';
-    ytEmpty.classList.toggle('hidden', filtered.length !== 0);
-    filtered.forEach(item=>{
-      const thumb = `https://i.ytimg.com/vi/${item.videoId}/hqdefault.jpg`;
-      const canDelete = item.deviceId === deviceId;
-      const card = document.createElement('div');
-      card.className = 'card p-3';
-      card.innerHTML = `
-        <div class="rounded overflow-hidden">
-          <img src="${thumb}" alt="Thumbnail" class="w-full" loading="lazy">
-        </div>
-        <div class="mt-2 font-semibold">${item.title || 'YouTube Video'}</div>
-        <div class="text-xs subtle mt-1">
-          ${item.notes ? `<span class="pill mr-2">${item.notes}</span>` : ''}
-          <span class="pill">by ${item.uploaderName||'Guest'}</span>
-          <span class="pill">${new Date(item.ts).toLocaleString()}</span>
-        </div>
-        <div class="flex gap-2 mt-3 flex-wrap">
-          <button class="btn-sec" data-act="play">Play</button>
-          <a class="btn-sec" data-act="open" href="https://youtu.be/${item.videoId}" target="_blank" rel="noopener">Open</a>
-          <button class="btn-sec" data-act="share">Share</button>
-          ${canDelete ? '<button class="btn-sec" data-act="delete">Delete</button>' : ''}
-        </div>`;
-      const playBtn = card.querySelector('[data-act="play"]');
-      const shareBtn = card.querySelector('[data-act="share"]');
-      const delBtn = card.querySelector('[data-act="delete"]');
-      playBtn.onclick = ()=> ytOpen(item);
-      shareBtn.onclick = ()=> ytShare(item);
-      if (delBtn){
-        delBtn.onclick = async ()=>{
-          const stored = localStorage.getItem(PASS_KEYS.user);
-          if (stored){
-            const tryPass = prompt('Enter your passcode to delete');
-            if (!tryPass || stored !== await sha256(tryPass)) return alert('Wrong passcode.');
-          }
-          ytSetRepo(ytGetRepo().filter(x=> x.id !== item.id));
-          ytHydrateUploaderFilter(); ytRenderRepo();
-        };
+    function openPdfModal(item){
+      pdfModalTitle.textContent = item.name;
+      pdfMeta.textContent = `${item.uploaderName||'Guest'} • ${(item.size/1024|0)} KB • ${new Date(item.ts).toLocaleString()}${item.notes? ' • '+item.notes:''}`;
+      pdfObject.data = item.dataUrl;
+      pdfDownloadBtn.href = item.dataUrl;
+      pdfDownloadBtn.download = item.name;
+      pdfModal.showModal();
+    }
+    closePdfModal.onclick = ()=> pdfModal.close();
+
+    uploadPdfBtn.onclick = async ()=>{
+      const files = Array.from(pdfInput.files||[]);
+      if (!files.length){ alert('Select one or more PDF files.'); return; }
+      const repo = getRepo();
+      for (const f of files){
+        if (f.type !== 'application/pdf'){ alert(`'${f.name}' is not a PDF.`); continue; }
+        const dataUrl = await fileToDataUrl(f);
+        const entry = { id: crypto.randomUUID(), name: f.name, size: f.size, notes: (pdfTitle.value||'').trim(),
+          uploaderName: (uploaderName.value||'Guest').trim() || 'Guest', deviceId, ts: Date.now(), dataUrl };
+        repo.push(entry);
       }
-      ytList.appendChild(card);
-    });
-  }
-  function ytOpen(item, pushHash = true){
-    ytModalTitle.textContent = item.title || 'YouTube';
-    ytIframe.src = `https://www.youtube.com/embed/${item.videoId}?rel=0`;
-    ytMeta.textContent = `${item.uploaderName||'Guest'} • ${new Date(item.ts).toLocaleString()}${item.notes? ' • '+item.notes:''}`;
-    ytShareBtn.onclick = ()=> ytShare(item);
-    ytShareHint.classList.add('hidden');
-    ytModal.showModal();
-    if (pushHash) location.hash = `yt-${item.id}`;
-  }
-  function ytShare(item){
-    const url = `${location.origin}${location.pathname}#yt-${item.id}`;
-    navigator.clipboard?.writeText(url).then(()=>{
-      ytShareHint.classList.remove('hidden');
-      setTimeout(()=> ytShareHint.classList.add('hidden'), 1500);
-    });
-  }
-  ytCloseBtn.onclick = ()=>{
-    ytIframe.src = '';
-    ytModal.close();
-    if (location.hash.startsWith('#yt-')) history.replaceState(null,'',location.pathname+location.search);
-  };
-  addYtBtn.onclick = ()=>{
-    const id = parseYouTubeId(ytUrl.value);
-    if (!id){ alert('Please enter a valid YouTube URL or 11-character video ID.'); return; }
-    const repo = ytGetRepo();
-    const item = { id: crypto.randomUUID(), videoId: id, title:(ytTitle.value||'').trim(), notes:(ytNotes.value||'').trim(),
-                   uploaderName:(ytUploader.value||'Guest').trim() || 'Guest', deviceId, ts: Date.now() };
-    repo.push(item);
-    ytSetRepo(repo);
-    ytUrl.value=''; ytTitle.value=''; ytNotes.value='';
-    ytHydrateUploaderFilter(); ytRenderRepo();
-  };
-  ytSearch.addEventListener('input', ytRenderRepo);
-  ytUploaderFilter.addEventListener('change', ytRenderRepo);
-  ytClearFilters.onclick = ()=>{ ytSearch.value=''; ytUploaderFilter.value=''; ytRenderRepo(); };
-  ytExportBtn.onclick = ()=>{
-    const index = ytGetRepo().map(({id,videoId,title,notes,uploaderName,ts})=>({id,videoId,title,notes,uploaderName,ts}));
-    const blob = new Blob([JSON.stringify(index,null,2)], {type:'application/json'});
-    const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='youtube_index.json'; a.click(); URL.revokeObjectURL(url);
-  };
+      setRepo(repo);
+      pdfInput.value=''; pdfTitle.value='';
+      hydrateUploaderFilter(); renderRepo();
+    };
 
-  /* ===== Pass & Admin login ===== */
-  setPassBtn.onclick = ()=> passModal.showModal();
-  closePassBtn.onclick = ()=> passModal.close();
-  savePassBtn.onclick = async ()=>{
-    const u = document.getElementById('userPass').value.trim();
-    const a = document.getElementById('adminPass').value.trim();
-    await setPasscodes({ user: u || null, admin: a || null });
-    document.getElementById('userPass').value=''; document.getElementById('adminPass').value='';
-    passModal.close();
-  };
-  adminLoginBtn.onclick = ()=>{
-    if (!localStorage.getItem(PASS_KEYS.admin)) return alert('Set an admin passcode first (🔒 Set Passcode).');
-    adminLoginInput.value=''; adminLoginModal.showModal();
-  };
-  adminLoginClose.onclick = ()=> adminLoginModal.close();
-  adminLoginSubmit.onclick = async ()=>{
-    const stored = localStorage.getItem(PASS_KEYS.admin);
-    const tryPass = adminLoginInput.value.trim();
-    if (!tryPass) return;
-    const ok = stored === await sha256(tryPass);
-    if (!ok) return alert('Incorrect admin passcode.');
-    localStorage.setItem(PASS_KEYS.adminSession, '1');
-    adminLoginModal.close();
-    updateLockStatusUI();
-    renderEvents(); renderCalendar();
-  };
-  adminLogoutBtn.onclick = ()=>{
-    localStorage.removeItem(PASS_KEYS.adminSession);
-    updateLockStatusUI();
-    renderEvents(); renderCalendar();
-  };
+    function fileToDataUrl(file){
+      return new Promise((resolve,reject)=>{
+        const r=new FileReader(); r.onload=()=>resolve(r.result); r.onerror=reject; r.readAsDataURL(file);
+      });
+    }
 
-  /* ===== Init ===== */
-  function init(){
-    migrateLegacyFields();          // (8) Optional cleanup executed once on load
-    updateLockStatusUI();
-    renderCalendar();
-    renderEvents();
-    hydratePayMemberSelect();
-  }
-  window.addEventListener('DOMContentLoaded', init);
+    clearFiltersBtn.onclick = ()=>{ searchPdf.value=''; uploaderFilter.value=''; renderRepo(); };
+    exportRepoBtn.onclick = ()=>{
+      const index = getRepo().map(({id,name,size,uploaderName,notes,ts})=>({id,name,size,uploaderName,notes,ts}));
+      const blob = new Blob([JSON.stringify(index,null,2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='charts_index.json'; a.click(); URL.revokeObjectURL(url);
+    };
+
+    /* ===== YouTube Repo (local) ===== */
+    const YT_KEY = 'ct_yt_repo_v1';
+    function ytGetRepo(){ try{ return JSON.parse(localStorage.getItem(YT_KEY)) || []; }catch{ return []; } }
+    function ytSetRepo(arr){ localStorage.setItem(YT_KEY, JSON.stringify(arr)); }
+
+    function parseYouTubeId(input){
+      if (!input) return null; input=input.trim();
+      if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+      const m = input.match(/(?:v=|\/embed\/|\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/) || input.match(/v=([a-zA-Z0-9_-]{11})/);
+      return m ? m[1] : null;
+    }
+
+    function ytHydrateUploaderFilter(){
+      const repo = ytGetRepo();
+      const names = Array.from(new Set(repo.map(f=> f.uploaderName || 'Guest')));
+      ytUploaderFilter.innerHTML = '<option value="">All uploaders</option>';
+      names.forEach(n=>{ const opt=document.createElement('option'); opt.value=n; opt.textContent=n; ytUploaderFilter.appendChild(opt); });
+    }
+
+    function ytRenderRepo(){
+      const q = (ytSearch.value||'').toLowerCase();
+      const u = ytUploaderFilter.value || '';
+      const repo = ytGetRepo().sort((a,b)=> b.ts - a.ts);
+      const filtered = repo.filter(item=>{
+        const text = `${item.title||''} ${item.notes||''}`.toLowerCase();
+        const matchesQ = !q || text.includes(q);
+        const matchesU = !u || (item.uploaderName||'Guest') === u;
+        return matchesQ && matchesU;
+      });
+
+      ytList.innerHTML = '';
+      ytEmpty.classList.toggle('hidden', filtered.length !== 0);
+
+      filtered.forEach(item=>{
+        const thumb = `https://i.ytimg.com/vi/${item.videoId}/hqdefault.jpg`;
+        const canDelete = item.deviceId === deviceId;
+
+        const card = document.createElement('div');
+        card.className = 'card p-3';
+        card.innerHTML = `
+          <div class="rounded overflow-hidden">
+            <img src="${thumb}" alt="Thumbnail" class="w-full" loading="lazy">
+          </div>
+          <div class="mt-2 font-semibold">${item.title || 'YouTube Video'}</div>
+          <div class="text-xs subtle mt-1">
+            ${item.notes ? `<span class="pill mr-2">${item.notes}</span>` : ''}
+            <span class="pill">by ${item.uploaderName||'Guest'}</span>
+            <span class="pill">${new Date(item.ts).toLocaleString()}</span>
+          </div>
+          <div class="repo-actions mt-3">
+            <button class="btn-dark" data-act="play">Play</button>
+            <a class="btn-dark" data-act="open" href="https://youtu.be/${item.videoId}" target="_blank" rel="noopener">Open</a>
+            <button class="btn-dark" data-act="share">Share</button>
+            ${canDelete ? '<button class="btn-dark" data-act="delete">Delete</button>' : ''}
+          </div>`;
+
+        const playBtn = card.querySelector('[data-act="play"]');
+        const shareBtn = card.querySelector('[data-act="share"]');
+        const delBtn = card.querySelector('[data-act="delete"]');
+
+        playBtn.onclick = ()=> ytOpen(item);
+        shareBtn.onclick = ()=> ytShare(item);
+        if (delBtn){
+          delBtn.onclick = async ()=>{
+            const stored = localStorage.getItem(PASS_KEYS.user);
+            if (stored){
+              const tryPass = prompt('Enter your passcode to delete');
+              if (!tryPass || stored !== await sha256(tryPass)) return alert('Wrong passcode.');
+            }
+            ytSetRepo(ytGetRepo().filter(x=> x.id !== item.id));
+            ytHydrateUploaderFilter(); ytRenderRepo();
+          };
+        }
+        ytList.appendChild(card);
+      });
+    }
+
+    function ytOpen(item, pushHash = true){
+      ytModalTitle.textContent = item.title || 'YouTube';
+      ytIframe.src = `https://www.youtube.com/embed/${item.videoId}?rel=0`;
+      ytMeta.textContent = `${item.uploaderName||'Guest'} • ${new Date(item.ts).toLocaleString()}${item.notes? ' • '+item.notes:''}`;
+      ytShareBtn.onclick = ()=> ytShare(item);
+      ytShareHint.classList.add('hidden');
+      ytModal.showModal();
+      if (pushHash) location.hash = `yt-${item.id}`;
+    }
+    function ytShare(item){
+      const url = `${location.origin}${location.pathname}#yt-${item.id}`;
+      navigator.clipboard?.writeText(url).then(()=>{
+        ytShareHint.classList.remove('hidden');
+        setTimeout(()=> ytShareHint.classList.add('hidden'), 1500);
+      });
+    }
+    ytCloseBtn.onclick = ()=>{
+      ytIframe.src = '';
+      ytModal.close();
+      if (location.hash.startsWith('#yt-')) history.replaceState(null,'',location.pathname+location.search);
+    };
+
+    addYtBtn.onclick = ()=>{
+      const id = parseYouTubeId(ytUrl.value);
+      if (!id){ alert('Please enter a valid YouTube URL or 11-character video ID.'); return; }
+      const repo = ytGetRepo();
+      const item = { id: crypto.randomUUID(), videoId: id, title:(ytTitle.value||'').trim(), notes:(ytNotes.value||'').trim(),
+                     uploaderName:(ytUploader.value||'Guest').trim() || 'Guest', deviceId, ts: Date.now() };
+      repo.push(item);
+      ytSetRepo(repo);
+      ytUrl.value=''; ytTitle.value=''; ytNotes.value='';
+      ytHydrateUploaderFilter(); ytRenderRepo();
+    };
+
+    ytSearch.addEventListener('input', ytRenderRepo);
+    ytUploaderFilter.addEventListener('change', ytRenderRepo);
+    ytClearFilters.onclick = ()=>{ ytSearch.value=''; ytUploaderFilter.value=''; ytRenderRepo(); };
+    ytExportBtn.onclick = ()=>{
+      const index = ytGetRepo().map(({id,videoId,title,notes,uploaderName,ts})=>({id,videoId,title,notes,uploaderName,ts}));
+      const blob = new Blob([JSON.stringify(index,null,2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='youtube_index.json'; a.click(); URL.revokeObjectURL(url);
+    };
+
+    /* ===== Pass & Admin login ===== */
+    setPassBtn.onclick = ()=> passModal.showModal();
+    closePassBtn.onclick = ()=> passModal.close();
+    savePassBtn.onclick = async ()=>{
+      const u = document.getElementById('userPass').value.trim();
+      const a = document.getElementById('adminPass').value.trim();
+      await setPasscodes({ user: u || null, admin: a || null });
+      document.getElementById('userPass').value=''; document.getElementById('adminPass').value='';
+      passModal.close();
+    };
+
+    adminLoginBtn.onclick = ()=>{
+      if (!localStorage.getItem(PASS_KEYS.admin)) return alert('Set an admin passcode first (🔒 Set Passcode).');
+      adminLoginInput.value=''; adminLoginModal.showModal();
+    };
+    adminLoginClose.onclick = ()=> adminLoginModal.close();
+    adminLoginSubmit.onclick = async ()=>{
+      const stored = localStorage.getItem(PASS_KEYS.admin);
+      const tryPass = adminLoginInput.value.trim();
+      if (!tryPass) return;
+      const ok = stored === await sha256(tryPass);
+      if (!ok) return alert('Incorrect admin passcode.');
+      localStorage.setItem(PASS_KEYS.adminSession, '1');
+      adminLoginModal.close();
+      updateLockStatusUI();
+      renderevents(); renderCalendar(); renderPayments();
+    };
+    adminLogoutBtn.onclick = ()=>{
+      localStorage.removeItem(PASS_KEYS.adminSession);
+      updateLockStatusUI();
+      renderevents(); renderCalendar(); renderPayments();
+    };
+
+    /* ===== Profile modal ===== */
+    setProfileBtn.onclick = ()=>{
+      profileSelect.value = getCurrentMember();
+      profileModal.showModal();
+    };
+    saveProfileBtn.onclick = ()=>{
+      setCurrentMember(profileSelect.value);
+      profileModal.close();
+      renderPayments();
+    };
+    closeProfileBtn.onclick = ()=> profileModal.close();
+
+    /* ===== Init ===== */
+    function init(){
+      updateLockStatusUI();
+      updateProfileStatus();
+      renderCalendar();
+      renderevents();
+    }
+    window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
