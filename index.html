@@ -216,7 +216,7 @@
   </div>
 
   <!-- Event Detail Modal -->
-  <dialog id="gigModal" class="card modal p-0" style="max-width:720px;">
+  <dialog id="gigModal" class="card modal p-0" style="max-width:760px;">
     <div class="p-6">
       <div class="flex items-center justify-between mb-3">
         <h3 class="text-xl font-bold" id="gigTitle"></h3>
@@ -245,11 +245,36 @@
           <label class="flex items-center gap-2"><input id="egRoomFlip" type="checkbox" /><span>Room flip?</span></label>
 
           <div><label class="subtle text-xs">Guest Arrival</label><input id="egGuestArrivalTime" type="time" /></div>
+
+          <!-- Conditionally shown when Ceremony Onsite = true -->
+          <div id="egCeremonyGuestArrivalRow" class="hidden">
+            <label class="subtle text-xs">Guest Arrival (Ceremony)</label>
+            <input id="egCeremonyGuestArrivalTime" type="time" />
+          </div>
+
           <div><label class="subtle text-xs">Band Arrival</label><input id="egBandArrivalTime" type="time" /></div>
           <div><label class="subtle text-xs">Time of Introduction</label><input id="egIntroTime" type="time" /></div>
           <div><label class="subtle text-xs">Song for Introduction</label><input id="egIntroSong" /></div>
-          <div><label class="subtle text-xs">First Dance</label><input id="egFirstDanceSong" /></div>
-          <div><label class="subtle text-xs">Parents' Dances</label><input id="egParentsDances" /></div>
+
+          <!-- Dances -->
+          <div><label class="subtle text-xs">First Dance (song)</label><input id="egFirstDanceSong" /></div>
+          <label class="flex items-center gap-2">
+            <input id="egFirstDancePlay" type="checkbox" />
+            <span>Band to play First Dance</span>
+          </label>
+
+          <div><label class="subtle text-xs">Father / Daughter (song)</label><input id="egFatherDaughterSong" /></div>
+          <label class="flex items-center gap-2">
+            <input id="egFatherDaughterPlay" type="checkbox" />
+            <span>Band to play F/D</span>
+          </label>
+
+          <div><label class="subtle text-xs">Mother / Son (song)</label><input id="egMotherSonSong" /></div>
+          <label class="flex items-center gap-2">
+            <input id="egMotherSonPlay" type="checkbox" />
+            <span>Band to play M/S</span>
+          </label>
+
           <div class="md:col-span-2"><label class="subtle text-xs">Special Requests</label><textarea id="egSpecialRequests"></textarea></div>
           <div><label class="subtle text-xs">Last Song</label><input id="egLastSong" /></div>
           <div class="md:col-span-2"><label class="subtle text-xs">Do-Not-Play Songs</label><textarea id="egDoNotPlay"></textarea></div>
@@ -264,7 +289,7 @@
   </dialog>
 
   <!-- New Event Modal -->
-  <dialog id="newGigModal" class="card modal p-0" style="max-width:720px;">
+  <dialog id="newGigModal" class="card modal p-0" style="max-width:760px;">
     <div class="p-6">
       <div class="flex items-center justify-between mb-3">
         <h3 class="text-xl font-bold">New Event</h3>
@@ -283,11 +308,36 @@
         <label class="flex items-center gap-2"><input id="ngRoomFlip" type="checkbox" /><span>Room flip?</span></label>
 
         <div><label class="subtle text-xs">Guest Arrival</label><input id="ngGuestArrivalTime" type="time" /></div>
+
+        <!-- Conditionally shown when Ceremony Onsite = true -->
+        <div id="ngCeremonyGuestArrivalRow" class="hidden">
+          <label class="subtle text-xs">Guest Arrival (Ceremony)</label>
+          <input id="ngCeremonyGuestArrivalTime" type="time" />
+        </div>
+
         <div><label class="subtle text-xs">Band Arrival</label><input id="ngBandArrivalTime" type="time" /></div>
         <div><label class="subtle text-xs">Time of Introduction</label><input id="ngIntroTime" type="time" /></div>
         <div><label class="subtle text-xs">Song for Introduction</label><input id="ngIntroSong" /></div>
-        <div><label class="subtle text-xs">First Dance</label><input id="ngFirstDanceSong" /></div>
-        <div><label class="subtle text-xs">Parents' Dances</label><input id="ngParentsDances" /></div>
+
+        <!-- Dances -->
+        <div><label class="subtle text-xs">First Dance (song)</label><input id="ngFirstDanceSong" /></div>
+        <label class="flex items-center gap-2">
+          <input id="ngFirstDancePlay" type="checkbox" />
+          <span>Band to play First Dance</span>
+        </label>
+
+        <div><label class="subtle text-xs">Father / Daughter (song)</label><input id="ngFatherDaughterSong" /></div>
+        <label class="flex items-center gap-2">
+          <input id="ngFatherDaughterPlay" type="checkbox" />
+          <span>Band to play F/D</span>
+        </label>
+
+        <div><label class="subtle text-xs">Mother / Son (song)</label><input id="ngMotherSonSong" /></div>
+        <label class="flex items-center gap-2">
+          <input id="ngMotherSonPlay" type="checkbox" />
+          <span>Band to play M/S</span>
+        </label>
+
         <div class="md:col-span-2"><label class="subtle text-xs">Special Requests</label><textarea id="ngSpecialRequests"></textarea></div>
         <div><label class="subtle text-xs">Last Song</label><input id="ngLastSong" /></div>
         <div class="md:col-span-2"><label class="subtle text-xs">Do-Not-Play Songs</label><textarea id="ngDoNotPlay"></textarea></div>
@@ -380,17 +430,27 @@
     const h12 = h%12||12;
     return `${h12}:${String(m||0).padStart(2,'0')} ${ampm}`;
   }
+  function normTime(t){
+    if (!t) return '';
+    if (t.includes('T')) {
+      const m = t.match(/(?:T| )(\d{2}:\d{2})/);
+      t = m ? m[1] : '';
+    }
+    return /^\d{2}:\d{2}$/.test(t) ? t : '';
+  }
   function normalizeEvent(e){
     let date = (e.date||'').trim();
     if (date.includes('T')) date = date.split('T')[0];
-    let startTime = (e.startTime||'').trim();
-    if (startTime.includes('T')){
-      const m = startTime.match(/(?:T| )(\d{2}:\d{2})/);
-      startTime = m ? m[1] : '';
-    }
-    if (/^\d{1,2}:\d{2}/.test(startTime)) startTime = startTime.slice(0,5);
-    else startTime = '';
-    return { ...e, date, startTime };
+    // keep only HH:MM
+    return {
+      ...e,
+      date,
+      startTime: normTime(e.startTime),
+      guestArrivalTime: normTime(e.guestArrivalTime),
+      ceremonyGuestArrivalTime: normTime(e.ceremonyGuestArrivalTime),
+      bandArrivalTime: normTime(e.bandArrivalTime),
+      introTime: normTime(e.introTime)
+    };
   }
   function money(n){ return '$' + (Number(n||0)).toFixed(2); }
 
@@ -414,13 +474,48 @@
   const EVENTS_KEY = 'ct_events_v1';
   function getEvents(){ try { return JSON.parse(localStorage.getItem(EVENTS_KEY)) || SEED_EVENTS.slice(); } catch { return SEED_EVENTS.slice(); } }
   function setEvents(arr){ localStorage.setItem(EVENTS_KEY, JSON.stringify(arr)); }
-  function migrateEventsStore(){
-    try{
-      const current = JSON.parse(localStorage.getItem(EVENTS_KEY)||'[]');
-      if (!Array.isArray(current)) return;
-      const migrated = current.map(normalizeEvent);
-      localStorage.setItem(EVENTS_KEY, JSON.stringify(migrated));
-    }catch{}
+
+  // (8) Optional cleanup: migrate legacy fields into the new schema safely
+  function migrateLegacyFields(){
+    let arr = getEvents();
+    let changed = false;
+
+    arr = arr.map(ev=>{
+      const e = {...ev};
+
+      // Normalize core fields
+      Object.assign(e, normalizeEvent(e));
+
+      // Migrate legacy `parentsDances` into Father/Mother or Special Requests
+      if (e.parentsDances && (!e.fatherDaughterSong && !e.motherSonSong)) {
+        const txt = String(e.parentsDances).trim();
+
+        // Simple heuristics: try to split if it contains "father"/"mother"
+        const lower = txt.toLowerCase();
+
+        const fdMatch = lower.match(/father.*daughter.*?:?\s*([^;|,]+)|f\/d.*?:?\s*([^;|,]+)/i);
+        const msMatch = lower.match(/mother.*son.*?:?\s*([^;|,]+)|m\/s.*?:?\s*([^;|,]+)/i);
+
+        if (fdMatch && !e.fatherDaughterSong) {
+          e.fatherDaughterSong = (fdMatch[1] || fdMatch[2] || '').trim();
+        }
+        if (msMatch && !e.motherSonSong) {
+          e.motherSonSong = (msMatch[1] || msMatch[2] || '').trim();
+        }
+
+        // If we didn't extract anything meaningful, append to specialRequests
+        if (!e.fatherDaughterSong && !e.motherSonSong) {
+          e.specialRequests = (e.specialRequests ? e.specialRequests + ' | ' : '') + `Parents' dances: ${txt}`;
+        }
+
+        delete e.parentsDances; // drop legacy field after migration
+        changed = true;
+      }
+
+      return e;
+    });
+
+    if (changed) setEvents(arr);
   }
 
   /* ===== Chat ===== */
@@ -483,7 +578,6 @@
   const sendChat=document.getElementById('sendChat');
   const clearChatBtn=document.getElementById('clearChatBtn');
 
-  const ytdSummary=document.getElementById('ytdSummary'); // (unused in personal view, kept for safety)
   const paymentsList=document.getElementById('paymentsList');
   const payMemberSelect=document.getElementById('payMemberSelect');
   const payYtd=document.getElementById('payYtd');
@@ -528,11 +622,20 @@
   const egCeremonyOnsite=document.getElementById('egCeremonyOnsite');
   const egRoomFlip=document.getElementById('egRoomFlip');
   const egGuestArrivalTime=document.getElementById('egGuestArrivalTime');
+  const egCeremonyGuestArrivalRow=document.getElementById('egCeremonyGuestArrivalRow');
+  const egCeremonyGuestArrivalTime=document.getElementById('egCeremonyGuestArrivalTime');
   const egBandArrivalTime=document.getElementById('egBandArrivalTime');
   const egIntroTime=document.getElementById('egIntroTime');
   const egIntroSong=document.getElementById('egIntroSong');
+
+  // Dances (Edit)
   const egFirstDanceSong=document.getElementById('egFirstDanceSong');
-  const egParentsDances=document.getElementById('egParentsDances');
+  const egFirstDancePlay=document.getElementById('egFirstDancePlay');
+  const egFatherDaughterSong=document.getElementById('egFatherDaughterSong');
+  const egFatherDaughterPlay=document.getElementById('egFatherDaughterPlay');
+  const egMotherSonSong=document.getElementById('egMotherSonSong');
+  const egMotherSonPlay=document.getElementById('egMotherSonPlay');
+
   const egSpecialRequests=document.getElementById('egSpecialRequests');
   const egLastSong=document.getElementById('egLastSong');
   const egDoNotPlay=document.getElementById('egDoNotPlay');
@@ -551,11 +654,20 @@
   const ngCeremonyOnsite=document.getElementById('ngCeremonyOnsite');
   const ngRoomFlip=document.getElementById('ngRoomFlip');
   const ngGuestArrivalTime=document.getElementById('ngGuestArrivalTime');
+  const ngCeremonyGuestArrivalRow=document.getElementById('ngCeremonyGuestArrivalRow');
+  const ngCeremonyGuestArrivalTime=document.getElementById('ngCeremonyGuestArrivalTime');
   const ngBandArrivalTime=document.getElementById('ngBandArrivalTime');
   const ngIntroTime=document.getElementById('ngIntroTime');
   const ngIntroSong=document.getElementById('ngIntroSong');
+
+  // Dances (New)
   const ngFirstDanceSong=document.getElementById('ngFirstDanceSong');
-  const ngParentsDances=document.getElementById('ngParentsDances');
+  const ngFirstDancePlay=document.getElementById('ngFirstDancePlay');
+  const ngFatherDaughterSong=document.getElementById('ngFatherDaughterSong');
+  const ngFatherDaughterPlay=document.getElementById('ngFatherDaughterPlay');
+  const ngMotherSonSong=document.getElementById('ngMotherSonSong');
+  const ngMotherSonPlay=document.getElementById('ngMotherSonPlay');
+
   const ngSpecialRequests=document.getElementById('ngSpecialRequests');
   const ngLastSong=document.getElementById('ngLastSong');
   const ngDoNotPlay=document.getElementById('ngDoNotPlay');
@@ -713,12 +825,31 @@
       <div class="font-bold mt-4">Event Details</div>
       <div class="kv"><div class="subtle">Ceremony onsite?</div><div>${g.ceremonyOnsite ? 'Yes' : 'No'}</div></div>
       <div class="kv"><div class="subtle">Guest arrival</div><div>${g.guestArrivalTime ? formatTime12(g.guestArrivalTime) : '—'}</div></div>
+      <div class="kv"><div class="subtle">Guest arrival (ceremony)</div><div>${
+        (g.ceremonyOnsite && g.ceremonyGuestArrivalTime)
+          ? formatTime12(g.ceremonyGuestArrivalTime)
+          : (g.ceremonyOnsite ? '—' : 'n/a')
+      }</div></div>
       <div class="kv"><div class="subtle">Room flip?</div><div>${g.roomFlip ? 'Yes' : 'No'}</div></div>
       <div class="kv"><div class="subtle">Band arrival</div><div>${g.bandArrivalTime ? formatTime12(g.bandArrivalTime) : '—'}</div></div>
       <div class="kv"><div class="subtle">Time of introduction</div><div>${g.introTime ? formatTime12(g.introTime) : '—'}</div></div>
       <div class="kv"><div class="subtle">Song for introduction</div><div>${g.introSong || '—'}</div></div>
-      <div class="kv"><div class="subtle">First dance</div><div>${g.firstDanceSong || '—'}</div></div>
-      <div class="kv"><div class="subtle">Parents' dances</div><div>${g.parentsDances || '—'}</div></div>
+
+      <div class="kv"><div class="subtle">First Dance</div><div>${
+        g.firstDanceSong ? `${g.firstDanceSong} ${g.firstDancePlay ? '(Band: Yes)' : '(Band: No)'}`
+                         : '—'
+      }</div></div>
+
+      <div class="kv"><div class="subtle">Father / Daughter</div><div>${
+        g.fatherDaughterSong ? `${g.fatherDaughterSong} ${g.fatherDaughterPlay ? '(Band: Yes)' : '(Band: No)'}`
+                             : '—'
+      }</div></div>
+
+      <div class="kv"><div class="subtle">Mother / Son</div><div>${
+        g.motherSonSong ? `${g.motherSonSong} ${g.motherSonPlay ? '(Band: Yes)' : '(Band: No)'}`
+                        : '—'
+      }</div></div>
+
       <div class="kv"><div class="subtle">Special requests</div><div>${g.specialRequests || '—'}</div></div>
       <div class="kv"><div class="subtle">Last song</div><div>${g.lastSong || '—'}</div></div>
       <div class="kv"><div class="subtle">Do-Not-Play</div><div>${g.doNotPlay || '—'}</div></div>`;
@@ -747,14 +878,37 @@
     if (pushHash) location.hash = `gig-${id}`;
   };
 
+  function toggleCeremonyGuestArrivalRow(isOnsite, rowEl){
+    if (!rowEl) return;
+    rowEl.classList.toggle('hidden', !isOnsite);
+  }
+
   function enterEditMode(g){
     egTitle.value = g.title||''; egDate.value = g.date||''; egTime.value = g.startTime||'';
     egVenue.value = g.venue||''; egAddress.value = g.address||''; egBandOff.checked = !!g.bandOff;
-    egCeremonyOnsite.checked = !!g.ceremonyOnsite; egRoomFlip.checked = !!g.roomFlip;
-    egGuestArrivalTime.value = g.guestArrivalTime||''; egBandArrivalTime.value = g.bandArrivalTime||'';
-    egIntroTime.value = g.introTime||''; egIntroSong.value = g.introSong||'';
-    egFirstDanceSong.value = g.firstDanceSong||''; egParentsDances.value = g.parentsDances||'';
-    egSpecialRequests.value = g.specialRequests||''; egLastSong.value = g.lastSong||'';
+
+    egCeremonyOnsite.checked = !!g.ceremonyOnsite;
+    egRoomFlip.checked = !!g.roomFlip;
+    egGuestArrivalTime.value = g.guestArrivalTime||'';
+
+    toggleCeremonyGuestArrivalRow(egCeremonyOnsite.checked, egCeremonyGuestArrivalRow);
+    egCeremonyOnsite.onchange = ()=> toggleCeremonyGuestArrivalRow(egCeremonyOnsite.checked, egCeremonyGuestArrivalRow);
+    egCeremonyGuestArrivalTime.value = g.ceremonyGuestArrivalTime||'';
+
+    egBandArrivalTime.value = g.bandArrivalTime||'';
+    egIntroTime.value = g.introTime||'';
+    egIntroSong.value = g.introSong||'';
+
+    // Dances
+    egFirstDanceSong.value = g.firstDanceSong||'';
+    egFirstDancePlay.checked = !!g.firstDancePlay;
+    egFatherDaughterSong.value = g.fatherDaughterSong||'';
+    egFatherDaughterPlay.checked = !!g.fatherDaughterPlay;
+    egMotherSonSong.value = g.motherSonSong||'';
+    egMotherSonPlay.checked = !!g.motherSonPlay;
+
+    egSpecialRequests.value = g.specialRequests||'';
+    egLastSong.value = g.lastSong||'';
     egDoNotPlay.value = g.doNotPlay||'';
 
     gigView.classList.add('hidden'); gigEdit.classList.remove('hidden');
@@ -774,11 +928,20 @@
           ceremonyOnsite: !!egCeremonyOnsite.checked,
           roomFlip: !!egRoomFlip.checked,
           guestArrivalTime: egGuestArrivalTime.value || '',
+          ceremonyGuestArrivalTime: egCeremonyOnsite.checked ? (egCeremonyGuestArrivalTime.value || '') : '',
           bandArrivalTime: egBandArrivalTime.value || '',
           introTime: egIntroTime.value || '',
           introSong: egIntroSong.value.trim(),
+
           firstDanceSong: egFirstDanceSong.value.trim(),
-          parentsDances: egParentsDances.value.trim(),
+          firstDancePlay: !!egFirstDancePlay.checked,
+
+          fatherDaughterSong: egFatherDaughterSong.value.trim(),
+          fatherDaughterPlay: !!egFatherDaughterPlay.checked,
+
+          motherSonSong: egMotherSonSong.value.trim(),
+          motherSonPlay: !!egMotherSonPlay.checked,
+
           specialRequests: egSpecialRequests.value.trim(),
           lastSong: egLastSong.value.trim(),
           doNotPlay: egDoNotPlay.value.trim()
@@ -812,9 +975,18 @@
     if (!adminLoggedIn()) return alert('Admin login required.');
     ngTitle.value=''; ngDate.value=''; ngTime.value=''; ngVenue.value=''; ngAddress.value='';
     ngBandOff.checked=false; ngCeremonyOnsite.checked=false; ngRoomFlip.checked=false;
-    ngGuestArrivalTime.value=''; ngBandArrivalTime.value=''; ngIntroTime.value='';
-    ngIntroSong.value=''; ngFirstDanceSong.value=''; ngParentsDances.value='';
+    ngGuestArrivalTime.value=''; ngCeremonyGuestArrivalTime.value=''; ngBandArrivalTime.value=''; ngIntroTime.value='';
+    ngIntroSong.value='';
+
+    ngFirstDanceSong.value=''; ngFirstDancePlay.checked=false;
+    ngFatherDaughterSong.value=''; ngFatherDaughterPlay.checked=false;
+    ngMotherSonSong.value=''; ngMotherSonPlay.checked=false;
+
     ngSpecialRequests.value=''; ngLastSong.value=''; ngDoNotPlay.value='';
+
+    toggleCeremonyGuestArrivalRow(ngCeremonyOnsite.checked, ngCeremonyGuestArrivalRow);
+    ngCeremonyOnsite.onchange = ()=> toggleCeremonyGuestArrivalRow(ngCeremonyOnsite.checked, ngCeremonyGuestArrivalRow);
+
     newGigModal.showModal();
   };
   closeNewGigModal.onclick = ()=> newGigModal.close();
@@ -832,11 +1004,20 @@
       ceremonyOnsite: !!ngCeremonyOnsite.checked,
       roomFlip: !!ngRoomFlip.checked,
       guestArrivalTime: ngGuestArrivalTime.value || '',
+      ceremonyGuestArrivalTime: ngCeremonyOnsite.checked ? (ngCeremonyGuestArrivalTime.value || '') : '',
       bandArrivalTime: ngBandArrivalTime.value || '',
       introTime: ngIntroTime.value || '',
       introSong: (ngIntroSong.value||'').trim(),
+
       firstDanceSong: (ngFirstDanceSong.value||'').trim(),
-      parentsDances: (ngParentsDances.value||'').trim(),
+      firstDancePlay: !!ngFirstDancePlay.checked,
+
+      fatherDaughterSong: (ngFatherDaughterSong.value||'').trim(),
+      fatherDaughterPlay: !!ngFatherDaughterPlay.checked,
+
+      motherSonSong: (ngMotherSonSong.value||'').trim(),
+      motherSonPlay: !!ngMotherSonPlay.checked,
+
       specialRequests: (ngSpecialRequests.value||'').trim(),
       lastSong: (ngLastSong.value||'').trim(),
       doNotPlay: (ngDoNotPlay.value||'').trim(),
@@ -1193,7 +1374,7 @@
 
   /* ===== Init ===== */
   function init(){
-    migrateEventsStore();
+    migrateLegacyFields();          // (8) Optional cleanup executed once on load
     updateLockStatusUI();
     renderCalendar();
     renderEvents();
