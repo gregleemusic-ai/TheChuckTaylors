@@ -113,8 +113,9 @@
       <div class="xl-grid-3">
         <div class="card p-4 min-w-0">
           <div class="cal-nav">
+            <button id="prevMonth" class="btn-sec">← Prev</button>
             <h2 id="calTitle" class="text-2xl font-bold"></h2>
-            <!-- (Prev/Next removed per earlier instruction) -->
+            <button id="nextMonth" class="btn-sec">Next →</button>
           </div>
           <div class="flex gap-4 mb-3 text-sm flex-wrap">
             <div class="flex items-center gap-2"><div class="w-4 h-4 bg-white rounded"></div><span>Open Date</span></div>
@@ -454,7 +455,7 @@
         <button id="adminLoginSubmit" class="btn">Login</button>
         <button id="adminLoginClose" class="btn-sec">Cancel</button>
       </div>
-      <p class="text-xs subtle mt-2">You’ll stay logged in on this browser until you log out.</p>
+      <p class="text-xs subtle mt-2">You'll stay logged in on this browser until you log out.</p>
     </div>
   </dialog>
 
@@ -484,18 +485,8 @@
     const BAND_MEMBERS = ['greg','john','tim','brian','mark'];
     const MEMBER_NAMES = { greg:'Greg', john:'John', tim:'Tim', brian:'Brian', mark:'Mark' };
 
-    const SEED_events = [
-      { id:1, title:'Sarah & Mike Wedding', date:'2025-11-15', startTime:'18:00', venue:'The Bell Event Centre', address:'312 Elm St, Cincinnati, OH',
-        payments:{ greg:{amount:250,paid:true}, john:{amount:200,paid:true}, tim:{amount:200,paid:false}, brian:{amount:225,paid:true}, mark:{amount:200,paid:false} } },
-      { id:2, title:'Jazz Night at The Blue Note', date:'2025-11-08', startTime:'20:00', venue:'The Blue Note', address:'456 Main St, Cincinnati, OH',
-        payments:{ greg:{amount:180,paid:true}, john:{amount:150,paid:true}, tim:{amount:150,paid:true}, brian:{amount:165,paid:true}, mark:{amount:150,paid:true} } },
-      { id:3, title:'Corporate Holiday Party', date:'2025-11-22', startTime:'19:00', venue:'Marriott Downtown', address:'11 W 5th St, Cincinnati, OH',
-        payments:{ greg:{amount:300,paid:false}, john:{amount:250,paid:false}, tim:{amount:250,paid:false}, brian:{amount:275,paid:false}, mark:{amount:250,paid:false} } },
-      { id:4, title:'Thanksgiving Eve Show', date:'2025-11-26', startTime:'21:00', venue:'The Riverfront Club', address:'789 River Rd, Cincinnati, OH',
-        payments:{ greg:{amount:220,paid:false}, john:{amount:180,paid:false}, tim:{amount:180,paid:false}, brian:{amount:195,paid:false}, mark:{amount:180,paid:false} } },
-      { id:5, title:'New Years Eve Party', date:'2025-12-31', startTime:'21:00', venue:'Cincinnati Music Hall', address:'1241 Elm St, Cincinnati, OH',
-        payments:{ greg:{amount:400,paid:false}, john:{amount:350,paid:false}, tim:{amount:350,paid:false}, brian:{amount:375,paid:false}, mark:{amount:350,paid:false} } }
-    ];
+    // Empty seed data - start fresh
+    const SEED_events = [];
 
     /* ===== Persistence ===== */
     const events_KEY = 'ct_events_v3';
@@ -503,13 +494,7 @@
     function setevents(arr){ localStorage.setItem(events_KEY, JSON.stringify(arr)); }
 
     /* ===== Chat (local) ===== */
-    const DEMO_CHAT = [
-      { name:'Greg', message:'Great show last night everyone!', time:'2:30 PM' },
-      { name:'John', message:'Thanks! That crowd was amazing', time:'2:35 PM' },
-      { name:'Tim', message:'When is our next rehearsal?', time:'2:40 PM' },
-      { name:'Greg', message:'Thursday at 7pm, my place', time:'2:42 PM' },
-      { name:'Brian', message:'I\'ll bring the setlist', time:'2:45 PM' },
-    ];
+    const DEMO_CHAT = [];
     let chatMessages = JSON.parse(localStorage.getItem('ct_chat_v1')||'null') || [...DEMO_CHAT];
 
     /* ===== Device + Passcodes ===== */
@@ -728,6 +713,10 @@
     const saveProfileBtn = document.getElementById('saveProfileBtn');
     const closeProfileBtn = document.getElementById('closeProfileBtn');
 
+    // Calendar navigation
+    const prevMonth = document.getElementById('prevMonth');
+    const nextMonth = document.getElementById('nextMonth');
+
     /* ===== View switching ===== */
     function hideAllViews(){ eventsView.classList.add('hidden'); chatView.classList.add('hidden'); paymentsView.classList.add('hidden'); chartsView.classList.add('hidden'); youtubeView.classList.add('hidden'); }
     function showeventsView(){ hideAllViews(); eventsView.classList.remove('hidden'); renderCalendar(); renderevents(); }
@@ -759,6 +748,17 @@
 
     /* ===== Calendar ===== */
     let calendarDate = new Date();
+    
+    prevMonth.onclick = () => {
+      calendarDate.setMonth(calendarDate.getMonth() - 1);
+      renderCalendar();
+    };
+    
+    nextMonth.onclick = () => {
+      calendarDate.setMonth(calendarDate.getMonth() + 1);
+      renderCalendar();
+    };
+    
     function renderCalendar(){
       const events = getevents();
       const year = calendarDate.getFullYear();
@@ -833,6 +833,12 @@
       const events = getevents().slice().sort((a,b)=> parseYMD(a.date) - parseYMD(b.date));
       const eventsList = document.getElementById('eventsList');
       eventsList.innerHTML = '';
+      
+      if (events.length === 0) {
+        eventsList.innerHTML = '<div class="text-slate-400 text-sm">No events yet. Add your first event!</div>';
+        return;
+      }
+      
       events.forEach(g=>{
         const div = document.createElement('div');
         const cat = g.hold ? `<span class="pill" style="border-color:#1e3a8a;color:#fff;background:#1e3a8a">Hold</span>` :
@@ -1117,6 +1123,10 @@
     /* ===== Chat ===== */
     function renderChat(){
       chatMessagesEl.innerHTML = '';
+      if (chatMessages.length === 0) {
+        chatMessagesEl.innerHTML = '<div class="text-slate-400 text-sm">No messages yet. Start the conversation!</div>';
+        return;
+      }
       chatMessages.forEach(m=>{
         const div = document.createElement('div');
         div.className='chat-msg';
@@ -1168,6 +1178,10 @@
         });
 
         paymentsList.innerHTML = '';
+        if (events.length === 0) {
+          paymentsList.innerHTML = '<div class="text-slate-400 text-sm">No events with payments yet.</div>';
+          return;
+        }
         events.forEach(g=>{
           const div = document.createElement('div'); div.className='payment-gig';
           let inner = '<div class="grid grid-cols-2 md:grid-cols-5 gap-2 mt-2">';
@@ -1200,7 +1214,7 @@
         paymentsList.innerHTML = `
           <div class="payment-gig">
             <div class="text-sm subtle">
-              Choose your profile to see your payments. Click <strong>“Set My Profile”</strong> at the top.
+              Choose your profile to see your payments. Click <strong>"Set My Profile"</strong> at the top.
             </div>
           </div>`;
         return;
@@ -1217,7 +1231,12 @@
       ytdSummary.appendChild(myCard);
 
       paymentsList.innerHTML = '';
-      events.forEach(g=>{
+      const myEvents = events.filter(g => g.payments?.[me]);
+      if (myEvents.length === 0) {
+        paymentsList.innerHTML = '<div class="text-slate-400 text-sm">No payments assigned yet.</div>';
+        return;
+      }
+      myEvents.forEach(g=>{
         const p = g.payments?.[me];
         if (!p) return;
         const statusClass = p.paid ? 'paid' : 'unpaid';
