@@ -3,36 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Chuck Taylors — Gigs</title>
+  <title>The Chuck Taylors — EVENTS</title>
   <meta name="theme-color" content="#ff6b35" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-  
     body{font-family:Inter,system-ui,sans-serif;background:#0d1117;color:#e5e7eb}
     .card{background:rgba(255,255,255,.06);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.08);border-radius:14px}
     .btn{background:#ff6b35;color:#0d1117;font-weight:700;border-radius:10px;padding:.6rem .9rem;cursor:pointer;border:none}
     .btn-sec{background:transparent;border:1px solid #ff6b35;color:#ff6b35;border-radius:10px;padding:.5rem .8rem;cursor:pointer}
     .btn:hover{background:#ff8555}
     .btn-sec:hover{background:rgba(255,107,53,.1)}
-    a.link{color:#ffd23f;text-decoration:underline}
     input,select,textarea{background:#0b1220;border:1px solid #2b3547;border-radius:10px;padding:.55rem .7rem;width:100%;color:#e5e7eb}
-    label{font-size:.9rem;color:#cbd5e1}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
-    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.8rem}
-    .hidden{display:none}
     .subtle{color:#a3b0c2}
     .pill{display:inline-block;font-size:.75rem;padding:.25rem .5rem;border:1px solid #2b3547;border-radius:999px}
     .kv{display:grid;grid-template-columns:180px 1fr;gap:.6rem}
     .chat-msg{background:rgba(255,255,255,.05);padding:.75rem;border-radius:8px;border-left:3px solid #ff6b35;margin-bottom:.5rem}
-    .chat-user{font-weight:700;color:#ff6b35;font-size:.85rem}
-    .chat-time{color:#a3b0c2;font-size:.7rem;margin-left:.5rem}
-    .chat-text{margin-top:.3rem;font-size:.9rem}
-    .ytd-card{background:rgba(255,107,53,.1);border:2px solid #ff6b35;border-radius:12px;padding:1rem;text-align:center}
-    .ytd-name{font-size:.9rem;color:#cbd5e1;margin-bottom:.3rem}
-    .ytd-amount{font-size:1.5rem;font-weight:700;color:#ff6b35}
     .payment-gig{background:rgba(255,255,255,.03);border:1px solid #2b3547;border-radius:8px;padding:1rem;margin-bottom:.75rem}
     .payment-status{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600}
     .payment-status.paid{background:#10b981;color:#fff}
@@ -60,9 +48,11 @@
 <body>
   <div class="max-w-6xl mx-auto p-4 md:p-8">
     <header class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">The Chuck Taylors — Gigs</h1>
-      <div class="flex items-center gap-3 text-sm text-slate-300">
+      <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">The Chuck Taylors — EVENTS</h1>
+      <div class="flex items-center gap-2 flex-wrap text-sm text-slate-300">
         <button id="setPassBtn" class="btn-sec">🔒 Set Passcode</button>
+        <button id="adminLoginBtn" class="btn-sec">👤 Admin Login</button>
+        <button id="adminLogoutBtn" class="btn-sec hidden">↩︎ Logout</button>
         <span id="lockStatus" class="text-xs subtle"></span>
       </div>
     </header>
@@ -70,21 +60,20 @@
     <!-- Control bar -->
     <div class="card p-3 md:p-4 mb-6">
       <div class="flex items-center justify-between gap-2 flex-wrap">
-        <div class="text-sm text-slate-300">
-          <span>Gigs, chat, payments, charts, and YouTube links.</span>
-        </div>
+        <div class="text-sm text-slate-300">events, chat, payments, charts, and YouTube links.</div>
         <div class="flex items-center gap-2 flex-wrap">
-          <button id="showGigsBtn" class="btn-sec">📅 Gigs</button>
+          <button id="showeventsBtn" class="btn-sec">📅 Dates</button>
           <button id="toggleChatBtn" class="btn-sec">💬 Chat</button>
           <button id="togglePaymentsBtn" class="btn-sec">💰 Payments</button>
           <button id="toggleChartsBtn" class="btn-sec">📊 Charts</button>
           <button id="toggleYouTubeBtn" class="btn-sec">🎬 YouTUBE</button>
+          <button id="addGigBtn" class="btn hidden">+ New Gig</button>
         </div>
       </div>
     </div>
 
-    <!-- Gigs View -->
-    <div id="gigsView">
+    <!-- events View -->
+    <div id="eventsView">
       <div class="grid xl:grid-cols-3 gap-6">
         <div class="xl:col-span-2 card p-4 min-w-0">
           <div class="cal-nav">
@@ -101,39 +90,41 @@
           <div id="monthlyCalendar"></div>
         </div>
         <div class="card p-4 min-w-0">
-          <h2 class="text-xl font-bold mb-4">Upcoming Gigs</h2>
-          <div id="gigsList" class="space-y-3"></div>
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-bold mb-4">Upcoming Dates</h2>
+          </div>
+          <div id="eventsList" class="space-y-3"></div>
         </div>
       </div>
     </div>
 
-    <!-- Chat Box -->
+    <!-- Chat -->
     <div id="chatView" class="hidden">
       <div class="card p-6">
         <h2 class="text-2xl font-bold mb-4">Band Chat</h2>
         <div id="chatMessages" class="bg-black bg-opacity-30 rounded-lg p-4 h-96 overflow-y-auto mb-4"></div>
-        <div class="grid2">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           <input id="chatName" type="text" placeholder="Your name (optional)" />
           <div class="flex gap-2">
             <input id="chatInput" type="text" placeholder="Type a message..." />
             <button id="sendChat" class="btn">Send</button>
           </div>
         </div>
-        <p class="text-xs text-slate-400 mt-2">Messages are stored only in this browser.</p>
+        <p class="text-xs subtle mt-2">Messages are stored only in this browser.</p>
       </div>
     </div>
 
-    <!-- Payments Dashboard -->
+    <!-- Payments -->
     <div id="paymentsView" class="hidden">
       <div class="card p-6">
         <h2 class="text-2xl font-bold mb-4">Payment Tracking - YTD 2025</h2>
         <div id="ytdSummary" class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6"></div>
-        <h3 class="text-xl font-bold mb-3">Recent Gigs</h3>
+        <h3 class="text-xl font-bold mb-3">Recent Events</h3>
         <div id="paymentsList"></div>
       </div>
     </div>
 
-    <!-- Charts Repository -->
+    <!-- Charts -->
     <div id="chartsView" class="hidden">
       <div class="card p-6">
         <div class="flex items-center justify-between flex-wrap gap-3">
@@ -141,12 +132,12 @@
           <span class="pill">Public uploads</span>
         </div>
 
-        <div class="mt-4 grid2">
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
           <div class="card p-4">
             <h3 class="text-xl font-semibold mb-2">Upload PDFs</h3>
-            <p class="text-sm text-slate-400 mb-3">Stage plots, setlists, tech riders, song charts… (PDF only)</p>
+            <p class="text-sm subtle mb-3">Stage plots, setlists, tech riders, song charts… (PDF only)</p>
             <input id="pdfInput" type="file" accept="application/pdf" multiple />
-            <div class="grid2 mt-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
               <input id="pdfTitle" type="text" placeholder="Optional: title/notes" />
               <input id="uploaderName" type="text" placeholder="Your name (optional)" />
             </div>
@@ -155,7 +146,7 @@
 
           <div class="card p-4">
             <h3 class="text-xl font-semibold mb-2">Find Files</h3>
-            <div class="grid2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
               <input id="searchPdf" type="text" placeholder="Search by filename or notes..." />
               <select id="uploaderFilter"><option value="">All uploaders</option></select>
             </div>
@@ -174,7 +165,7 @@
       </div>
     </div>
 
-    <!-- YouTube Links Repository -->
+    <!-- YouTube -->
     <div id="youtubeView" class="hidden">
       <div class="card p-6">
         <div class="flex items-center justify-between flex-wrap gap-3">
@@ -182,16 +173,16 @@
           <span class="pill">Public links</span>
         </div>
 
-        <div class="mt-4 grid2">
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
           <div class="card p-4">
             <h3 class="text-xl font-semibold mb-2">Add a YouTube Link</h3>
-            <p class="text-sm text-slate-400 mb-3">Paste a YouTube URL or 11-character video ID.</p>
+            <p class="text-sm subtle mb-3">Paste a YouTube URL or 11-character video ID.</p>
             <input id="ytUrl" type="text" placeholder="https://www.youtube.com/watch?v=VIDEOID or VIDEOID" />
-            <div class="grid2 mt-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
               <input id="ytTitle" type="text" placeholder="Optional title" />
               <input id="ytNotes" type="text" placeholder="Optional notes" />
             </div>
-            <div class="grid2 mt-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
               <input id="ytUploader" type="text" placeholder="Your name (optional)" />
               <button id="addYtBtn" class="btn">Add Link</button>
             </div>
@@ -199,7 +190,7 @@
 
           <div class="card p-4">
             <h3 class="text-xl font-semibold mb-2">Find Links</h3>
-            <div class="grid2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
               <input id="ytSearch" type="text" placeholder="Search by title or notes..." />
               <select id="ytUploaderFilter"><option value="">All uploaders</option></select>
             </div>
@@ -219,20 +210,62 @@
     </div>
   </div>
 
-  <!-- Gig Detail Modal -->
-  <dialog id="gigModal" class="card modal p-0" style="max-width:640px;">
+  <!-- Gig Detail Modal (view/edit/delete + band off) -->
+  <dialog id="gigModal" class="card modal p-0" style="max-width:720px;">
     <div class="p-6">
       <div class="flex items-center justify-between mb-3">
         <h3 class="text-xl font-bold" id="gigTitle"></h3>
-        <div class="flex gap-2">
+        <div class="flex gap-2 flex-wrap">
           <button id="bandOffBtn" class="btn-sec hidden">Mark Band Off</button>
           <button id="clearBandOffBtn" class="btn-sec hidden">Clear Band Off</button>
+          <button id="editGigBtn" class="btn-sec hidden">Edit</button>
+          <button id="deleteGigBtn" class="btn-sec hidden">Delete</button>
           <button id="shareGigBtn" class="btn-sec">Share</button>
           <button id="closeGigModal" class="btn">Close</button>
         </div>
       </div>
-      <div id="gigContent" class="space-y-2 text-sm"></div>
+
+      <!-- View mode -->
+      <div id="gigView" class="space-y-2 text-sm"></div>
+
+      <!-- Edit mode -->
+      <div id="gigEdit" class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div><label class="subtle text-xs">Title</label><input id="egTitle" /></div>
+          <div><label class="subtle text-xs">Date</label><input id="egDate" type="date" /></div>
+          <div><label class="subtle text-xs">Start Time</label><input id="egTime" type="time" /></div>
+          <div><label class="subtle text-xs">Venue</label><input id="egVenue" /></div>
+          <div class="md:col-span-2"><label class="subtle text-xs">Address</label><input id="egAddress" /></div>
+          <label class="flex items-center gap-2"><input id="egBandOff" type="checkbox" /><span>Band Off (Greg solo)</span></label>
+        </div>
+        <div class="flex justify-end gap-2 mt-4">
+          <button id="saveGigBtn" class="btn">Save</button>
+          <button id="cancelEditBtn" class="btn-sec">Cancel</button>
+        </div>
+      </div>
+
       <p id="shareHint" class="text-xs subtle mt-3 hidden">Link copied!</p>
+    </div>
+  </dialog>
+
+  <!-- New Gig Modal -->
+  <dialog id="newGigModal" class="card modal p-0" style="max-width:720px;">
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-xl font-bold">New Gig</h3>
+        <button id="closeNewGigModal" class="btn-sec">Close</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div><label class="subtle text-xs">Title</label><input id="ngTitle" /></div>
+        <div><label class="subtle text-xs">Date</label><input id="ngDate" type="date" /></div>
+        <div><label class="subtle text-xs">Start Time</label><input id="ngTime" type="time" /></div>
+        <div><label class="subtle text-xs">Venue</label><input id="ngVenue" /></div>
+        <div class="md:col-span-2"><label class="subtle text-xs">Address</label><input id="ngAddress" /></div>
+        <label class="flex items-center gap-2"><input id="ngBandOff" type="checkbox" /><span>Band Off (Greg solo)</span></label>
+      </div>
+      <div class="flex justify-end gap-2 mt-4">
+        <button id="createGigBtn" class="btn">Create</button>
+      </div>
     </div>
   </dialog>
 
@@ -251,9 +284,7 @@
       </div>
       <div class="mt-3" style="height:75vh;">
         <object id="pdfObject" type="application/pdf" data="" width="100%" height="100%">
-          <div class="text-sm text-slate-300 p-4">
-            PDF preview not supported in this browser. Use the Download button instead.
-          </div>
+          <div class="text-sm subtle p-4">PDF preview not supported in this browser. Use the Download button instead.</div>
         </object>
       </div>
     </div>
@@ -281,9 +312,9 @@
   <dialog id="passModal" class="card modal p-0" style="max-width:420px;">
     <div class="p-5">
       <h3 class="text-lg font-bold mb-3">Set/Update Passcodes (optional)</h3>
-      <div class="grid2">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
         <input id="userPass" type="password" placeholder="Your passcode (this device)" />
-        <input id="adminPass" type="password" placeholder="Admin passcode (Band Off)" />
+        <input id="adminPass" type="password" placeholder="Admin passcode (Band Off & Admin Login)" />
       </div>
       <div class="flex justify-end gap-2 mt-4">
         <button id="savePassBtn" class="btn">Save</button>
@@ -293,12 +324,25 @@
     </div>
   </dialog>
 
+  <!-- Admin Login Modal -->
+  <dialog id="adminLoginModal" class="card modal p-0" style="max-width:420px;">
+    <div class="p-5">
+      <h3 class="text-lg font-bold mb-3">Admin Login</h3>
+      <input id="adminLoginInput" type="password" placeholder="Admin passcode" />
+      <div class="flex justify-end gap-2 mt-4">
+        <button id="adminLoginSubmit" class="btn">Login</button>
+        <button id="adminLoginClose" class="btn-sec">Cancel</button>
+      </div>
+      <p class="text-xs subtle mt-2">You’ll stay logged in on this browser until you log out.</p>
+    </div>
+  </dialog>
+
   <script>
-  /* ===== Demo data (can be replaced with live) ===== */
+  /* ===== Data (seed) ===== */
   const BAND_MEMBERS = ['greg','john','tim','brian','mark'];
   const MEMBER_NAMES = { greg:'Greg', john:'John', tim:'Tim', brian:'Brian', mark:'Mark' };
 
-  const DEMO_GIGS = [
+  const SEED_events = [
     { id:1, title:'Sarah & Mike Wedding', date:'2025-11-15', startTime:'18:00', venue:'The Bell Event Centre', address:'312 Elm St, Cincinnati, OH',
       payments:{ greg:{amount:250,paid:true}, john:{amount:200,paid:true}, tim:{amount:200,paid:false}, brian:{amount:225,paid:true}, mark:{amount:200,paid:false} } },
     { id:2, title:'Jazz Night at The Blue Note', date:'2025-11-08', startTime:'20:00', venue:'The Blue Note', address:'456 Main St, Cincinnati, OH',
@@ -311,25 +355,27 @@
       payments:{ greg:{amount:400,paid:false}, john:{amount:350,paid:false}, tim:{amount:350,paid:false}, brian:{amount:375,paid:false}, mark:{amount:350,paid:false} } }
   ];
 
+  /* ===== Persistence: events in localStorage ===== */
+  const events_KEY = 'ct_events_v1';
+  function getevents(){ try { return JSON.parse(localStorage.getItem(events_KEY)) || SEED_events.slice(); } catch { return SEED_events.slice(); } }
+  function setevents(arr){ localStorage.setItem(events_KEY, JSON.stringify(arr)); }
+
+  /* ===== Chat (local) ===== */
   const DEMO_CHAT = [
     { name:'Greg', message:'Great show last night everyone!', time:'2:30 PM' },
     { name:'John', message:'Thanks! That crowd was amazing', time:'2:35 PM' },
     { name:'Tim', message:'When is our next rehearsal?', time:'2:40 PM' },
     { name:'Greg', message:'Thursday at 7pm, my place', time:'2:42 PM' },
-    { name:'Brian', message:'I\'ll bring the setlist', time:'2:45 PM' },
+    { name:'Brian', message:'I\\'ll bring the setlist', time:'2:45 PM' },
   ];
-
-  /* ===== State ===== */
-  let calendarDate = new Date();
   let chatMessages = JSON.parse(localStorage.getItem('ct_chat_v1')||'null') || [...DEMO_CHAT];
 
-  // per-device id (for delete rights)
+  /* ===== Device + Passcodes ===== */
   const DEVICE_KEY = 'ct_device_id_v1';
   let deviceId = localStorage.getItem(DEVICE_KEY);
   if (!deviceId) { deviceId = (crypto.randomUUID && crypto.randomUUID()) || String(Math.random()).slice(2); localStorage.setItem(DEVICE_KEY, deviceId); }
 
-  /* ===== Passcodes ===== */
-  const PASS_KEYS = { user:'ct_user_pass_v1', admin:'ct_admin_pass_v1' };
+  const PASS_KEYS = { user:'ct_user_pass_v1', admin:'ct_admin_pass_v1', adminSession:'ct_admin_session_v1' };
   async function sha256(text){
     const data = new TextEncoder().encode(text);
     const buf = await crypto.subtle.digest('SHA-256', data);
@@ -338,140 +384,153 @@
   async function setPasscodes({user, admin}){
     if (user) localStorage.setItem(PASS_KEYS.user, await sha256(user));
     if (admin) localStorage.setItem(PASS_KEYS.admin, await sha256(admin));
-    updateLockStatus();
+    updateLockStatusUI();
   }
-  async function checkUserPass(){
-    const stored = localStorage.getItem(PASS_KEYS.user);
-    if (!stored) return true; // no pass set -> allow
-    const tryPass = prompt('Enter your passcode to continue');
-    if (!tryPass) return false;
-    return stored === await sha256(tryPass);
+  function adminLoggedIn(){ return localStorage.getItem(PASS_KEYS.adminSession) === '1'; }
+  function ensureAdminUI(){
+    document.getElementById('addGigBtn').classList.toggle('hidden', !adminLoggedIn());
+    document.getElementById('adminLoginBtn').classList.toggle('hidden', adminLoggedIn());
+    document.getElementById('adminLogoutBtn').classList.toggle('hidden', !adminLoggedIn());
   }
-  async function requireAdmin(){
-    const stored = localStorage.getItem(PASS_KEYS.admin);
-    if (!stored){ alert('Admin passcode not set.'); return false; }
-    const tryPass = prompt('Admin passcode required');
-    if (!tryPass) return false;
-    return stored === await sha256(tryPass);
-  }
-  function updateLockStatus(){
+  function updateLockStatusUI(){
     const hasUser = !!localStorage.getItem(PASS_KEYS.user);
     const hasAdmin = !!localStorage.getItem(PASS_KEYS.admin);
     document.getElementById('lockStatus').textContent =
-      `${hasUser?'User🔒':'User🔓'} • ${hasAdmin?'Admin🔒':'Admin🔓'}`;
-    // Show admin buttons in modal if an admin pass exists locally
-    const showAdmin = hasAdmin;
-    document.getElementById('bandOffBtn').classList.toggle('hidden', !showAdmin);
-    document.getElementById('clearBandOffBtn').classList.toggle('hidden', !showAdmin);
+      `${hasUser?'User🔒':'User🔓'} • ${hasAdmin?'Admin🔒':'Admin🔓'} • ${adminLoggedIn()?'Logged-in':'Logged-out'}`;
+    ensureAdminUI();
   }
 
-  // Pass modal wiring
-  const passModal = document.getElementById('passModal');
-  document.getElementById('setPassBtn').onclick = ()=> passModal.showModal();
-  document.getElementById('closePassBtn').onclick = ()=> passModal.close();
-  document.getElementById('savePassBtn').onclick = async ()=>{
-    const u = document.getElementById('userPass').value.trim();
-    const a = document.getElementById('adminPass').value.trim();
-    await setPasscodes({ user: u || null, admin: a || null });
-    document.getElementById('userPass').value = '';
-    document.getElementById('adminPass').value = '';
-    passModal.close();
-  };
-  updateLockStatus();
-
   /* ===== Elements ===== */
-  const showGigsBtn = document.getElementById('showGigsBtn');
-  const toggleChatBtn = document.getElementById('toggleChatBtn');
-  const togglePaymentsBtn = document.getElementById('togglePaymentsBtn');
-  const toggleChartsBtn = document.getElementById('toggleChartsBtn');
-  const toggleYouTubeBtn = document.getElementById('toggleYouTubeBtn');
+  const showeventsBtn=document.getElementById('showeventsBtn');
+  const toggleChatBtn=document.getElementById('toggleChatBtn');
+  const togglePaymentsBtn=document.getElementById('togglePaymentsBtn');
+  const toggleChartsBtn=document.getElementById('toggleChartsBtn');
+  const toggleYouTubeBtn=document.getElementById('toggleYouTubeBtn');
+  const addGigBtn=document.getElementById('addGigBtn');
 
-  const gigsView = document.getElementById('gigsView');
-  const chatView = document.getElementById('chatView');
-  const paymentsView = document.getElementById('paymentsView');
-  const chartsView = document.getElementById('chartsView');
-  const youtubeView = document.getElementById('youtubeView');
+  const eventsView=document.getElementById('eventsView');
+  const chatView=document.getElementById('chatView');
+  const paymentsView=document.getElementById('paymentsView');
+  const chartsView=document.getElementById('chartsView');
+  const youtubeView=document.getElementById('youtubeView');
 
-  const calPrev = document.getElementById('calPrev');
-  const calNext = document.getElementById('calNext');
+  const calPrev=document.getElementById('calPrev');
+  const calNext=document.getElementById('calNext');
 
-  const chatMessagesEl = document.getElementById('chatMessages');
-  const chatInput = document.getElementById('chatInput');
-  const chatName = document.getElementById('chatName');
-  const sendChat = document.getElementById('sendChat');
+  const chatMessagesEl=document.getElementById('chatMessages');
+  const chatInput=document.getElementById('chatInput');
+  const chatName=document.getElementById('chatName');
+  const sendChat=document.getElementById('sendChat');
 
-  const ytdSummary = document.getElementById('ytdSummary');
-  const paymentsList = document.getElementById('paymentsList');
+  const ytdSummary=document.getElementById('ytdSummary');
+  const paymentsList=document.getElementById('paymentsList');
 
-  // Charts repo
-  const pdfInput = document.getElementById('pdfInput');
-  const pdfTitle = document.getElementById('pdfTitle');
-  const uploaderName = document.getElementById('uploaderName');
-  const uploadPdfBtn = document.getElementById('uploadPdfBtn');
-  const searchPdf = document.getElementById('searchPdf');
-  const uploaderFilter = document.getElementById('uploaderFilter');
-  const clearFiltersBtn = document.getElementById('clearFiltersBtn');
-  const exportRepoBtn = document.getElementById('exportRepoBtn');
-  const pdfList = document.getElementById('pdfList');
-  const emptyRepo = document.getElementById('emptyRepo');
+  // Charts repo elements
+  const pdfInput=document.getElementById('pdfInput');
+  const pdfTitle=document.getElementById('pdfTitle');
+  const uploaderName=document.getElementById('uploaderName');
+  const uploadPdfBtn=document.getElementById('uploadPdfBtn');
+  const searchPdf=document.getElementById('searchPdf');
+  const uploaderFilter=document.getElementById('uploaderFilter');
+  const clearFiltersBtn=document.getElementById('clearFiltersBtn');
+  const exportRepoBtn=document.getElementById('exportRepoBtn');
+  const pdfList=document.getElementById('pdfList');
+  const emptyRepo=document.getElementById('emptyRepo');
 
-  const pdfModal = document.getElementById('pdfModal');
-  const pdfObject = document.getElementById('pdfObject');
-  const pdfModalTitle = document.getElementById('pdfModalTitle');
-  const pdfMeta = document.getElementById('pdfMeta');
-  const pdfDownloadBtn = document.getElementById('pdfDownloadBtn');
-  const closePdfModal = document.getElementById('closePdfModal');
+  const pdfModal=document.getElementById('pdfModal');
+  const pdfObject=document.getElementById('pdfObject');
+  const pdfModalTitle=document.getElementById('pdfModalTitle');
+  const pdfMeta=document.getElementById('pdfMeta');
+  const pdfDownloadBtn=document.getElementById('pdfDownloadBtn');
+  const closePdfModal=document.getElementById('closePdfModal');
 
   // Gig modal
-  const gigModal = document.getElementById('gigModal');
-  const gigTitleEl = document.getElementById('gigTitle');
-  const gigContent = document.getElementById('gigContent');
-  const closeGigModal = document.getElementById('closeGigModal');
-  const shareGigBtn = document.getElementById('shareGigBtn');
-  const shareHint = document.getElementById('shareHint');
-  const bandOffBtn = document.getElementById('bandOffBtn');
-  const clearBandOffBtn = document.getElementById('clearBandOffBtn');
+  const gigModal=document.getElementById('gigModal');
+  const gigTitleEl=document.getElementById('gigTitle');
+  const gigView=document.getElementById('gigView');
+  const gigEdit=document.getElementById('gigEdit');
+  const shareGigBtn=document.getElementById('shareGigBtn');
+  const shareHint=document.getElementById('shareHint');
+  const bandOffBtn=document.getElementById('bandOffBtn');
+  const clearBandOffBtn=document.getElementById('clearBandOffBtn');
+  const editGigBtn=document.getElementById('editGigBtn');
+  const deleteGigBtn=document.getElementById('deleteGigBtn');
+  const closeGigModal=document.getElementById('closeGigModal');
 
-  // YouTube repo
-  const ytUrl = document.getElementById('ytUrl');
-  const ytTitle = document.getElementById('ytTitle');
-  const ytNotes = document.getElementById('ytNotes');
-  const ytUploader = document.getElementById('ytUploader');
-  const addYtBtn = document.getElementById('addYtBtn');
-  const ytSearch = document.getElementById('ytSearch');
-  const ytUploaderFilter = document.getElementById('ytUploaderFilter');
-  const ytClearFilters = document.getElementById('ytClearFilters');
-  const ytExportBtn = document.getElementById('ytExportBtn');
-  const ytList = document.getElementById('ytList');
-  const ytEmpty = document.getElementById('ytEmpty');
+  const egTitle=document.getElementById('egTitle');
+  const egDate=document.getElementById('egDate');
+  const egTime=document.getElementById('egTime');
+  const egVenue=document.getElementById('egVenue');
+  const egAddress=document.getElementById('egAddress');
+  const egBandOff=document.getElementById('egBandOff');
+  const saveGigBtn=document.getElementById('saveGigBtn');
+  const cancelEditBtn=document.getElementById('cancelEditBtn');
 
-  const ytModal = document.getElementById('ytModal');
-  const ytModalTitle = document.getElementById('ytModalTitle');
-  const ytIframe = document.getElementById('ytIframe');
-  const ytMeta = document.getElementById('ytMeta');
-  const ytCloseBtn = document.getElementById('ytCloseBtn');
-  const ytShareBtn = document.getElementById('ytShareBtn');
-  const ytShareHint = document.getElementById('ytShareHint');
+  // New gig modal
+  const newGigModal=document.getElementById('newGigModal');
+  const closeNewGigModal=document.getElementById('closeNewGigModal');
+  const ngTitle=document.getElementById('ngTitle');
+  const ngDate=document.getElementById('ngDate');
+  const ngTime=document.getElementById('ngTime');
+  const ngVenue=document.getElementById('ngVenue');
+  const ngAddress=document.getElementById('ngAddress');
+  const ngBandOff=document.getElementById('ngBandOff');
+  const createGigBtn=document.getElementById('createGigBtn');
+
+  // YouTube
+  const ytUrl=document.getElementById('ytUrl');
+  const ytTitle=document.getElementById('ytTitle');
+  const ytNotes=document.getElementById('ytNotes');
+  const ytUploader=document.getElementById('ytUploader');
+  const addYtBtn=document.getElementById('addYtBtn');
+  const ytSearch=document.getElementById('ytSearch');
+  const ytUploaderFilter=document.getElementById('ytUploaderFilter');
+  const ytClearFilters=document.getElementById('ytClearFilters');
+  const ytExportBtn=document.getElementById('ytExportBtn');
+  const ytList=document.getElementById('ytList');
+  const ytEmpty=document.getElementById('ytEmpty');
+  const ytModal=document.getElementById('ytModal');
+  const ytModalTitle=document.getElementById('ytModalTitle');
+  const ytIframe=document.getElementById('ytIframe');
+  const ytMeta=document.getElementById('ytMeta');
+  const ytCloseBtn=document.getElementById('ytCloseBtn');
+  const ytShareBtn=document.getElementById('ytShareBtn');
+  const ytShareHint=document.getElementById('ytShareHint');
+
+  // Pass modal + admin login
+  const passModal=document.getElementById('passModal');
+  const setPassBtn=document.getElementById('setPassBtn');
+  const savePassBtn=document.getElementById('savePassBtn');
+  const closePassBtn=document.getElementById('closePassBtn');
+  const adminLoginModal=document.getElementById('adminLoginModal');
+  const adminLoginBtn=document.getElementById('adminLoginBtn');
+  const adminLogoutBtn=document.getElementById('adminLogoutBtn');
+  const adminLoginInput=document.getElementById('adminLoginInput');
+  const adminLoginSubmit=document.getElementById('adminLoginSubmit');
+  const adminLoginClose=document.getElementById('adminLoginClose');
 
   /* ===== View switching ===== */
-  function hideAllViews(){ gigsView.classList.add('hidden'); chatView.classList.add('hidden'); paymentsView.classList.add('hidden'); chartsView.classList.add('hidden'); youtubeView.classList.add('hidden'); }
-  function showGigsView(){ hideAllViews(); gigsView.classList.remove('hidden'); renderCalendar(); renderGigs(); }
+  function hideAllViews(){ eventsView.classList.add('hidden'); chatView.classList.add('hidden'); paymentsView.classList.add('hidden'); chartsView.classList.add('hidden'); youtubeView.classList.add('hidden'); }
+  function showeventsView(){ hideAllViews(); eventsView.classList.remove('hidden'); renderCalendar(); renderevents(); }
   function showChatView(){ hideAllViews(); chatView.classList.remove('hidden'); renderChat(); }
   function showPaymentsView(){ hideAllViews(); paymentsView.classList.remove('hidden'); renderPayments(); }
   function showChartsView(){ hideAllViews(); chartsView.classList.remove('hidden'); hydrateUploaderFilter(); renderRepo(); }
   function showYouTubeView(){ hideAllViews(); youtubeView.classList.remove('hidden'); ytHydrateUploaderFilter(); ytRenderRepo(); }
 
-  showGigsBtn.onclick = showGigsView;
+  showeventsBtn.onclick = showeventsView;
   toggleChatBtn.onclick = showChatView;
   togglePaymentsBtn.onclick = showPaymentsView;
   toggleChartsBtn.onclick = showChartsView;
   toggleYouTubeBtn.onclick = showYouTubeView;
 
   /* ===== Calendar ===== */
-  calPrev.onclick = ()=>{ calendarDate.setMonth(calendarDate.getMonth()-1); renderCalendar(); };
-  calNext.onclick = ()=>{ calendarDate.setMonth(calendarDate.getMonth()+1); renderCalendar(); };
+  let calendarDate = new Date();
+
+  document.getElementById('calPrev').onclick = ()=>{ calendarDate.setMonth(calendarDate.getMonth()-1); renderCalendar(); };
+  document.getElementById('calNext').onclick = ()=>{ calendarDate.setMonth(calendarDate.getMonth()+1); renderCalendar(); };
 
   function renderCalendar(){
+    const events = getevents();
     const year = calendarDate.getFullYear();
     const month = calendarDate.getMonth();
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -490,7 +549,7 @@
     const todayDate = today.getDate();
 
     const monthEvents = {};
-    DEMO_GIGS.forEach(g=>{
+    events.forEach(g=>{
       const d = new Date(g.date);
       if (d.getFullYear()===year && d.getMonth()===month){
         const day = d.getDate();
@@ -499,19 +558,17 @@
       }
     });
 
-    // prev month days
     for (let i=firstDay-1; i>=0; i--){
       const day = daysInPrevMonth - i;
       const cell = document.createElement('div'); cell.className='cal-day other-month';
       cell.innerHTML = `<div class="cal-day-num">${day}</div>`;
       grid.appendChild(cell);
     }
-    // current month
     for (let day=1; day<=daysInMonth; day++){
       const cell = document.createElement('div'); cell.className='cal-day';
-      const gigsToday = monthEvents[day] || [];
-      const hasBandOff = gigsToday.some(g => g.bandOff === true);
-      const hasAnyGig  = gigsToday.length > 0;
+      const eventsToday = monthEvents[day] || [];
+      const hasBandOff = eventsToday.some(g => g.bandOff === true);
+      const hasAnyGig  = eventsToday.length > 0;
 
       if (hasBandOff) cell.classList.add('band-off');
       else if (hasAnyGig) cell.classList.add('has-event');
@@ -519,16 +576,15 @@
       if (isCurrentMonth && day===todayDate) cell.classList.add('today');
 
       let html = `<div class="cal-day-num">${day}</div>`;
-      gigsToday.forEach(g=> {
+      eventsToday.forEach(g=> {
         const label = g.bandOff ? 'Band Off' : g.title;
-        html += `<div class="cal-event">${g.startTime} ${label}</div>`;
+        html += `<div class="cal-event">${g.startTime || ''} ${label}</div>`;
       });
       cell.innerHTML = html;
 
-      if (gigsToday.length) cell.onclick = ()=> showGigDetail(gigsToday[0].id);
+      if (eventsToday.length) cell.onclick = ()=> showGigDetail(eventsToday[0].id);
       grid.appendChild(cell);
     }
-    // next month padding
     const total = firstDay + daysInMonth;
     const rem = total % 7 === 0 ? 0 : 7 - (total % 7);
     for (let day=1; day<=rem; day++){
@@ -539,57 +595,110 @@
     calendar.appendChild(grid);
   }
 
-  function renderGigs(){
-    const gigsList = document.getElementById('gigsList');
-    gigsList.innerHTML = '';
-    const sorted = [...DEMO_GIGS].sort((a,b)=> new Date(a.date) - new Date(b.date));
-    sorted.forEach(g=>{
+  /* ===== events list ===== */
+  function renderevents(){
+    const events = getevents().slice().sort((a,b)=> new Date(a.date) - new Date(b.date));
+    const eventsList = document.getElementById('eventsList');
+    eventsList.innerHTML = '';
+    events.forEach(g=>{
       const div = document.createElement('div');
       const bandOffPill = g.bandOff ? `<span class="pill" style="border-color:#dc2626;color:#fff;background:#dc2626">Band Off</span>` : '';
       div.className='p-3 card cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all';
       div.innerHTML = `
         <div>
-          <div class="text-sm subtle">${g.date} • ${g.startTime}</div>
+          <div class="text-sm subtle">${g.date}${g.startTime?' • '+g.startTime:''}</div>
           <div class="font-semibold">${g.title} ${bandOffPill}</div>
-          <div class="text-xs text-slate-400">${g.venue}</div>
+          <div class="text-xs text-slate-400">${g.venue||''}</div>
           <button class="btn-sec mt-2 text-xs" onclick="showGigDetail(${g.id})">View Details</button>
-          <button class="btn-sec mt-2 text-xs" onclick="shareGig(${g.id})">Share</button>
         </div>`;
-      gigsList.appendChild(div);
+      eventsList.appendChild(div);
     });
   }
 
-  // Gig modal + sharable links + admin tagging
+  /* ===== Gig modal (view/edit/delete) ===== */
+  let currentGigId = null;
+
   window.showGigDetail = function(id, pushHash = true){
-    const g = DEMO_GIGS.find(x=> x.id===id); if(!g) return;
-    gigTitleEl.textContent = g.title;
+    const events = getevents();
+    const g = events.find(x=> x.id===id); if(!g) return;
+    currentGigId = id;
+
+    document.getElementById('gigTitle').textContent = g.title;
     const badge = g.bandOff
       ? `<div class="mb-3 text-sm" style="background:#dc2626;color:#fff;padding:.4rem .6rem;border-radius:8px;display:inline-block">Band Off (Greg solo)</div>`
       : '';
-    gigContent.innerHTML = `
+    gigView.innerHTML = `
       ${badge}
-      <div class="kv"><div class="subtle">Date</div><div>${g.date} at ${g.startTime}</div></div>
-      <div class="kv"><div class="subtle">Venue</div><div>${g.venue}</div></div>
-      <div class="kv"><div class="subtle">Address</div><div>${g.address}</div></div>`;
+      <div class="kv"><div class="subtle">Date</div><div>${g.date}${g.startTime?' at '+g.startTime:''}</div></div>
+      <div class="kv"><div class="subtle">Venue</div><div>${g.venue||''}</div></div>
+      <div class="kv"><div class="subtle">Address</div><div>${g.address||''}</div></div>`;
 
+    // Admin-only controls visible on session
+    editGigBtn.classList.toggle('hidden', !adminLoggedIn());
+    deleteGigBtn.classList.toggle('hidden', !adminLoggedIn());
+    bandOffBtn.classList.toggle('hidden', !adminLoggedIn() || g.bandOff === true);
+    clearBandOffBtn.classList.toggle('hidden', !adminLoggedIn() || g.bandOff !== true);
+
+    // wire share
     shareGigBtn.onclick = ()=> shareGig(id);
-    bandOffBtn.onclick = ()=> markBandOff(id);
-    clearBandOffBtn.onclick = ()=> clearBandOff(id);
 
-    // Toggle admin buttons based on local admin pass
-    const hasAdmin = !!localStorage.getItem(PASS_KEYS.admin);
-    bandOffBtn.classList.toggle('hidden', !hasAdmin || g.bandOff === true);
-    clearBandOffBtn.classList.toggle('hidden', !hasAdmin || g.bandOff !== true);
+    // wire band off
+    bandOffBtn.onclick = ()=> { const events=getevents(); const i=events.findIndex(x=>x.id===id); if(i>=0){ events[i].bandOff=true; setevents(events); renderCalendar(); renderevents(); showGigDetail(id,false);} };
+    clearBandOffBtn.onclick = ()=> { const events=getevents(); const i=events.findIndex(x=>x.id===id); if(i>=0){ delete events[i].bandOff; setevents(events); renderCalendar(); renderevents(); showGigDetail(id,false);} };
 
-    shareHint.classList.add('hidden');
+    // edit
+    editGigBtn.onclick = ()=> enterEditMode(g);
+    deleteGigBtn.onclick = ()=> {
+      if (!confirm('Delete this gig?')) return;
+      const events=getevents().filter(x=> x.id!==id);
+      setevents(events); renderCalendar(); renderevents(); gigModal.close();
+    };
+
+    // modes
+    gigView.classList.remove('hidden');
+    gigEdit.classList.add('hidden');
+
+    document.getElementById('shareHint').classList.add('hidden');
     gigModal.showModal();
     if (pushHash) location.hash = `gig-${id}`;
   };
+
+  function enterEditMode(g){
+    egTitle.value = g.title||'';
+    egDate.value = g.date||'';
+    egTime.value = g.startTime||'';
+    egVenue.value = g.venue||'';
+    egAddress.value = g.address||'';
+    egBandOff.checked = !!g.bandOff;
+
+    gigView.classList.add('hidden');
+    gigEdit.classList.remove('hidden');
+
+    saveGigBtn.onclick = ()=>{
+      const events = getevents();
+      const i = events.findIndex(x=> x.id===g.id);
+      if (i>=0){
+        events[i] = {
+          ...events[i],
+          title: egTitle.value.trim() || 'Untitled',
+          date: egDate.value,
+          startTime: egTime.value,
+          venue: egVenue.value.trim(),
+          address: egAddress.value.trim(),
+          bandOff: !!egBandOff.checked
+        };
+        setevents(events);
+        renderCalendar(); renderevents(); showGigDetail(g.id, false);
+      }
+    };
+    cancelEditBtn.onclick = ()=> { gigEdit.classList.add('hidden'); gigView.classList.remove('hidden'); };
+  }
+
   function shareGig(id){
     const url = `${location.origin}${location.pathname}#gig-${id}`;
     navigator.clipboard?.writeText(url).then(()=>{
-      shareHint.classList.remove('hidden');
-      setTimeout(()=> shareHint.classList.add('hidden'), 1500);
+      document.getElementById('shareHint').classList.remove('hidden');
+      setTimeout(()=> document.getElementById('shareHint').classList.add('hidden'), 1500);
     });
   }
   window.addEventListener('hashchange', handleHashOpen);
@@ -602,16 +711,31 @@
   if (location.hash) handleHashOpen();
   closeGigModal.onclick = ()=> { gigModal.close(); if (location.hash.startsWith('#gig-')) history.replaceState(null,'',location.pathname+location.search); };
 
-  async function markBandOff(gigId){
-    if (!(await requireAdmin())) return;
-    const idx = DEMO_GIGS.findIndex(g=> g.id===gigId);
-    if (idx>=0){ DEMO_GIGS[idx].bandOff = true; renderCalendar(); renderGigs(); showGigDetail(gigId, false); }
-  }
-  async function clearBandOff(gigId){
-    if (!(await requireAdmin())) return;
-    const idx = DEMO_GIGS.findIndex(g=> g.id===gigId);
-    if (idx>=0){ delete DEMO_GIGS[idx].bandOff; renderCalendar(); renderGigs(); showGigDetail(gigId, false); }
-  }
+  /* ===== New gig ===== */
+  addGigBtn.onclick = ()=> {
+    if (!adminLoggedIn()) return alert('Admin login required.');
+    ngTitle.value=''; ngDate.value=''; ngTime.value=''; ngVenue.value=''; ngAddress.value=''; ngBandOff.checked=false;
+    newGigModal.showModal();
+  };
+  document.getElementById('closeNewGigModal').onclick = ()=> newGigModal.close();
+  createGigBtn.onclick = ()=>{
+    const events = getevents();
+    const nextId = (events.reduce((m,g)=> Math.max(m,g.id), 0) || 0) + 1;
+    events.push({
+      id: nextId,
+      title: (ngTitle.value||'Untitled').trim(),
+      date: ngDate.value,
+      startTime: ngTime.value,
+      venue: (ngVenue.value||'').trim(),
+      address: (ngAddress.value||'').trim(),
+      bandOff: !!ngBandOff.checked,
+      payments: {}
+    });
+    setevents(events);
+    newGigModal.close();
+    renderCalendar(); renderevents();
+    showGigDetail(nextId);
+  };
 
   /* ===== Chat ===== */
   function renderChat(){
@@ -620,9 +744,9 @@
       const div = document.createElement('div');
       div.className='chat-msg';
       div.innerHTML = `
-        <div><span class="chat-user">${m.name||'Guest'}</span>
-        <span class="chat-time">${m.time||''}</span></div>
-        <div class="chat-text">${m.message}</div>`;
+        <div><span class="font-semibold text-orange-400">${m.name||'Guest'}</span>
+        <span class="subtle ml-2">${m.time||''}</span></div>
+        <div>${m.message}</div>`;
       chatMessagesEl.appendChild(div);
     });
     chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
@@ -636,32 +760,31 @@
   };
   chatInput.addEventListener('keypress', e=>{ if(e.key==='Enter') sendChat.click(); });
 
-  /* ===== Payments ===== */
+  /* ===== Payments (static demo from events.payments) ===== */
   function renderPayments(){
+    const events = getevents();
     const totals = {};
-    BAND_MEMBERS.forEach(m=>{
-      totals[m] = DEMO_GIGS.reduce((sum,g)=> sum + (g.payments[m]?.amount || 0), 0);
-    });
+    BAND_MEMBERS.forEach(m=> totals[m]= events.reduce((sum,g)=> sum + (g.payments?.[m]?.amount || 0), 0));
     ytdSummary.innerHTML = '';
     BAND_MEMBERS.forEach(m=>{
       const card = document.createElement('div');
       card.className='ytd-card';
       card.innerHTML = `
-        <div class="ytd-name">${MEMBER_NAMES[m]}</div>
-        <div class="ytd-amount">$${totals[m].toFixed(2)}</div>
-        <div class="text-xs text-slate-400 mt-1">YTD 2025</div>`;
+        <div class="text-sm">${MEMBER_NAMES[m]}</div>
+        <div class="text-2xl font-bold text-orange-400">$${totals[m].toFixed(2)}</div>
+        <div class="text-xs subtle mt-1">YTD 2025</div>`;
       ytdSummary.appendChild(card);
     });
     paymentsList.innerHTML='';
-    DEMO_GIGS.forEach(g=>{
+    events.forEach(g=>{
       const div = document.createElement('div'); div.className='payment-gig';
       let inner = '<div class="grid grid-cols-2 md:grid-cols-5 gap-2 mt-2">';
       BAND_MEMBERS.forEach(m=>{
-        const p = g.payments[m];
+        const p = g.payments?.[m] || {amount:0,paid:false};
         inner += `
           <div class="text-center">
-            <div class="text-xs text-slate-400">${MEMBER_NAMES[m]}</div>
-            <div class="font-bold">$${p.amount.toFixed(2)}</div>
+            <div class="text-xs subtle">${MEMBER_NAMES[m]}</div>
+            <div class="font-bold">$${(p.amount||0).toFixed(2)}</div>
             <div class="payment-status ${p.paid?'paid':'unpaid'}">${p.paid?'✓ Paid':'Unpaid'}</div>
           </div>`;
       });
@@ -670,14 +793,14 @@
         <div class="flex items-center justify-between mb-2">
           <div>
             <div class="font-bold">${g.title}</div>
-            <div class="text-sm text-slate-400">${g.date} • ${g.venue}</div>
+            <div class="text-sm subtle">${g.date} • ${g.venue||''}</div>
           </div>
         </div>${inner}`;
       paymentsList.appendChild(div);
     });
   }
 
-  /* ===== Charts Repository ===== */
+  /* ===== Charts Repo (local) ===== */
   const REPO_KEY = 'ct_pdf_repo_v2_public';
   function getRepo(){ try{ return JSON.parse(localStorage.getItem(REPO_KEY)) || []; }catch{ return []; } }
   function setRepo(arr){ localStorage.setItem(REPO_KEY, JSON.stringify(arr)); }
@@ -686,11 +809,7 @@
     const repo = getRepo();
     const names = Array.from(new Set(repo.map(f=> f.uploaderName || 'Guest')));
     uploaderFilter.innerHTML = '<option value="">All uploaders</option>';
-    names.forEach(n=>{
-      const opt = document.createElement('option');
-      opt.value = n; opt.textContent = n;
-      uploaderFilter.appendChild(opt);
-    });
+    names.forEach(n=>{ const opt=document.createElement('option'); opt.value=n; opt.textContent=n; uploaderFilter.appendChild(opt); });
   }
 
   function renderRepo(){
@@ -718,7 +837,7 @@
         <div class="flex items-start justify-between gap-3">
           <div>
             <div class="font-semibold">${item.name}</div>
-            <div class="text-xs text-slate-400 mt-1">
+            <div class="text-xs subtle mt-1">
               ${item.notes ? `<span class="pill mr-2">${item.notes}</span>` : ''}
               <span class="pill">by ${item.uploaderName||'Guest'}</span>
               <span class="pill">${sizeKB} KB</span>
@@ -739,7 +858,11 @@
       dlBtn.href = item.dataUrl;
       if (delBtn){
         delBtn.onclick = async ()=>{
-          if (!(await checkUserPass())) return alert('Wrong passcode.');
+          const stored = localStorage.getItem(PASS_KEYS.user);
+          if (stored){ // if a user pass is set, ask once per delete
+            const tryPass = prompt('Enter your passcode to delete');
+            if (!tryPass || stored !== await sha256(tryPass)) return alert('Wrong passcode.');
+          }
           const next = getRepo().filter(x=> x.id !== item.id);
           setRepo(next); hydrateUploaderFilter(); renderRepo();
         };
@@ -765,16 +888,8 @@
     for (const f of files){
       if (f.type !== 'application/pdf'){ alert(`'${f.name}' is not a PDF.`); continue; }
       const dataUrl = await fileToDataUrl(f);
-      const entry = {
-        id: crypto.randomUUID(),
-        name: f.name,
-        size: f.size,
-        notes: (pdfTitle.value||'').trim(),
-        uploaderName: (uploaderName.value||'Guest').trim() || 'Guest',
-        deviceId,
-        ts: Date.now(),
-        dataUrl
-      };
+      const entry = { id: crypto.randomUUID(), name: f.name, size: f.size, notes: (pdfTitle.value||'').trim(),
+        uploaderName: (uploaderName.value||'Guest').trim() || 'Guest', deviceId, ts: Date.now(), dataUrl };
       repo.push(entry);
     }
     setRepo(repo);
@@ -784,36 +899,26 @@
 
   function fileToDataUrl(file){
     return new Promise((resolve,reject)=>{
-      const r = new FileReader();
-      r.onload = ()=> resolve(r.result);
-      r.onerror = reject;
-      r.readAsDataURL(file);
+      const r=new FileReader(); r.onload=()=>resolve(r.result); r.onerror=reject; r.readAsDataURL(file);
     });
   }
 
-  searchPdf.addEventListener('input', renderRepo);
-  uploaderFilter.addEventListener('change', renderRepo);
   clearFiltersBtn.onclick = ()=>{ searchPdf.value=''; uploaderFilter.value=''; renderRepo(); };
   exportRepoBtn.onclick = ()=>{
     const index = getRepo().map(({id,name,size,uploaderName,notes,ts})=>({id,name,size,uploaderName,notes,ts}));
     const blob = new Blob([JSON.stringify(index,null,2)], {type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'charts_index.json'; a.click();
-    URL.revokeObjectURL(url);
+    const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='charts_index.json'; a.click(); URL.revokeObjectURL(url);
   };
 
-  /* ===== YouTube Links Repository ===== */
+  /* ===== YouTube Repo (local) ===== */
   const YT_KEY = 'ct_yt_repo_v1';
   function ytGetRepo(){ try{ return JSON.parse(localStorage.getItem(YT_KEY)) || []; }catch{ return []; } }
   function ytSetRepo(arr){ localStorage.setItem(YT_KEY, JSON.stringify(arr)); }
 
   function parseYouTubeId(input){
-    if (!input) return null;
-    input = input.trim();
+    if (!input) return null; input=input.trim();
     if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
-    const m =
-      input.match(/(?:v=|\/embed\/|\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/) ||
-      input.match(/v=([a-zA-Z0-9_-]{11})/);
+    const m = input.match(/(?:v=|\/embed\/|\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/) || input.match(/v=([a-zA-Z0-9_-]{11})/);
     return m ? m[1] : null;
   }
 
@@ -821,11 +926,7 @@
     const repo = ytGetRepo();
     const names = Array.from(new Set(repo.map(f=> f.uploaderName || 'Guest')));
     ytUploaderFilter.innerHTML = '<option value="">All uploaders</option>';
-    names.forEach(n=>{
-      const opt = document.createElement('option');
-      opt.value = n; opt.textContent = n;
-      ytUploaderFilter.appendChild(opt);
-    });
+    names.forEach(n=>{ const opt=document.createElement('option'); opt.value=n; opt.textContent=n; ytUploaderFilter.appendChild(opt); });
   }
 
   function ytRenderRepo(){
@@ -853,7 +954,7 @@
           <img src="${thumb}" alt="Thumbnail" class="w-full" loading="lazy">
         </div>
         <div class="mt-2 font-semibold">${item.title || 'YouTube Video'}</div>
-        <div class="text-xs text-slate-400 mt-1">
+        <div class="text-xs subtle mt-1">
           ${item.notes ? `<span class="pill mr-2">${item.notes}</span>` : ''}
           <span class="pill">by ${item.uploaderName||'Guest'}</span>
           <span class="pill">${new Date(item.ts).toLocaleString()}</span>
@@ -873,7 +974,11 @@
       shareBtn.onclick = ()=> ytShare(item);
       if (delBtn){
         delBtn.onclick = async ()=>{
-          if (!(await checkUserPass())) return alert('Wrong passcode.');
+          const stored = localStorage.getItem(PASS_KEYS.user);
+          if (stored){
+            const tryPass = prompt('Enter your passcode to delete');
+            if (!tryPass || stored !== await sha256(tryPass)) return alert('Wrong passcode.');
+          }
           ytSetRepo(ytGetRepo().filter(x=> x.id !== item.id));
           ytHydrateUploaderFilter(); ytRenderRepo();
         };
@@ -908,15 +1013,8 @@
     const id = parseYouTubeId(ytUrl.value);
     if (!id){ alert('Please enter a valid YouTube URL or 11-character video ID.'); return; }
     const repo = ytGetRepo();
-    const item = {
-      id: crypto.randomUUID(),
-      videoId: id,
-      title: (ytTitle.value||'').trim(),
-      notes: (ytNotes.value||'').trim(),
-      uploaderName: (ytUploader.value||'Guest').trim() || 'Guest',
-      deviceId,
-      ts: Date.now()
-    };
+    const item = { id: crypto.randomUUID(), videoId: id, title:(ytTitle.value||'').trim(), notes:(ytNotes.value||'').trim(),
+                   uploaderName:(ytUploader.value||'Guest').trim() || 'Guest', deviceId, ts: Date.now() };
     repo.push(item);
     ytSetRepo(repo);
     ytUrl.value=''; ytTitle.value=''; ytNotes.value='';
@@ -929,16 +1027,45 @@
   ytExportBtn.onclick = ()=>{
     const index = ytGetRepo().map(({id,videoId,title,notes,uploaderName,ts})=>({id,videoId,title,notes,uploaderName,ts}));
     const blob = new Blob([JSON.stringify(index,null,2)], {type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'youtube_index.json'; a.click();
-    URL.revokeObjectURL(url);
+    const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='youtube_index.json'; a.click(); URL.revokeObjectURL(url);
+  };
+
+  /* ===== Pass & Admin login ===== */
+  setPassBtn.onclick = ()=> passModal.showModal();
+  closePassBtn.onclick = ()=> passModal.close();
+  savePassBtn.onclick = async ()=>{
+    const u = document.getElementById('userPass').value.trim();
+    const a = document.getElementById('adminPass').value.trim();
+    await setPasscodes({ user: u || null, admin: a || null });
+    document.getElementById('userPass').value=''; document.getElementById('adminPass').value='';
+    passModal.close();
+  };
+
+  adminLoginBtn.onclick = ()=>{
+    if (!localStorage.getItem(PASS_KEYS.admin)) return alert('Set an admin passcode first (🔒 Set Passcode).');
+    adminLoginInput.value=''; adminLoginModal.showModal();
+  };
+  adminLoginClose.onclick = ()=> adminLoginModal.close();
+  adminLoginSubmit.onclick = async ()=>{
+    const stored = localStorage.getItem(PASS_KEYS.admin);
+    const tryPass = adminLoginInput.value.trim();
+    if (!tryPass) return;
+    const ok = stored === await sha256(tryPass);
+    if (!ok) return alert('Incorrect admin passcode.');
+    localStorage.setItem(PASS_KEYS.adminSession, '1');
+    adminLoginModal.close();
+    updateLockStatusUI();
+    renderevents(); renderCalendar();
+  };
+  adminLogoutBtn.onclick = ()=>{
+    localStorage.removeItem(PASS_KEYS.adminSession);
+    updateLockStatusUI();
+    renderevents(); renderCalendar();
   };
 
   /* ===== Init ===== */
-  function init(){ renderCalendar(); renderGigs(); }
-  init();
+  function init(){ updateLockStatusUI(); renderCalendar(); renderevents(); }
+  window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
-
-
