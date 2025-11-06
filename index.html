@@ -10,17 +10,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    :root{--accent:#ff6b35}
     body{font-family:Inter,system-ui,sans-serif;background:#0d1117;color:#e5e7eb}
     .card{background:rgba(255,255,255,.06);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.08);border-radius:14px}
-    .btn{background:#ff6b35;color:#0d1117;font-weight:700;border-radius:10px;padding:.6rem .9rem;cursor:pointer;border:none}
-    .btn-sec{background:transparent;border:1px solid #ff6b35;color:#ff6b35;border-radius:10px;padding:.5rem .8rem;cursor:pointer}
+    .btn{background:var(--accent);color:#0d1117;font-weight:700;border-radius:10px;padding:.6rem .9rem;cursor:pointer;border:none}
+    .btn-sec{background:transparent;border:1px solid var(--accent);color:var(--accent);border-radius:10px;padding:.5rem .8rem;cursor:pointer}
     .btn:hover{background:#ff8555}
     .btn-sec:hover{background:rgba(255,107,53,.1)}
     input,select,textarea{background:#0b1220;border:1px solid #2b3547;border-radius:10px;padding:.55rem .7rem;width:100%;color:#e5e7eb}
+    textarea{min-height:84px}
     .subtle{color:#a3b0c2}
     .pill{display:inline-block;font-size:.75rem;padding:.25rem .5rem;border:1px solid #2b3547;border-radius:999px}
     .kv{display:grid;grid-template-columns:180px 1fr;gap:.6rem}
-    .chat-msg{background:rgba(255,255,255,.05);padding:.75rem;border-radius:8px;border-left:3px solid #ff6b35;margin-bottom:.5rem}
+    .chat-msg{background:rgba(255,255,255,.05);padding:.75rem;border-radius:8px;border-left:3px solid var(--accent);margin-bottom:.5rem}
     .payment-gig{background:rgba(255,255,255,.03);border:1px solid #2b3547;border-radius:8px;padding:1rem;margin-bottom:.75rem}
     .payment-status{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600}
     .payment-status.paid{background:#10b981;color:#fff}
@@ -31,18 +33,23 @@
     .modal{background:#1a1f2e !important;border:1px solid #2b3547 !important;color:#fff !important}
     .modal .subtle{color:#cbd5e1}
 
+    /* Calendar */
     .cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;margin-top:.5rem}
     .cal-header{font-size:.75rem;font-weight:700;color:#cbd5e1;text-align:center;padding:.5rem;background:#1a1f2e}
     .cal-day{min-height:80px;background:#fff;color:#0d1117;padding:.5rem;border-radius:4px;position:relative;cursor:pointer;transition:all .2s}
     .cal-day:hover{transform:scale(1.02);box-shadow:0 4px 12px rgba(255,107,53,.3)}
-    .cal-day.has-event{background:#ff6b35;color:#fff;font-weight:700}
+    .cal-day.has-event{background:var(--accent);color:#fff;font-weight:700}
     .cal-day.band-off{background:#dc2626 !important;color:#fff !important;font-weight:700}
     .cal-day.band-off .cal-event{background:rgba(255,255,255,.25)}
     .cal-day.other-month{opacity:.3}
     .cal-day-num{font-size:1.1rem;font-weight:700;margin-bottom:.25rem}
-    .cal-day.today{border:3px solid #ffd23f}
+    .cal-day.today{outline:3px solid #ffd23f;outline-offset:-3px}
     .cal-event{font-size:.7rem;background:rgba(0,0,0,.2);padding:.2rem .3rem;margin-top:.2rem;border-radius:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .cal-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+
+    /* Mobile buttons: same width */
+    .nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+    @media (min-width:640px){ .nav-grid{display:flex;gap:.5rem} .nav-grid > *{width:auto} }
+    .wfull-sm{width:100%} @media (min-width:640px){ .wfull-sm{width:auto} }
   </style>
 </head>
 <body>
@@ -50,24 +57,24 @@
     <header class="flex items-center justify-between mb-6">
       <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">The Chuck Taylors — Events</h1>
       <div class="flex items-center gap-2 flex-wrap text-sm text-slate-300">
-        <button id="setPassBtn" class="btn-sec">🔒 Set Passcode</button>
-        <button id="adminLoginBtn" class="btn-sec">👤 Admin Login</button>
-        <button id="adminLogoutBtn" class="btn-sec hidden">↩︎ Logout</button>
-        <span id="lockStatus" class="text-xs subtle"></span>
+        <button id="setPassBtn" class="btn-sec wfull-sm">🔒 Set Passcode</button>
+        <button id="adminLoginBtn" class="btn-sec wfull-sm">👤 Admin Login</button>
+        <button id="adminLogoutBtn" class="btn-sec hidden wfull-sm">↩︎ Logout</button>
+        <span id="lockStatus" class="text-xs subtle block w-full sm:w-auto sm:block"></span>
       </div>
     </header>
 
     <!-- Control bar -->
     <div class="card p-3 md:p-4 mb-6">
-      <div class="flex items-center justify-between gap-2 flex-wrap">
+      <div class="flex flex-col gap-3">
         <div class="text-sm text-slate-300">Events, chat, payments, charts, and YouTube links.</div>
-        <div class="flex items-center gap-2 flex-wrap">
-          <button id="showEventsBtn" class="btn-sec">📅 Dates</button>
-          <button id="toggleChatBtn" class="btn-sec">💬 Chat</button>
-          <button id="togglePaymentsBtn" class="btn-sec">💰 Payments</button>
-          <button id="toggleChartsBtn" class="btn-sec">📊 Charts</button>
-          <button id="toggleYouTubeBtn" class="btn-sec">🎬 YouTube</button>
-          <button id="addEventBtn" class="btn hidden">+ New Event</button>
+        <div class="nav-grid">
+          <button id="showEventsBtn" class="btn-sec wfull-sm">📅 Dates</button>
+          <button id="toggleChatBtn" class="btn-sec wfull-sm">💬 Chat</button>
+          <button id="togglePaymentsBtn" class="btn-sec wfull-sm">💰 Payments</button>
+          <button id="toggleChartsBtn" class="btn-sec wfull-sm">📊 Charts</button>
+          <button id="toggleYouTubeBtn" class="btn-sec wfull-sm">🎬 YouTube</button>
+          <button id="addEventBtn" class="btn hidden wfull-sm">+ New Event</button>
         </div>
       </div>
     </div>
@@ -76,15 +83,13 @@
     <div id="eventsView">
       <div class="grid xl:grid-cols-3 gap-6">
         <div class="xl:col-span-2 card p-4 min-w-0">
-          <div class="cal-nav">
-            <button id="calPrev" class="btn-sec">← Prev</button>
-            <h2 id="calTitle" class="text-2xl font-bold"></h2>
-            <button id="calNext" class="btn-sec">Next →</button>
+          <div class="flex items-center justify-center mb-3">
+            <h2 id="calTitle" class="text-2xl font-bold text-center"></h2>
           </div>
-          <div class="flex gap-4 mb-3 text-sm flex-wrap">
+          <div class="flex gap-4 mb-3 text-sm flex-wrap justify-center">
             <div class="flex items-center gap-2"><div class="w-4 h-4 bg-white rounded"></div><span>Open Date</span></div>
             <div class="flex items-center gap-2"><div class="w-4 h-4 bg-orange-500 rounded"></div><span>Event Scheduled</span></div>
-            <div class="flex items-center gap-2"><div class="w-4 h-4 bg-red-600 rounded"></div><span>Band Off (Greg solo)</span></div>
+            <div class="flex items-center gap-2"><div class="w-4 h-4 bg-red-600 rounded"></div><span>Band Off</span></div>
             <div class="flex items-center gap-2"><div class="w-4 h-4 border-4 border-yellow-400 rounded"></div><span>Today</span></div>
           </div>
           <div id="monthlyCalendar"></div>
@@ -101,7 +106,10 @@
     <!-- Chat -->
     <div id="chatView" class="hidden">
       <div class="card p-6">
-        <h2 class="text-2xl font-bold mb-4">Band Chat</h2>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold">Band Chat</h2>
+          <button id="clearChatBtn" class="btn-sec hidden">🗑️ Clear Chat</button>
+        </div>
         <div id="chatMessages" class="bg-black bg-opacity-30 rounded-lg p-4 h-96 overflow-y-auto mb-4"></div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           <input id="chatName" type="text" placeholder="Your name (optional)" />
@@ -236,7 +244,21 @@
           <div><label class="subtle text-xs">Start Time</label><input id="egTime" type="time" /></div>
           <div><label class="subtle text-xs">Venue</label><input id="egVenue" /></div>
           <div class="md:col-span-2"><label class="subtle text-xs">Address</label><input id="egAddress" /></div>
-          <label class="flex items-center gap-2"><input id="egBandOff" type="checkbox" /><span>Band Off (Greg solo)</span></label>
+
+          <label class="flex items-center gap-2 md:col-span-2"><input id="egBandOff" type="checkbox" /><span>Band Off (Greg solo)</span></label>
+
+          <label class="flex items-center gap-2"><input id="egCeremonyOnsite" type="checkbox" /><span>Ceremony onsite?</span></label>
+          <label class="flex items-center gap-2"><input id="egRoomFlip" type="checkbox" /><span>Room flip?</span></label>
+
+          <div><label class="subtle text-xs">Guest Arrival</label><input id="egGuestArrivalTime" type="time" /></div>
+          <div><label class="subtle text-xs">Band Arrival</label><input id="egBandArrivalTime" type="time" /></div>
+          <div><label class="subtle text-xs">Time of Introduction</label><input id="egIntroTime" type="time" /></div>
+          <div><label class="subtle text-xs">Song for Introduction</label><input id="egIntroSong" /></div>
+          <div><label class="subtle text-xs">First Dance</label><input id="egFirstDanceSong" /></div>
+          <div><label class="subtle text-xs">Parents' Dances</label><input id="egParentsDances" /></div>
+          <div class="md:col-span-2"><label class="subtle text-xs">Special Requests</label><textarea id="egSpecialRequests"></textarea></div>
+          <div><label class="subtle text-xs">Last Song</label><input id="egLastSong" /></div>
+          <div class="md:col-span-2"><label class="subtle text-xs">Do-Not-Play Songs</label><textarea id="egDoNotPlay"></textarea></div>
         </div>
         <div class="flex justify-end gap-2 mt-4">
           <button id="saveGigBtn" class="btn">Save</button>
@@ -261,7 +283,21 @@
         <div><label class="subtle text-xs">Start Time</label><input id="ngTime" type="time" /></div>
         <div><label class="subtle text-xs">Venue</label><input id="ngVenue" /></div>
         <div class="md:col-span-2"><label class="subtle text-xs">Address</label><input id="ngAddress" /></div>
-        <label class="flex items-center gap-2"><input id="ngBandOff" type="checkbox" /><span>Band Off (Greg solo)</span></label>
+
+        <label class="flex items-center gap-2 md:col-span-2"><input id="ngBandOff" type="checkbox" /><span>Band Off (Greg solo)</span></label>
+
+        <label class="flex items-center gap-2"><input id="ngCeremonyOnsite" type="checkbox" /><span>Ceremony onsite?</span></label>
+        <label class="flex items-center gap-2"><input id="ngRoomFlip" type="checkbox" /><span>Room flip?</span></label>
+
+        <div><label class="subtle text-xs">Guest Arrival</label><input id="ngGuestArrivalTime" type="time" /></div>
+        <div><label class="subtle text-xs">Band Arrival</label><input id="ngBandArrivalTime" type="time" /></div>
+        <div><label class="subtle text-xs">Time of Introduction</label><input id="ngIntroTime" type="time" /></div>
+        <div><label class="subtle text-xs">Song for Introduction</label><input id="ngIntroSong" /></div>
+        <div><label class="subtle text-xs">First Dance</label><input id="ngFirstDanceSong" /></div>
+        <div><label class="subtle text-xs">Parents' Dances</label><input id="ngParentsDances" /></div>
+        <div class="md:col-span-2"><label class="subtle text-xs">Special Requests</label><textarea id="ngSpecialRequests"></textarea></div>
+        <div><label class="subtle text-xs">Last Song</label><input id="ngLastSong" /></div>
+        <div class="md:col-span-2"><label class="subtle text-xs">Do-Not-Play Songs</label><textarea id="ngDoNotPlay"></textarea></div>
       </div>
       <div class="flex justify-end gap-2 mt-4">
         <button id="createGigBtn" class="btn">Create</button>
@@ -338,6 +374,16 @@
   </dialog>
 
   <script>
+  /* ===== Helpers ===== */
+  function parseLocalDate(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y, m-1, d); }
+  function formatTime12(hhmm){
+    if (!hhmm) return '';
+    const [h,m]=hhmm.split(':').map(Number);
+    const ampm = h>=12?'PM':'AM';
+    const h12 = h%12||12;
+    return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+  }
+
   /* ===== Data (seed) ===== */
   const BAND_MEMBERS = ['greg','john','tim','brian','mark'];
   const MEMBER_NAMES = { greg:'Greg', john:'John', tim:'Tim', brian:'Brian', mark:'Mark' };
@@ -391,6 +437,7 @@
     document.getElementById('addEventBtn').classList.toggle('hidden', !adminLoggedIn());
     document.getElementById('adminLoginBtn').classList.toggle('hidden', adminLoggedIn());
     document.getElementById('adminLogoutBtn').classList.toggle('hidden', !adminLoggedIn());
+    clearChatBtn.classList.toggle('hidden', !adminLoggedIn());
   }
   function updateLockStatusUI(){
     const hasUser = !!localStorage.getItem(PASS_KEYS.user);
@@ -418,6 +465,7 @@
   const chatInput=document.getElementById('chatInput');
   const chatName=document.getElementById('chatName');
   const sendChat=document.getElementById('sendChat');
+  const clearChatBtn=document.getElementById('clearChatBtn');
 
   const ytdSummary=document.getElementById('ytdSummary');
   const paymentsList=document.getElementById('paymentsList');
@@ -443,7 +491,6 @@
 
   // Event modal
   const gigModal=document.getElementById('gigModal');
-  const gigTitleEl=document.getElementById('gigTitle');
   const gigView=document.getElementById('gigView');
   const gigEdit=document.getElementById('gigEdit');
   const shareGigBtn=document.getElementById('shareGigBtn');
@@ -460,6 +507,17 @@
   const egVenue=document.getElementById('egVenue');
   const egAddress=document.getElementById('egAddress');
   const egBandOff=document.getElementById('egBandOff');
+  const egCeremonyOnsite = document.getElementById('egCeremonyOnsite');
+  const egRoomFlip = document.getElementById('egRoomFlip');
+  const egGuestArrivalTime = document.getElementById('egGuestArrivalTime');
+  const egBandArrivalTime = document.getElementById('egBandArrivalTime');
+  const egIntroTime = document.getElementById('egIntroTime');
+  const egIntroSong = document.getElementById('egIntroSong');
+  const egFirstDanceSong = document.getElementById('egFirstDanceSong');
+  const egParentsDances = document.getElementById('egParentsDances');
+  const egSpecialRequests = document.getElementById('egSpecialRequests');
+  const egLastSong = document.getElementById('egLastSong');
+  const egDoNotPlay = document.getElementById('egDoNotPlay');
   const saveGigBtn=document.getElementById('saveGigBtn');
   const cancelEditBtn=document.getElementById('cancelEditBtn');
 
@@ -472,6 +530,17 @@
   const ngVenue=document.getElementById('ngVenue');
   const ngAddress=document.getElementById('ngAddress');
   const ngBandOff=document.getElementById('ngBandOff');
+  const ngCeremonyOnsite = document.getElementById('ngCeremonyOnsite');
+  const ngRoomFlip = document.getElementById('ngRoomFlip');
+  const ngGuestArrivalTime = document.getElementById('ngGuestArrivalTime');
+  const ngBandArrivalTime = document.getElementById('ngBandArrivalTime');
+  const ngIntroTime = document.getElementById('ngIntroTime');
+  const ngIntroSong = document.getElementById('ngIntroSong');
+  const ngFirstDanceSong = document.getElementById('ngFirstDanceSong');
+  const ngParentsDances = document.getElementById('ngParentsDances');
+  const ngSpecialRequests = document.getElementById('ngSpecialRequests');
+  const ngLastSong = document.getElementById('ngLastSong');
+  const ngDoNotPlay = document.getElementById('ngDoNotPlay');
   const createGigBtn=document.getElementById('createGigBtn');
 
   // YouTube
@@ -514,9 +583,6 @@
   function showChartsView(){ hideAllViews(); chartsView.classList.remove('hidden'); hydrateUploaderFilter(); renderRepo(); }
   function showYouTubeView(){ hideAllViews(); youtubeView.classList.remove('hidden'); ytHydrateUploaderFilter(); ytRenderRepo(); }
 
-  document.getElementById('calPrev').onclick = ()=>{ calendarDate.setMonth(calendarDate.getMonth()-1); renderCalendar(); };
-  document.getElementById('calNext').onclick = ()=>{ calendarDate.setMonth(calendarDate.getMonth()+1); renderCalendar(); };
-
   showEventsBtn.onclick = showEventsView;
   toggleChatBtn.onclick = showChatView;
   togglePaymentsBtn.onclick = showPaymentsView;
@@ -531,7 +597,7 @@
     const year = calendarDate.getFullYear();
     const month = calendarDate.getMonth();
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; // Abbreviations
     document.getElementById('calTitle').textContent = `${monthNames[month]} ${year}`;
     const calendar = document.getElementById('monthlyCalendar');
     calendar.innerHTML = '';
@@ -547,7 +613,7 @@
 
     const monthEvents = {};
     allEvents.forEach(ev=>{
-      const d = new Date(ev.date);
+      const d = parseLocalDate(ev.date);
       if (d.getFullYear()===year && d.getMonth()===month){
         const day = d.getDate();
         (monthEvents[day] ||= []).push(ev);
@@ -575,7 +641,7 @@
       if (isCurrentMonth && day===todayDate) cell.classList.add('today');
 
       let html = `<div class="cal-day-num">${day}</div>`;
-      todays.forEach(ev=> { html += `<div class="cal-event">${ev.startTime || ''} ${ev.bandOff ? 'Band Off' : ev.title}</div>`; });
+      todays.forEach(ev=> { html += `<div class="cal-event">${ev.startTime?formatTime12(ev.startTime)+' ':''}${ev.bandOff ? 'Band Off' : ev.title}</div>`; });
       cell.innerHTML = html;
 
       if (todays.length) cell.onclick = ()=> showGigDetail(todays[0].id);
@@ -585,491 +651,4 @@
     // next month leading days
     const total = firstDay + daysInMonth;
     const rem = total % 7 === 0 ? 0 : 7 - (total % 7);
-    for (let day=1; day<=rem; day++){
-      const cell = document.createElement('div'); cell.className='cal-day other-month';
-      cell.innerHTML = `<div class="cal-day-num">${day}</div>`;
-      grid.appendChild(cell);
-    }
-
-    calendar.appendChild(grid);
-  }
-
-  /* ===== Events list ===== */
-  function renderEvents(){
-    const allEvents = getEvents().slice().sort((a,b)=> new Date(a.date) - new Date(b.date));
-    const eventsList = document.getElementById('eventsList');
-    eventsList.innerHTML = '';
-    allEvents.forEach(ev=>{
-      const div = document.createElement('div');
-      const bandOffPill = ev.bandOff ? `<span class="pill" style="border-color:#dc2626;color:#fff;background:#dc2626">Band Off</span>` : '';
-      div.className='p-3 card cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all';
-      div.innerHTML = `
-        <div>
-          <div class="text-sm subtle">${ev.date}${ev.startTime?' • '+ev.startTime:''}</div>
-          <div class="font-semibold">${ev.title} ${bandOffPill}</div>
-          <div class="text-xs text-slate-400">${ev.venue||''}</div>
-          <button class="btn-sec mt-2 text-xs" onclick="showGigDetail(${ev.id})">View Details</button>
-        </div>`;
-      eventsList.appendChild(div);
-    });
-  }
-
-  /* ===== Event modal (view/edit/delete) ===== */
-  window.showGigDetail = function(id, pushHash = true){
-    const allEvents = getEvents();
-    const ev = allEvents.find(x=> x.id===id); if(!ev) return;
-
-    document.getElementById('gigTitle').textContent = ev.title;
-    const badge = ev.bandOff
-      ? `<div class="mb-3 text-sm" style="background:#dc2626;color:#fff;padding:.4rem .6rem;border-radius:8px;display:inline-block">Band Off (Greg solo)</div>`
-      : '';
-    gigView.innerHTML = `
-      ${badge}
-      <div class="kv"><div class="subtle">Date</div><div>${ev.date}${ev.startTime?' at '+ev.startTime:''}</div></div>
-      <div class="kv"><div class="subtle">Venue</div><div>${ev.venue||''}</div></div>
-      <div class="kv"><div class="subtle">Address</div><div>${ev.address||''}</div></div>`;
-
-    // Admin-only controls visible on session
-    editGigBtn.classList.toggle('hidden', !adminLoggedIn());
-    deleteGigBtn.classList.toggle('hidden', !adminLoggedIn());
-    bandOffBtn.classList.toggle('hidden', !adminLoggedIn() || ev.bandOff === true);
-    clearBandOffBtn.classList.toggle('hidden', !adminLoggedIn() || ev.bandOff !== true);
-
-    // share
-    shareGigBtn.onclick = ()=> shareGig(id);
-
-    // band off toggles
-    bandOffBtn.onclick = ()=> {
-      const arr = getEvents();
-      const i = arr.findIndex(x=>x.id===id);
-      if(i>=0){ arr[i].bandOff=true; setEvents(arr); renderCalendar(); renderEvents(); showGigDetail(id,false); }
-    };
-    clearBandOffBtn.onclick = ()=> {
-      const arr = getEvents();
-      const i = arr.findIndex(x=>x.id===id);
-      if(i>=0){ delete arr[i].bandOff; setEvents(arr); renderCalendar(); renderEvents(); showGigDetail(id,false); }
-    };
-
-    // edit
-    editGigBtn.onclick = ()=> enterEditMode(ev);
-    deleteGigBtn.onclick = ()=> {
-      if (!confirm('Delete this event?')) return;
-      const next = getEvents().filter(x=> x.id!==id);
-      setEvents(next); renderCalendar(); renderEvents(); gigModal.close();
-    };
-
-    // modes
-    gigView.classList.remove('hidden');
-    gigEdit.classList.add('hidden');
-
-    document.getElementById('shareHint').classList.add('hidden');
-    gigModal.showModal();
-    if (pushHash) location.hash = `gig-${id}`;
-  };
-
-  function enterEditMode(ev){
-    egTitle.value = ev.title||'';
-    egDate.value = ev.date||'';
-    egTime.value = ev.startTime||'';
-    egVenue.value = ev.venue||'';
-    egAddress.value = ev.address||'';
-    egBandOff.checked = !!ev.bandOff;
-
-    gigView.classList.add('hidden');
-    gigEdit.classList.remove('hidden');
-
-    saveGigBtn.onclick = ()=>{
-      const arr = getEvents();
-      const i = arr.findIndex(x=> x.id===ev.id);
-      if (i>=0){
-        arr[i] = {
-          ...arr[i],
-          title: egTitle.value.trim() || 'Untitled',
-          date: egDate.value,
-          startTime: egTime.value,
-          venue: egVenue.value.trim(),
-          address: egAddress.value.trim(),
-          bandOff: !!egBandOff.checked
-        };
-        setEvents(arr);
-        renderCalendar(); renderEvents(); showGigDetail(ev.id, false);
-      }
-    };
-    cancelEditBtn.onclick = ()=> { gigEdit.classList.add('hidden'); gigView.classList.remove('hidden'); };
-  }
-
-  function shareGig(id){
-    const url = `${location.origin}${location.pathname}#gig-${id}`;
-    navigator.clipboard?.writeText(url).then(()=>{
-      document.getElementById('shareHint').classList.remove('hidden');
-      setTimeout(()=> document.getElementById('shareHint').classList.add('hidden'), 1500);
-    });
-  }
-  window.addEventListener('hashchange', handleHashOpen);
-  function handleHashOpen(){
-    const g = location.hash.match(/#gig-(\d+)/);
-    const y = location.hash.match(/#yt-([a-z0-9-]+)/i);
-    if (g){ const id = parseInt(g[1],10); showGigDetail(id, false); }
-    if (y){ const id = y[1]; const item = ytGetRepo().find(x=> x.id===id); if (item) ytOpen(item, false); }
-  }
-  if (location.hash) handleHashOpen();
-  closeGigModal.onclick = ()=> { gigModal.close(); if (location.hash.startsWith('#gig-')) history.replaceState(null,'',location.pathname+location.search); };
-
-  /* ===== New event ===== */
-  addEventBtn.onclick = ()=> {
-    if (!adminLoggedIn()) return alert('Admin login required.');
-    ngTitle.value=''; ngDate.value=''; ngTime.value=''; ngVenue.value=''; ngAddress.value=''; ngBandOff.checked=false;
-    newGigModal.showModal();
-  };
-  document.getElementById('closeNewGigModal').onclick = ()=> newGigModal.close();
-  createGigBtn.onclick = ()=>{
-    const arr = getEvents();
-    const nextId = (arr.reduce((m,g)=> Math.max(m,g.id), 0) || 0) + 1;
-    arr.push({
-      id: nextId,
-      title: (ngTitle.value||'Untitled').trim(),
-      date: ngDate.value,
-      startTime: ngTime.value,
-      venue: (ngVenue.value||'').trim(),
-      address: (ngAddress.value||'').trim(),
-      bandOff: !!ngBandOff.checked,
-      payments: {}
-    });
-    setEvents(arr);
-    newGigModal.close();
-    renderCalendar(); renderEvents();
-    showGigDetail(nextId);
-  };
-
-  /* ===== Chat ===== */
-  function renderChat(){
-    chatMessagesEl.innerHTML = '';
-    chatMessages.forEach(m=>{
-      const div = document.createElement('div');
-      div.className='chat-msg';
-      div.innerHTML = `
-        <div><span class="font-semibold text-orange-400">${m.name||'Guest'}</span>
-        <span class="subtle ml-2">${m.time||''}</span></div>
-        <div>${m.message}</div>`;
-      chatMessagesEl.appendChild(div);
-    });
-    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-  }
-  sendChat.onclick = ()=>{
-    const msg = (chatInput.value||'').trim(); if(!msg) return;
-    const name = (chatName.value||'Guest').trim();
-    const time = new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-    chatMessages.push({ name, message: msg, time });
-    chatInput.value=''; localStorage.setItem('ct_chat_v1', JSON.stringify(chatMessages)); renderChat();
-  };
-  chatInput.addEventListener('keypress', e=>{ if(e.key==='Enter') sendChat.click(); });
-
-  /* ===== Payments (static demo from event.payments) ===== */
-  function renderPayments(){
-    const allEvents = getEvents();
-    const totals = {};
-    BAND_MEMBERS.forEach(m=> totals[m]= allEvents.reduce((sum,ev)=> sum + (ev.payments?.[m]?.amount || 0), 0));
-    ytdSummary.innerHTML = '';
-    BAND_MEMBERS.forEach(m=>{
-      const card = document.createElement('div');
-      card.className='ytd-card';
-      card.innerHTML = `
-        <div class="text-sm">${MEMBER_NAMES[m]}</div>
-        <div class="text-2xl font-bold text-orange-400">$${totals[m].toFixed(2)}</div>
-        <div class="text-xs subtle mt-1">YTD 2025</div>`;
-      ytdSummary.appendChild(card);
-    });
-    paymentsList.innerHTML='';
-    allEvents.forEach(ev=>{
-      const div = document.createElement('div'); div.className='payment-gig';
-      let inner = '<div class="grid grid-cols-2 md:grid-cols-5 gap-2 mt-2">';
-      BAND_MEMBERS.forEach(m=>{
-        const p = ev.payments?.[m] || {amount:0,paid:false};
-        inner += `
-          <div class="text-center">
-            <div class="text-xs subtle">${MEMBER_NAMES[m]}</div>
-            <div class="font-bold">$${(p.amount||0).toFixed(2)}</div>
-            <div class="payment-status ${p.paid?'paid':'unpaid'}">${p.paid?'✓ Paid':'Unpaid'}</div>
-          </div>`;
-      });
-      inner += '</div>';
-      div.innerHTML = `
-        <div class="flex items-center justify-between mb-2">
-          <div>
-            <div class="font-bold">${ev.title}</div>
-            <div class="text-sm subtle">${ev.date} • ${ev.venue||''}</div>
-          </div>
-        </div>${inner}`;
-      paymentsList.appendChild(div);
-    });
-  }
-
-  /* ===== Charts Repo (local) ===== */
-  const REPO_KEY = 'ct_pdf_repo_v2_public';
-  function getRepo(){ try{ return JSON.parse(localStorage.getItem(REPO_KEY)) || []; }catch{ return []; } }
-  function setRepo(arr){ localStorage.setItem(REPO_KEY, JSON.stringify(arr)); }
-
-  function hydrateUploaderFilter(){
-    const repo = getRepo();
-    const names = Array.from(new Set(repo.map(f=> f.uploaderName || 'Guest')));
-    uploaderFilter.innerHTML = '<option value="">All uploaders</option>';
-    names.forEach(n=>{ const opt=document.createElement('option'); opt.value=n; opt.textContent=n; uploaderFilter.appendChild(opt); });
-  }
-
-  function renderRepo(){
-    const q = (searchPdf.value||'').toLowerCase();
-    const u = uploaderFilter.value || '';
-    const repo = getRepo().sort((a,b)=> b.ts - a.ts);
-    const filtered = repo.filter(item=>{
-      const text = `${item.name} ${item.notes||''}`.toLowerCase();
-      const matchesQ = !q || text.includes(q);
-      const matchesU = !u || (item.uploaderName||'Guest') === u;
-      return matchesQ && matchesU;
-    });
-
-    pdfList.innerHTML = '';
-    emptyRepo.classList.toggle('hidden', filtered.length !== 0);
-
-    filtered.forEach(item=>{
-      const card = document.createElement('div');
-      card.className = 'card p-4';
-      const sizeKB = Math.round(item.size/1024);
-      const when = new Date(item.ts).toLocaleString();
-      const canDelete = item.deviceId === deviceId;
-
-      card.innerHTML = `
-        <div class="flex items-start justify-between gap-3">
-          <div>
-            <div class="font-semibold">${item.name}</div>
-            <div class="text-xs subtle mt-1">
-              ${item.notes ? `<span class="pill mr-2">${item.notes}</span>` : ''}
-              <span class="pill">by ${item.uploaderName||'Guest'}</span>
-              <span class="pill">${sizeKB} KB</span>
-              <span class="pill">${when}</span>
-            </div>
-          </div>
-          <div class="flex gap-2">
-            <button class="btn-sec" data-act="view">View</button>
-            <a class="btn-sec" data-act="download" download="${item.name}">Download</a>
-            ${canDelete ? '<button class="btn-sec" data-act="delete">Delete</button>' : ''}
-          </div>
-        </div>`;
-      const viewBtn = card.querySelector('[data-act="view"]');
-      const dlBtn   = card.querySelector('[data-act="download"]');
-      const delBtn  = card.querySelector('[data-act="delete"]');
-
-      viewBtn.onclick = ()=> openPdfModal(item);
-      dlBtn.href = item.dataUrl;
-      if (delBtn){
-        delBtn.onclick = async ()=>{
-          const stored = localStorage.getItem(PASS_KEYS.user);
-          if (stored){
-            const tryPass = prompt('Enter your passcode to delete');
-            if (!tryPass || stored !== await sha256(tryPass)) return alert('Wrong passcode.');
-          }
-          const next = getRepo().filter(x=> x.id !== item.id);
-          setRepo(next); hydrateUploaderFilter(); renderRepo();
-        };
-      }
-      pdfList.appendChild(card);
-    });
-  }
-
-  function openPdfModal(item){
-    pdfModalTitle.textContent = item.name;
-    pdfMeta.textContent = `${item.uploaderName||'Guest'} • ${(item.size/1024|0)} KB • ${new Date(item.ts).toLocaleString()}${item.notes? ' • '+item.notes:''}`;
-    pdfObject.data = item.dataUrl;
-    pdfDownloadBtn.href = item.dataUrl;
-    pdfDownloadBtn.download = item.name;
-    pdfModal.showModal();
-  }
-  closePdfModal.onclick = ()=> pdfModal.close();
-
-  uploadPdfBtn.onclick = async ()=>{
-    const files = Array.from(pdfInput.files||[]);
-    if (!files.length){ alert('Select one or more PDF files.'); return; }
-    const repo = getRepo();
-    for (const f of files){
-      if (f.type !== 'application/pdf'){ alert(`'${f.name}' is not a PDF.`); continue; }
-      const dataUrl = await fileToDataUrl(f);
-      const entry = { id: crypto.randomUUID(), name: f.name, size: f.size, notes: (pdfTitle.value||'').trim(),
-        uploaderName: (uploaderName.value||'Guest').trim() || 'Guest', deviceId, ts: Date.now(), dataUrl };
-      repo.push(entry);
-    }
-    setRepo(repo);
-    pdfInput.value=''; pdfTitle.value='';
-    hydrateUploaderFilter(); renderRepo();
-  };
-
-  function fileToDataUrl(file){
-    return new Promise((resolve,reject)=>{
-      const r=new FileReader(); r.onload=()=>resolve(r.result); r.onerror=reject; r.readAsDataURL(file);
-    });
-  }
-
-  clearFiltersBtn.onclick = ()=>{ searchPdf.value=''; uploaderFilter.value=''; renderRepo(); };
-  exportRepoBtn.onclick = ()=>{
-    const index = getRepo().map(({id,name,size,uploaderName,notes,ts})=>({id,name,size,uploaderName,notes,ts}));
-    const blob = new Blob([JSON.stringify(index,null,2)], {type:'application/json'});
-    const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='charts_index.json'; a.click(); URL.revokeObjectURL(url);
-  };
-
-  /* ===== YouTube Repo (local) ===== */
-  const YT_KEY = 'ct_yt_repo_v1';
-  function ytGetRepo(){ try{ return JSON.parse(localStorage.getItem(YT_KEY)) || []; }catch{ return []; } }
-  function ytSetRepo(arr){ localStorage.setItem(YT_KEY, JSON.stringify(arr)); }
-
-  function parseYouTubeId(input){
-    if (!input) return null; input=input.trim();
-    if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
-    const m = input.match(/(?:v=|\/embed\/|\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/) || input.match(/v=([a-zA-Z0-9_-]{11})/);
-    return m ? m[1] : null;
-  }
-
-  function ytHydrateUploaderFilter(){
-    const repo = ytGetRepo();
-    const names = Array.from(new Set(repo.map(f=> f.uploaderName || 'Guest')));
-    ytUploaderFilter.innerHTML = '<option value="">All uploaders</option>';
-    names.forEach(n=>{ const opt=document.createElement('option'); opt.value=n; opt.textContent=n; ytUploaderFilter.appendChild(opt); });
-  }
-
-  function ytRenderRepo(){
-    const q = (ytSearch.value||'').toLowerCase();
-    const u = ytUploaderFilter.value || '';
-    const repo = ytGetRepo().sort((a,b)=> b.ts - a.ts);
-    const filtered = repo.filter(item=>{
-      const text = `${item.title||''} ${item.notes||''}`.toLowerCase();
-      const matchesQ = !q || text.includes(q);
-      const matchesU = !u || (item.uploaderName||'Guest') === u;
-      return matchesQ && matchesU;
-    });
-
-    ytList.innerHTML = '';
-    ytEmpty.classList.toggle('hidden', filtered.length !== 0);
-
-    filtered.forEach(item=>{
-      const thumb = `https://i.ytimg.com/vi/${item.videoId}/hqdefault.jpg`;
-      const canDelete = item.deviceId === deviceId;
-
-      const card = document.createElement('div');
-      card.className = 'card p-3';
-      card.innerHTML = `
-        <div class="rounded overflow-hidden">
-          <img src="${thumb}" alt="Thumbnail" class="w-full" loading="lazy">
-        </div>
-        <div class="mt-2 font-semibold">${item.title || 'YouTube Video'}</div>
-        <div class="text-xs subtle mt-1">
-          ${item.notes ? `<span class="pill mr-2">${item.notes}</span>` : ''}
-          <span class="pill">by ${item.uploaderName||'Guest'}</span>
-          <span class="pill">${new Date(item.ts).toLocaleString()}</span>
-        </div>
-        <div class="flex gap-2 mt-3 flex-wrap">
-          <button class="btn-sec" data-act="play">Play</button>
-          <a class="btn-sec" data-act="open" href="https://youtu.be/${item.videoId}" target="_blank" rel="noopener">Open</a>
-          <button class="btn-sec" data-act="share">Share</button>
-          ${canDelete ? '<button class="btn-sec" data-act="delete">Delete</button>' : ''}
-        </div>`;
-
-      const playBtn = card.querySelector('[data-act="play"]');
-      const shareBtn = card.querySelector('[data-act="share"]');
-      const delBtn = card.querySelector('[data-act="delete"]');
-
-      playBtn.onclick = ()=> ytOpen(item);
-      shareBtn.onclick = ()=> ytShare(item);
-      if (delBtn){
-        delBtn.onclick = async ()=>{
-          const stored = localStorage.getItem(PASS_KEYS.user);
-          if (stored){
-            const tryPass = prompt('Enter your passcode to delete');
-            if (!tryPass || stored !== await sha256(tryPass)) return alert('Wrong passcode.');
-          }
-          ytSetRepo(ytGetRepo().filter(x=> x.id !== item.id));
-          ytHydrateUploaderFilter(); ytRenderRepo();
-        };
-      }
-      ytList.appendChild(card);
-    });
-  }
-
-  function ytOpen(item, pushHash = true){
-    ytModalTitle.textContent = item.title || 'YouTube';
-    ytIframe.src = `https://www.youtube.com/embed/${item.videoId}?rel=0`;
-    ytMeta.textContent = `${item.uploaderName||'Guest'} • ${new Date(item.ts).toLocaleString()}${item.notes? ' • '+item.notes:''}`;
-    ytShareBtn.onclick = ()=> ytShare(item);
-    ytShareHint.classList.add('hidden');
-    ytModal.showModal();
-    if (pushHash) location.hash = `yt-${item.id}`;
-  }
-  function ytShare(item){
-    const url = `${location.origin}${location.pathname}#yt-${item.id}`;
-    navigator.clipboard?.writeText(url).then(()=>{
-      ytShareHint.classList.remove('hidden');
-      setTimeout(()=> ytShareHint.classList.add('hidden'), 1500);
-    });
-  }
-  ytCloseBtn.onclick = ()=>{
-    ytIframe.src = '';
-    ytModal.close();
-    if (location.hash.startsWith('#yt-')) history.replaceState(null,'',location.pathname+location.search);
-  };
-
-  addYtBtn.onclick = ()=>{
-    const id = parseYouTubeId(ytUrl.value);
-    if (!id){ alert('Please enter a valid YouTube URL or 11-character video ID.'); return; }
-    const repo = ytGetRepo();
-    const item = { id: crypto.randomUUID(), videoId: id, title:(ytTitle.value||'').trim(), notes:(ytNotes.value||'').trim(),
-                   uploaderName:(ytUploader.value||'Guest').trim() || 'Guest', deviceId, ts: Date.now() };
-    repo.push(item);
-    ytSetRepo(repo);
-    ytUrl.value=''; ytTitle.value=''; ytNotes.value='';
-    ytHydrateUploaderFilter(); ytRenderRepo();
-  };
-
-  ytSearch.addEventListener('input', ytRenderRepo);
-  ytUploaderFilter.addEventListener('change', ytRenderRepo);
-  ytClearFilters.onclick = ()=>{ ytSearch.value=''; ytUploaderFilter.value=''; ytRenderRepo(); };
-  ytExportBtn.onclick = ()=>{
-    const index = ytGetRepo().map(({id,videoId,title,notes,uploaderName,ts})=>({id,videoId,title,notes,uploaderName,ts}));
-    const blob = new Blob([JSON.stringify(index,null,2)], {type:'application/json'});
-    const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='youtube_index.json'; a.click(); URL.revokeObjectURL(url);
-  };
-
-  /* ===== Pass & Admin login ===== */
-  setPassBtn.onclick = ()=> passModal.showModal();
-  closePassBtn.onclick = ()=> passModal.close();
-  savePassBtn.onclick = async ()=>{
-    const u = document.getElementById('userPass').value.trim();
-    const a = document.getElementById('adminPass').value.trim();
-    await setPasscodes({ user: u || null, admin: a || null });
-    document.getElementById('userPass').value=''; document.getElementById('adminPass').value='';
-    passModal.close();
-  };
-
-  adminLoginBtn.onclick = ()=>{
-    if (!localStorage.getItem(PASS_KEYS.admin)) return alert('Set an admin passcode first (🔒 Set Passcode).');
-    adminLoginInput.value=''; adminLoginModal.showModal();
-  };
-  adminLoginClose.onclick = ()=> adminLoginModal.close();
-  adminLoginSubmit.onclick = async ()=>{
-    const stored = localStorage.getItem(PASS_KEYS.admin);
-    const tryPass = adminLoginInput.value.trim();
-    if (!tryPass) return;
-    const ok = stored === await sha256(tryPass);
-    if (!ok) return alert('Incorrect admin passcode.');
-    localStorage.setItem(PASS_KEYS.adminSession, '1');
-    adminLoginModal.close();
-    updateLockStatusUI();
-    renderEvents(); renderCalendar();
-  };
-  adminLogoutBtn.onclick = ()=>{
-    localStorage.removeItem(PASS_KEYS.adminSession);
-    updateLockStatusUI();
-    renderEvents(); renderCalendar();
-  };
-
-  /* ===== Init ===== */
-  function init(){ updateLockStatusUI(); renderCalendar(); renderEvents(); }
-  window.addEventListener('DOMContentLoaded', init);
-  </script>
-</body>
-</html>
+   
